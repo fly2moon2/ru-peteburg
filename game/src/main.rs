@@ -69,7 +69,7 @@ impl Game {
     }
 
     pub fn draw(&self) {
-        clear_background(color_u8!(255, 255, 255, 255));
+        //clear_background(color_u8!(255, 255, 255, 255));
 
         draw_texture_ex(
             self.texture,
@@ -107,6 +107,10 @@ async fn main() {
     loop {
         clear_background(LIGHTGRAY);
 
+/*         set_camera(&Camera2D {
+            zoom: vec2(1., screen_width() / screen_height()),
+            ..Default::default()
+        }); */
         // Going 3d!
 
         set_camera(&Camera3D {
@@ -135,6 +139,7 @@ async fn main() {
 
         set_default_camera();
         draw_text("WELCOME TO 3D WORLD", 10.0, 20.0, 30.0, BLACK);
+        draw_text("In an unsafe world", 20.0, 30.0, 30.0, BLUE);
         // 3d example ends
         game.update();
         game.draw();
