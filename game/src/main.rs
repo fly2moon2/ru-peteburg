@@ -15,7 +15,7 @@ use macroquad::prelude::*;
 
 //const NOTO_SANS: &[u8] = include_bytes!("../assets/fonts/NotoSans-Regular.ttf");
 
-use std::mem::size_of;
+//use std::mem::size_of;
 
 static B:[u8;4]=[34,56,123,23];
 static C:[u8;7]=[3,33,54,231,34,45,98];
@@ -300,6 +300,7 @@ async fn main() {
 
         draw_sphere(vec3(10., 10., 10.), 1., rust_logo, BLACK);
 
+        draw_circle_lines(50.0, 50f32, 30f32, 0.5f32, GREEN);
         // Back to screen space, render some text
 
         set_default_camera();
