@@ -29,7 +29,112 @@ pub fn init() {
     println!("a is: {}",a);
     println!("location: {:p}",&a);
 
+// petetest
+    // String - growable vector
+    // &str - fix-sized string slice
 
+    // convert from &str to String
+    let hellostrslice:&str;
+    hellostrslice="string slice tanjobi";
+    println!("hellostrslice,{}",hellostrslice);
+    let hellotext:String=String::from(hellostrslice);
+    println!("hellotext, {}",hellotext);
+
+    // TryFrom / TryInto
+    // https://doc.rust-lang.org/stable/rust-by-example/conversion/try_from_try_into.html
+    #[derive(Debug, PartialEq)]
+    struct EvenNumber(i32);
+    
+    impl TryFrom<i32> for EvenNumber {
+        type Error = ();
+    
+        fn try_from(value: i32) -> Result<Self, Self::Error> {
+            if value % 2 == 0 {
+                Ok(EvenNumber(value))
+            } else {
+                Err(())
+            }
+        }
+    }
+
+    // TryFrom
+
+    assert_eq!(EvenNumber::try_from(8), Ok(EvenNumber(8)));
+    assert_eq!(EvenNumber::try_from(5), Err(()));
+
+    // TryInto
+
+    let result: Result<EvenNumber, ()> = 8i32.try_into();
+    assert_eq!(result, Ok(EvenNumber(8)));
+    let result: Result<EvenNumber, ()> = 5i32.try_into();
+    assert_eq!(result, Err(()));
+    //
+    // TryFrom / TryInto ends
+
+    // convert to string
+    use std::fmt;
+
+    struct Circle {
+        radius: i32
+    }
+
+    impl fmt::Display for Circle {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            write!(f, "Circle of radius {}", self.radius)
+        }
+    }
+    let circle = Circle { radius: 6 };
+    println!("{}", circle.to_string());
+    // convert to string ends
+
+    // parse number (types with FromStr trait) to string
+    let parsed: i32 = "5".parse().unwrap();
+    let turbo_parsed = "10".parse::<i32>().unwrap();
+
+    let sum = parsed + turbo_parsed;
+    println!("Sum: {:?}", sum);
+    // parse number ends
+
+    // expressions
+    let x = 5u32;
+
+    let y = {
+        let x_squared = x * x;
+        let x_cube = x_squared * x;
+
+        // This expression will be assigned to `y`
+        x_cube + x_squared + x
+    };
+
+    let z = {
+        // The semicolon suppresses this expression and `()` is assigned to `z`
+        2 * x;
+    };
+
+    println!("x is {:?}", x);
+    println!("y is {:?}", y);
+    println!("z is {:?}", z);
+    // expressions end
+
+    // literals
+    // Suffixed literals, their types are known at initialization
+    let x = 1u8;
+    let y = 2u32;
+    let z = 3f32;
+
+    // Unsuffixed literals, their types depend on how they are used
+    let i = 1;
+    let f = 1.0;
+
+    // `size_of_val` returns the size of a variable in bytes
+    println!("size of `x` in bytes: {}", std::mem::size_of_val(&x));
+    println!("size of `y` in bytes: {}", std::mem::size_of_val(&y));
+    println!("size of `z` in bytes: {}", std::mem::size_of_val(&z));
+    println!("size of `i` in bytes: {}", std::mem::size_of_val(&i));
+    println!("size of `f` in bytes: {}", std::mem::size_of_val(&f));
+    // literals end
+
+// petetest ends
 }
 
 #[derive(Default)]
