@@ -1,4 +1,8 @@
+// -------------------
+// note: game macroquad 
+// -------------------
 use macroquad::prelude::*;
+
 
 //use macroquad_font_renderer::Fonts;
 //use macroquad_tiled as tiled;
@@ -12,6 +16,41 @@ use macroquad::prelude::*;
     ui,
 }; */
 
+// ----------------------------------
+// note: game macroquad declares ends
+// ----------------------------------
+
+// -------------------
+// note: db mongodb
+// -------------------
+// ref.:https://www.mongodb.com/developer/languages/rust/rust-mongodb-crud-tutorial/
+//
+// start mongodb instance:
+// at {local}}/dev/engine/db/mongodb/bin
+// ./mongod --dbpath /Users/jack/dev/data/mongodb/crimea
+// or ./mongod1 (custom startup script)
+// connecting mongodb, default no password
+// see with MongoDB Conmpass
+// export MONGODB_URI='mongodb://localhost:27017/'
+// cargo run
+
+use mongodb::{Client, options::{ClientOptions, ResolverConfig}};
+// Document found in mongodb database collection
+use bson::document::Document;
+use std::env;
+use std::error::Error;
+use tokio;
+
+use chrono::{TimeZone, Utc};
+use mongodb::bson::doc;
+// -------------------------------
+// note: db mongodb - declare ends
+// -------------------------------
+
+// note:    module call
+use crate::sys::db::connect;
+pub mod sys;
+// note:    module call ends
 
 //const NOTO_SANS: &[u8] = include_bytes!("../assets/fonts/NotoSans-Regular.ttf");
 
@@ -323,8 +362,77 @@ fn draw_box(pos: Vec2, size: Vec2) {
 
 } */
 
+#[tokio::main]
+async fn dbconnect() -> Result<(), Box<dyn Error>> {
+    // -----------------------
+    // note:    db connect 
+    // -----------------------
+    let client1 = connect().await.unwrap();
+
+    // Load the MongoDB connection string from an environment variable:
+    let client_uri =
+       env::var("MONGODB_URI").expect("You must set the MONGODB_URI environment var!");
+ 
+    // A Client is needed to connect to MongoDB:
+    // An extra line of code to work around a DNS issue on Windows:
+    let options =
+       ClientOptions::parse_with_resolver_config(&client_uri, ResolverConfig::cloudflare())
+          .await?;
+    let client = Client::with_options(options)?;
+ 
+    // client implements std::sync::Arc, can use clone()
+    // https://mongodb.github.io/mongo-rust-driver/manual/connecting.html
+    //let client1 = client.clone();
+ 
+    // Print the databases in our MongoDB cluster:
+    println!("Databases:");
+    for name in client.list_database_names(None, None).await? {
+       println!("- {}", name);
+    }
+    // -------------------------
+    // note:    db connect ends 
+    // -------------------------
+    // note:    game main()-> db main rturns result 
+    //          returns Ok result
+    Ok(())
+}
+
 #[macroquad::main("game")]
+//#[tokio::main]
+// note:    game main()-> db main rturns result 
+//          returns result instead of main()
 async fn main() {
+//async fn main() -> Result<(), Box<dyn Error>> {
+    dbconnect();
+/*     // -----------------------
+    // note:    db connect 
+    // -----------------------
+    let client1 = connect().await.unwrap();
+
+    // Load the MongoDB connection string from an environment variable:
+    let client_uri =
+       env::var("MONGODB_URI").expect("You must set the MONGODB_URI environment var!");
+ 
+    // A Client is needed to connect to MongoDB:
+    // An extra line of code to work around a DNS issue on Windows:
+    let options =
+       ClientOptions::parse_with_resolver_config(&client_uri, ResolverConfig::cloudflare())
+          .await?;
+    let client = Client::with_options(options)?;
+ 
+    // client implements std::sync::Arc, can use clone()
+    // https://mongodb.github.io/mongo-rust-driver/manual/connecting.html
+    //let client1 = client.clone();
+ 
+    // Print the databases in our MongoDB cluster:
+    println!("Databases:");
+    for name in client.list_database_names(None, None).await? {
+       println!("- {}", name);
+    }
+    // -------------------------
+    // note:    db connect ends 
+    // ------------------------- */
+
     let mut game = Game::new().await;
     //
     let rust_logo = load_texture("assets/plane.png").await.unwrap();
@@ -415,8 +523,15 @@ async fn main() {
         game.update();
         game.draw();
         if game.quit {
+            // note:    game main()-> db main returns result 
+            //          break loop instead of return
             return;
+            //break;
         }
         next_frame().await
     }
+
+    // note:    game main()-> db main rturns result 
+    //          returns Ok result
+    //Ok(())
 }
