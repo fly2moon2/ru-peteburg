@@ -362,7 +362,16 @@ fn draw_box(pos: Vec2, size: Vec2) {
 
 } */
 
+// note: model
+// mod
+// https://dev.to/hackmamba/build-a-rest-api-with-rust-and-mongodb-rocket-version-ah5
+// https://doc.rust-lang.org/book/ch07-02-defining-modules-to-control-scope-and-privacy.html
+use crate::model::uam::Person;
+//use crate::model::code::ActiveStatus;
+pub mod model; // declared in \model\mod.rs
+
 #[tokio::main]
+// note:    game main()-> db main rturns result 
 async fn dbconnect() -> Result<(), Box<dyn Error>> {
     // -----------------------
     // note:    db connect 
@@ -389,6 +398,37 @@ async fn dbconnect() -> Result<(), Box<dyn Error>> {
     for name in client.list_database_names(None, None).await? {
        println!("- {}", name);
     }
+
+    // connect database collection
+   let soldiers = client.database("crimea").collection("soldier");
+
+      // Insert some documents into the "mydb.books" collection.
+   //soldiers.insert_many(docs, None).await?;
+
+   // struct to doc
+   // note: insert new doc
+/*    //let person=Person::new("Arigato");
+   let person=Person::new("stPetersburg");
+
+   let doc_pers1 = doc! {
+      "name": person.name,
+   };
+   
+   let rslt1 = soldiers.insert_one(doc_pers1.clone(), None).await?;
+ */
+
+    // find document
+   // Look up one document:
+   let soldier: Document = soldiers.find_one(
+    doc! {
+          "name": "stPetersburg"
+    },
+    None,
+ ).await?
+ .expect("Can't find the document.");
+ println!("solider stPetersburg: {}", soldier);
+
+
     // -------------------------
     // note:    db connect ends 
     // -------------------------
@@ -398,40 +438,10 @@ async fn dbconnect() -> Result<(), Box<dyn Error>> {
 }
 
 #[macroquad::main("game")]
-//#[tokio::main]
-// note:    game main()-> db main rturns result 
-//          returns result instead of main()
 async fn main() {
 //async fn main() -> Result<(), Box<dyn Error>> {
     dbconnect();
-/*     // -----------------------
-    // note:    db connect 
-    // -----------------------
-    let client1 = connect().await.unwrap();
 
-    // Load the MongoDB connection string from an environment variable:
-    let client_uri =
-       env::var("MONGODB_URI").expect("You must set the MONGODB_URI environment var!");
- 
-    // A Client is needed to connect to MongoDB:
-    // An extra line of code to work around a DNS issue on Windows:
-    let options =
-       ClientOptions::parse_with_resolver_config(&client_uri, ResolverConfig::cloudflare())
-          .await?;
-    let client = Client::with_options(options)?;
- 
-    // client implements std::sync::Arc, can use clone()
-    // https://mongodb.github.io/mongo-rust-driver/manual/connecting.html
-    //let client1 = client.clone();
- 
-    // Print the databases in our MongoDB cluster:
-    println!("Databases:");
-    for name in client.list_database_names(None, None).await? {
-       println!("- {}", name);
-    }
-    // -------------------------
-    // note:    db connect ends 
-    // ------------------------- */
 
     let mut game = Game::new().await;
     //
