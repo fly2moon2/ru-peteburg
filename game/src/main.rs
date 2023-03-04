@@ -366,6 +366,7 @@ fn draw_box(pos: Vec2, size: Vec2) {
 // mod
 // https://dev.to/hackmamba/build-a-rest-api-with-rust-and-mongodb-rocket-version-ah5
 // https://doc.rust-lang.org/book/ch07-02-defining-modules-to-control-scope-and-privacy.html
+use crate::model::uam::Sex;
 use crate::model::uam::Person;
 //use crate::model::code::ActiveStatus;
 pub mod model; // declared in \model\mod.rs
@@ -417,17 +418,25 @@ async fn dbconnect() -> Result<(), Box<dyn Error>> {
    let rslt1 = soldiers.insert_one(doc_pers1.clone(), None).await?;
  */
 
-    // find document
-   // Look up one document:
-   let soldier: Document = soldiers.find_one(
+// find document
+// Look up one document:
+let soldier: Document = soldiers.find_one(
     doc! {
           "name": "stPetersburg"
     },
     None,
  ).await?
  .expect("Can't find the document.");
- println!("solider stPetersburg: {}", soldier);
+ //println!("solider stPetersburg: {}", soldier);
+//let soldier1=solider;
+ 
+//const NAME: &str = "name";
+//let soldiername = soldier.get_str(NAME)?;
+// println!("solider stPetersburg NAME: {}", soldiername);
 
+   let doc2pers=doc_to_person(&soldier).unwrap();
+   //println!("solider doc NAME: {}, sex {}", doc2pers.name, doc2pers.sex.to_string)();
+   println!("solider doc NAME: {}", doc2pers.name);
 
     // -------------------------
     // note:    db connect ends 
@@ -437,6 +446,47 @@ async fn dbconnect() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+// note: help class to convert document to person object
+// ref: https://blog.logrocket.com/using-mongodb-in-a-rust-web-service/
+fn doc_to_person(doc: &Document) -> Result<Person, Box<dyn Error>> {
+//fn doc_to_person(&self, doc: &Document) -> Result<Person, Box<dyn Error>> {
+
+   
+    //let id = doc.get_object_id(ID)?;
+    //const NAME: &str = "name";
+    let persname = doc.get_str("name")?;
+/*     let author = doc.get_str(AUTHOR)?;
+    let num_pages = doc.get_i32(NUM_PAGES)?;
+    let added_at = doc.get_datetime(ADDED_AT)?;
+    let tags = doc.get_array(TAGS)?; */
+
+    let person1=Person::new(persname);
+/*     let person = Person {
+        name: persname.to_string(),
+        sex: Sex(String::from("F")),
+        dob: String::from("dob"),
+        data: Vec::new(),
+    }; */
+    Ok(person1)
+/*     let book = Book {
+        id: id.to_hex(),
+        name: name.to_owned(),
+        author: author.to_owned(),
+        num_pages: num_pages as usize,
+        added_at: *added_at,
+        tags: tags
+            .iter()
+            .filter_map(|entry| match entry {
+                Bson::String(v) => Some(v.to_owned()),
+                _ => None,
+            })
+            .collect(),
+    };
+    Ok(book) */
+}
+
+
+// note: game engine macroquad
 #[macroquad::main("game")]
 async fn main() {
 //async fn main() -> Result<(), Box<dyn Error>> {
