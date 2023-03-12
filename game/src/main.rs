@@ -368,6 +368,7 @@ fn draw_box(pos: Vec2, size: Vec2) {
 // https://doc.rust-lang.org/book/ch07-02-defining-modules-to-control-scope-and-privacy.html
 use crate::model::uam::Sex;
 use crate::model::uam::Person;
+use crate::model::uam::doc2Person;
 //use crate::model::code::ActiveStatus;
 pub mod model; // declared in \model\mod.rs
 
@@ -376,32 +377,18 @@ pub mod model; // declared in \model\mod.rs
 async fn dbconnect() -> Result<(), Box<dyn Error>> {
     // -----------------------
     // note:    db connect 
+    // returns a db client connection (called the db mod)
     // -----------------------
     let client1 = connect().await.unwrap();
-
-    // Load the MongoDB connection string from an environment variable:
-    let client_uri =
-       env::var("MONGODB_URI").expect("You must set the MONGODB_URI environment var!");
- 
-    // A Client is needed to connect to MongoDB:
-    // An extra line of code to work around a DNS issue on Windows:
-    let options =
-       ClientOptions::parse_with_resolver_config(&client_uri, ResolverConfig::cloudflare())
-          .await?;
-    let client = Client::with_options(options)?;
- 
-    // client implements std::sync::Arc, can use clone()
-    // https://mongodb.github.io/mongo-rust-driver/manual/connecting.html
-    //let client1 = client.clone();
  
     // Print the databases in our MongoDB cluster:
-    println!("Databases:");
-    for name in client.list_database_names(None, None).await? {
+    println!("main:Databases:");
+    for name in client1.list_database_names(None, None).await? {
        println!("- {}", name);
     }
 
     // connect database collection
-   let soldiers = client.database("crimea").collection("soldier");
+   let soldiers = client1.database("crimea").collection("soldier");
 
       // Insert some documents into the "mydb.books" collection.
    //soldiers.insert_many(docs, None).await?;
@@ -434,9 +421,9 @@ let soldier: Document = soldiers.find_one(
 //let soldiername = soldier.get_str(NAME)?;
 // println!("solider stPetersburg NAME: {}", soldiername);
 
-   let doc2pers=doc_to_person(&soldier).unwrap();
+   let doc2pers=doc2Person(&soldier).unwrap();
    //println!("solider doc NAME: {}, sex {}", doc2pers.name, doc2pers.sex.to_string)();
-   println!("solider doc NAME: {}", doc2pers.name);
+   println!("solider doc NAME: {}, DOB: {}", doc2pers.name, doc2pers.dob);
 
     // -------------------------
     // note:    db connect ends 
@@ -446,44 +433,6 @@ let soldier: Document = soldiers.find_one(
     Ok(())
 }
 
-// note: help class to convert document to person object
-// ref: https://blog.logrocket.com/using-mongodb-in-a-rust-web-service/
-fn doc_to_person(doc: &Document) -> Result<Person, Box<dyn Error>> {
-//fn doc_to_person(&self, doc: &Document) -> Result<Person, Box<dyn Error>> {
-
-   
-    //let id = doc.get_object_id(ID)?;
-    //const NAME: &str = "name";
-    let persname = doc.get_str("name")?;
-/*     let author = doc.get_str(AUTHOR)?;
-    let num_pages = doc.get_i32(NUM_PAGES)?;
-    let added_at = doc.get_datetime(ADDED_AT)?;
-    let tags = doc.get_array(TAGS)?; */
-
-    let person1=Person::new(persname);
-/*     let person = Person {
-        name: persname.to_string(),
-        sex: Sex(String::from("F")),
-        dob: String::from("dob"),
-        data: Vec::new(),
-    }; */
-    Ok(person1)
-/*     let book = Book {
-        id: id.to_hex(),
-        name: name.to_owned(),
-        author: author.to_owned(),
-        num_pages: num_pages as usize,
-        added_at: *added_at,
-        tags: tags
-            .iter()
-            .filter_map(|entry| match entry {
-                Bson::String(v) => Some(v.to_owned()),
-                _ => None,
-            })
-            .collect(),
-    };
-    Ok(book) */
-}
 
 
 // note: game engine macroquad
