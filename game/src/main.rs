@@ -372,6 +372,7 @@ use crate::model::uam::doc2Person;
 //use crate::model::code::ActiveStatus;
 pub mod model; // declared in \model\mod.rs
 
+
 #[tokio::main]
 // note:    game main()-> db main rturns result 
 async fn dbconnect() -> Result<(), Box<dyn Error>> {
@@ -425,6 +426,8 @@ let soldier: Document = soldiers.find_one(
    //println!("solider doc NAME: {}, sex {}", doc2pers.name, doc2pers.sex.to_string)();
    println!("solider doc NAME: {}, DOB: {}", doc2pers.name, doc2pers.dob);
 
+   //gPerson=Rc::new(doc2pers);
+   let gPerson=doc2pers.clone();
     // -------------------------
     // note:    db connect ends 
     // -------------------------
@@ -438,8 +441,20 @@ let soldier: Document = soldiers.find_one(
 // note: game engine macroquad
 #[macroquad::main("game")]
 async fn main() {
+    // note:
+    // pass variables to closure
+    // https://rust-unofficial.github.io/patterns/idioms/pass-var-to-closure.html
+
+    use std::rc::Rc;
+    let mut gPerson=Rc::new(Person::new("persname"));
+    //let mut gPerson=Person::new("persname");
 //async fn main() -> Result<(), Box<dyn Error>> {
-    dbconnect();
+    //dbconnect();
+    let closure_db={
+        dbconnect();
+        let gPerson=gPerson.clone();
+        println!("gPerson NAME: {}, DOB: {}", gPerson.name, gPerson.dob);
+    };
 
 
     let mut game = Game::new().await;
@@ -472,7 +487,8 @@ async fn main() {
         }; */
 
         for font_size in (30..100).step_by(20) {
-            let text = "abcdef";
+            //let text = "abcdef";
+            let text = &gPerson.name;
             let params = TextParams {
                 font,
                 font_size,

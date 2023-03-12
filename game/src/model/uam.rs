@@ -16,10 +16,10 @@ pub struct User {
 
 // struct
 // new type idiom
-#[derive(Debug)]
+#[derive(Debug,Clone)]
 pub struct Sex (String);
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Person {
   pub name: String,
   pub  sex: Sex,
