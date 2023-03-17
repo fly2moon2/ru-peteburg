@@ -1,9 +1,9 @@
-use mongodb::{Client, options::{ClientOptions, ResolverConfig}};
+use mongodb::{Client, Collection, options::{ClientOptions, ResolverConfig}};
 // Document found in mongodb database collection
 use bson::document::Document;
 use std::env;
 use std::error::Error;
-use tokio;
+//use tokio;
 
 pub async fn connect() -> Result<Client, Box<dyn Error>> {
     // Load the MongoDB connection string from an environment variable:
@@ -29,4 +29,14 @@ pub async fn connect() -> Result<Client, Box<dyn Error>> {
  */
     //Ok(())
     Ok(client)
+}
+
+
+// note:    db get document collection
+// returns a db collection from the given db connection client
+pub async fn getcollection(client:&Client) -> Result<Collection<Document>, Box<dyn Error>> {
+   // return database collection
+   let collection = client.database("crimea").collection("soldier");
+
+    Ok(collection)
 }

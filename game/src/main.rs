@@ -49,6 +49,7 @@ use mongodb::bson::doc;
 
 // note:    module call
 use crate::sys::db::connect;
+use crate::sys::db::getcollection;
 pub mod sys;
 // note:    module call ends
 
@@ -389,7 +390,8 @@ async fn dbconnect() -> Result<(), Box<dyn Error>> {
     }
 
     // connect database collection
-   let soldiers = client1.database("crimea").collection("soldier");
+   //let soldiers = client1.database("crimea").collection("soldier");
+   let soldiers=getcollection(&client1).await.unwrap();;
 
       // Insert some documents into the "mydb.books" collection.
    //soldiers.insert_many(docs, None).await?;
@@ -427,7 +429,9 @@ let soldier: Document = soldiers.find_one(
    println!("solider doc NAME: {}, DOB: {}", doc2pers.name, doc2pers.dob);
 
    //gPerson=Rc::new(doc2pers);
-   let gPerson=doc2pers.clone();
+   //let gPerson=doc2pers.clone();
+   let gPerson=doc2Person(&soldier).unwrap();
+   println!("gPerson doc NAME: {}, DOB: {}", gPerson.name, gPerson.dob);
     // -------------------------
     // note:    db connect ends 
     // -------------------------
@@ -445,16 +449,16 @@ async fn main() {
     // pass variables to closure
     // https://rust-unofficial.github.io/patterns/idioms/pass-var-to-closure.html
 
-    use std::rc::Rc;
-    let mut gPerson=Rc::new(Person::new("persname"));
-    //let mut gPerson=Person::new("persname");
+    //use std::rc::Rc;
+    //let mut gPerson=Rc::new(Person::new("persname"));
+    let mut gPerson=Person::new("persAname");
 //async fn main() -> Result<(), Box<dyn Error>> {
     //dbconnect();
-    let closure_db={
+   // let closure_db={
         dbconnect();
-        let gPerson=gPerson.clone();
-        println!("gPerson NAME: {}, DOB: {}", gPerson.name, gPerson.dob);
-    };
+        gPerson=gPerson.clone();
+        println!("gPerson aft dbconnedt NAME: {}, DOB: {}", gPerson.name, gPerson.dob);
+    //};
 
 
     let mut game = Game::new().await;
