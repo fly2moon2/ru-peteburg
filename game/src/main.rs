@@ -34,7 +34,7 @@ use macroquad::prelude::*;
 // export MONGODB_URI='mongodb://localhost:27017/'
 // cargo run
 
-use mongodb::{Client, options::{ClientOptions, ResolverConfig}};
+use mongodb::{Client, Collection, options::{ClientOptions, ResolverConfig}};
 // Document found in mongodb database collection
 use bson::document::Document;
 use std::env;
@@ -373,10 +373,49 @@ use crate::model::uam::doc2Person;
 //use crate::model::code::ActiveStatus;
 pub mod model; // declared in \model\mod.rs
 
+#[tokio::main]
+// note: await.unwrap() requires [#tokio::main]
+async fn dbconnection() -> Result<Client, Box<dyn Error>> {
+    // -----------------------
+    // note:    
+    // returns a db client connection (called the db mod)
+    // -----------------------
+    let client1 = connect().await.unwrap();
+    Ok(client1)
+}
+
+#[tokio::main]
+// note: Collection<Document> : Document is the generic type of Collection
+async fn dbcollection(client1:&Client) -> Result<Collection<Document>, Box<dyn Error>> {
+    // -----------------------
+    // note:   
+    // returns a db collection (of documents) given the db client connection
+    // -----------------------
+    let collection1=getcollection(&client1,String::from("crimea"),String::from("soldier")).await.unwrap();
+    Ok(collection1)
+}
+
+#[tokio::main]
+// note: 
+async fn dbdocument(collection1:&Collection<Document>) -> Result<Document, Box<dyn Error>> {
+    // -----------------------
+    // note:   
+    // 
+    let doc1: Document = collection1.find_one(
+            doc! {
+                  "name": "stPetersburdg"
+            },
+            None,
+         )
+         .await?
+         .expect("Can't find the document.");
+
+    Ok(doc1)
+}
 
 #[tokio::main]
 // note:    game main()-> db main rturns result 
-async fn dbconnect() -> Result<(), Box<dyn Error>> {
+async fn dbtask() -> Result<(), Box<dyn Error>> {
     // -----------------------
     // note:    db connect 
     // returns a db client connection (called the db mod)
@@ -391,8 +430,7 @@ async fn dbconnect() -> Result<(), Box<dyn Error>> {
 
     // connect database collection
    //let soldiers = client1.database("crimea").collection("soldier");
-   let soldiers=getcollection(&client1).await.unwrap();;
-
+   let soldiers=getcollection(&client1,String::from("crimea"),String::from("soldier")).await.unwrap();
       // Insert some documents into the "mydb.books" collection.
    //soldiers.insert_many(docs, None).await?;
 
@@ -455,7 +493,13 @@ async fn main() {
 //async fn main() -> Result<(), Box<dyn Error>> {
     //dbconnect();
    // let closure_db={
-        dbconnect();
+        let dbconnect1=dbconnection().unwrap();
+        let dbcollection1=dbcollection(&dbconnect1).unwrap();
+        //let dbdoc1=dbdocument(&dbcollection1).unwrap();
+        //let dbdoc1=dbdocument(&dbcollection(&dbconnect1).unwrap()).unwrap();
+
+
+        dbtask();
         gPerson=gPerson.clone();
         println!("gPerson aft dbconnedt NAME: {}, DOB: {}", gPerson.name, gPerson.dob);
     //};

@@ -34,9 +34,9 @@ pub async fn connect() -> Result<Client, Box<dyn Error>> {
 
 // note:    db get document collection
 // returns a db collection from the given db connection client
-pub async fn getcollection(client:&Client) -> Result<Collection<Document>, Box<dyn Error>> {
+pub async fn getcollection(client:&Client, dbname:String, collectionname:String) -> Result<Collection<Document>, Box<dyn Error>> {
    // return database collection
-   let collection = client.database("crimea").collection("soldier");
+   let collection = client.database(&dbname).collection(&collectionname);
 
     Ok(collection)
 }
