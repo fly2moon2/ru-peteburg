@@ -435,16 +435,31 @@ async fn main() {
         let dbcollection1=dbcollection(&dbconnect1).unwrap();
         let dbdoc1=dbdocument(&dbcollection1).unwrap(); */
 
-/*         let dbdoc1=dbdocx(String::from("crimea"),String::from("soldier")).unwrap();
+        // ***************************
+        // way 1: dbdocx: ok
+        // ***************************
+        let dbdoc1=dbdocx(String::from("crimea"),String::from("soldier")).unwrap();
 
-        let gPerson=doc2Person(&dbdoc1).unwrap(); */
+        let gPerson=doc2Person(&dbdoc1).unwrap();
+        // ***************************
+        // way 1: dbdocx ENDs
+        // ***************************
 
+        // ***************************
+        // way 2: find_soldier: panic
+        // ***************************
         // =====================
         // LEARN
-        // calling from main here (not #tokio), remove await(), just unwrap()
+        // calling from main here (since not from #tokio), remove await(), just unwrap()
         // =====================
-        let dbcollect1=dbcollectx(String::from("crimea"),String::from("soldier")).unwrap();
+/*         let dbcollect1=dbcollectx(String::from("crimea"),String::from("soldier")).unwrap();
     
+        // LEARN: error not handled. panic
+        let dbdoc1: Document = find_soldier(&dbcollect1).unwrap();
+ */
+        // *******************************
+        // way 2: find_soldier: panic ENDS
+        // *******************************
 /*         let dbdoc1_opt: Option<Document> = dbcollect1.find_one(
                doc! {
                      "name": "stPetersburg"
@@ -464,13 +479,13 @@ async fn main() {
             .await
             .expect("Can't find the document.");  */
 
-            // LEARN: error not handled. panic
-            //let dbdoc1: Document = find_soldier(dbcollect1).unwrap();
 
-            let dbdoc1: Document = match find_soldier(&dbcollect1) {
+
+/*             let dbdoc1: Document = match find_soldier(&dbcollect1) {
                 Ok(doc1) => doc1,
                 Err(error) => panic!("Problem find_soldier: {:?}", error),
-            };
+            }; */
+
             // sample ref
 /*             let greeting_file = match greeting_file_result {
                 Ok(file) => file,
@@ -624,7 +639,7 @@ async fn main() {
     }
 
     // note:    game main()-> db main rturns result 
-    //          returns Ok result
+    //          returns  Ok result
     //Ok(())
 }
 
