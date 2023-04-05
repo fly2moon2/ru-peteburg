@@ -51,7 +51,6 @@ use mongodb::bson::doc;
 use crate::sys::db::connect;
 use crate::sys::db::getcollection;
 //use crate::sys::db::connectncollect;
-use crate::sys::db::connectcld;
 use crate::sys::db::connectx;
 use crate::sys::db::connect_collectx;
 pub mod sys;
@@ -546,6 +545,8 @@ async fn main() {
         let dbdoc1=dbdocument(&dbcollection1).unwrap(); */
 
         let dbdoc1=dbdocx().unwrap();
+        let gPerson=doc2Person(&dbdoc1).unwrap();
+        //println!("gPerson doc NAME: {}, DOB: {}", gPerson.name, gPerson.dob);
 
         //let dbdoc1=dbdocument(&dbcollection(&dbconnect1).unwrap()).unwrap();
         //let dbdoc1=dbcollectdocument(&dbconnect1).unwrap();
@@ -570,8 +571,8 @@ async fn main() {
          println!("soldiers: {:?}", zsoldier); */
 
         //connectcld(); 
-        gPerson=gPerson.clone();
-        println!("gPerson aft dbconnedt NAME: {}, DOB: {}", gPerson.name, gPerson.dob);
+        //gPerson=gPerson.clone();
+        println!("gPerson aft dbdocx NAME: {}, DOB: {}", gPerson.name, gPerson.dob);
     //};
 
 

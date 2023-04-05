@@ -109,23 +109,3 @@ pub async fn connect_collectx(dbname:String, collectname:String) -> Result<Colle
 }
 
 
-//use mongodb::{bson::doc, options::ClientOptions, Client};
-#[tokio::main]
-pub async fn connectcld() -> mongodb::error::Result<()> {
-        let client_options = ClientOptions::parse(
-            "mongodb+srv://{user}:{pass}@crimeac0.6b1agmf.mongodb.net/?retryWrites=true&w=majority",
-        )
-        .await?;
-        let client = Client::with_options(client_options)?;
-
-        println!("altas cloud:Databases:");
-        for name in client.list_database_names(None, None).await? {
-           println!("- {}", name);
-        }
-
-        let database = client.database("crimea");
-
-
-
-        Ok(())
-    }
