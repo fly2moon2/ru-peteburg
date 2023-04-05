@@ -374,10 +374,19 @@ pub mod model; // declared in \model\mod.rs
 
 
 #[tokio::main]
-// note: db doc ver x - get the document
-async fn dbdocx() -> Result<Document, Box<dyn Error>> {
+// note: db collect ver x - get the document collection
+async fn dbcollectx(dbname:String, collectname:String) -> Result<Collection<Document>, Box<dyn Error>> {
 
-    let soldiers=connect_collectx(String::from("crimea"),String::from("soldier")).await.unwrap();
+    let collect1=connect_collectx(dbname,collectname).await.unwrap();
+    
+    Ok(collect1)
+}
+
+#[tokio::main]
+// note: db doc ver x - get the document
+async fn dbdocx(dbname:String, collectname:String) -> Result<Document, Box<dyn Error>> {
+
+    let soldiers=connect_collectx(dbname,collectname).await.unwrap();
     
      let doc1: Document = soldiers.find_one(
             doc! {
@@ -391,6 +400,21 @@ async fn dbdocx() -> Result<Document, Box<dyn Error>> {
     Ok(doc1)
 }
 
+#[tokio::main]
+// note: db collect ver x - get the document collection
+async fn find_soldier(collect1:&Collection<Document>) -> Result<Document, Box<dyn Error>> {
+
+    let doc1: Document = collect1.find_one(
+        doc! {
+              "name": "stPetersburg"
+        },
+        None,
+     )
+     .await?
+     .expect("Can't find the document."); 
+
+    Ok(doc1)
+}
 
 
 
@@ -411,8 +435,65 @@ async fn main() {
         let dbcollection1=dbcollection(&dbconnect1).unwrap();
         let dbdoc1=dbdocument(&dbcollection1).unwrap(); */
 
-        let dbdoc1=dbdocx().unwrap();
-        let gPerson=doc2Person(&dbdoc1).unwrap();
+/*         let dbdoc1=dbdocx(String::from("crimea"),String::from("soldier")).unwrap();
+
+        let gPerson=doc2Person(&dbdoc1).unwrap(); */
+
+        // =====================
+        // LEARN
+        // calling from main here (not #tokio), remove await(), just unwrap()
+        // =====================
+        let dbcollect1=dbcollectx(String::from("crimea"),String::from("soldier")).unwrap();
+    
+/*         let dbdoc1_opt: Option<Document> = dbcollect1.find_one(
+               doc! {
+                     "name": "stPetersburg"
+               },
+               None,
+            )
+            .await
+            .expect("Can't find the document.");  */
+
+
+/*         let dbdoc1: Document = dbcollect1.find_one(
+            doc! {
+                    "name": "stPetersburg"
+            },
+            None,
+            )
+            .await
+            .expect("Can't find the document.");  */
+
+            // LEARN: error not handled. panic
+            //let dbdoc1: Document = find_soldier(dbcollect1).unwrap();
+
+            let dbdoc1: Document = match find_soldier(&dbcollect1) {
+                Ok(doc1) => doc1,
+                Err(error) => panic!("Problem find_soldier: {:?}", error),
+            };
+            // sample ref
+/*             let greeting_file = match greeting_file_result {
+                Ok(file) => file,
+                Err(error) => panic!("Problem opening the file: {:?}", error),
+            }; */
+
+/*         let doc1_init = doc! {
+            "title": "Parasite",
+            "year": 2020,
+            "plot": "A poor family, the Kims, con their way into becoming the servants of a rich family, the Parks. But their easy life gets complicated when their deception is threatened with exposure.",
+            "released": Utc.ymd(2020, 2, 7).and_hms(0, 0, 0),
+         }; */
+
+/*          let doc1_init=doc!{};
+
+        // use of match expression to get the result out of Option
+        let dbdoc1_rslt = match dbdoc1_opt {
+            Some(doc1) => doc1,
+            //None => doc1_init,
+            None => doc!{},
+        }; */
+
+        //let gPerson=doc2Person(&dbdoc1_rslt).unwrap();
         //println!("gPerson doc NAME: {}, DOB: {}", gPerson.name, gPerson.dob);
 
         //let dbdoc1=dbdocument(&dbcollection(&dbconnect1).unwrap()).unwrap();
