@@ -84,6 +84,11 @@ pub fn doc2Person(doc: &Document) -> Result<Person, Box<dyn Error>> {
        Ok(book) */
    }
 
+
+   // ====================================
+// ARCIVED CODE CORNER
+// ====================================
+//
 /* //#[derive(Debug)]
 struct Appointment {
    client: Person,

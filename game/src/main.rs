@@ -48,10 +48,6 @@ use mongodb::bson::doc;
 // -------------------------------
 
 // note:    module call
-use crate::sys::db::connect;
-use crate::sys::db::getcollection;
-//use crate::sys::db::connectncollect;
-use crate::sys::db::connectx;
 use crate::sys::db::connect_collectx;
 pub mod sys;
 // note:    module call ends
@@ -376,71 +372,6 @@ use crate::model::uam::doc2Person;
 //use crate::model::code::ActiveStatus;
 pub mod model; // declared in \model\mod.rs
 
-#[tokio::main]
-// note: await.unwrap() requires [#tokio::main]
-async fn dbconnection() -> Result<Client, Box<dyn Error>> {
-    // -----------------------
-    // note:    
-    // returns a db client connection (called the db mod)
-    // -----------------------
-    //let client1 = connect().await.unwrap();
-    let client1 = connectx().await.unwrap();
-    Ok(client1)
-}
-
-#[tokio::main]
-// note: Collection<Document> : Document is the generic type of Collection
-async fn dbcollection(client1:&Client) -> Result<Collection<Document>, Box<dyn Error>> {
-    // -----------------------
-    // note:   
-    // returns a db collection (of documents) given the db client connection
-    // -----------------------
-    let collection1=getcollection(&client1,String::from("crimea"),String::from("soldier")).await.unwrap();
-    Ok(collection1)
-}
-
-#[tokio::main]
-// note: 
-async fn dbdocument(collection1:&Collection<Document>) -> Result<Document, Box<dyn Error>> {
-    // -----------------------
-    // note:   
-    // 
-    let doc1: Document = collection1.find_one(
-            doc! {
-                  "name": "stPetersburdg"
-            },
-            None,
-         )
-         .await?
-         .expect("Can't find the document.");
-
-    Ok(doc1)
-}
-
-#[tokio::main]
-// note: 
-async fn dbcollectdocument(client1:&Client) -> Result<Document, Box<dyn Error>> {
-    // -----------------------
-    // note:   
-    // 
-
-    //let collection1=getcollection(&client1,String::from("crimea"),String::from("soldier")).await.unwrap();
-
-
-    let soldiers=getcollection(&client1,String::from("crimea"),String::from("soldier")).await.unwrap();
-    //println!("soldiers: {:?}", soldiers);
-    
-     let doc1: Document = soldiers.find_one(
-            doc! {
-                  "name": "stPetersburdg"
-            },
-            None,
-         )
-         .await?
-         .expect("Can't find the document."); 
-
-    Ok(doc1)
-}
 
 #[tokio::main]
 // note: db doc ver x - get the document
@@ -460,70 +391,6 @@ async fn dbdocx() -> Result<Document, Box<dyn Error>> {
     Ok(doc1)
 }
 
-#[tokio::main]
-// note:    game main()-> db main rturns result 
-async fn dbtask() -> Result<(), Box<dyn Error>> {
-    // -----------------------
-    // note:    db connect 
-    // returns a db client connection (called the db mod)
-    // -----------------------
-    let client1 = connect().await.unwrap();
- 
-    // Print the databases in our MongoDB cluster:
-    println!("main:Databases:");
-    for name in client1.list_database_names(None, None).await? {
-       println!("- {}", name);
-    }
-
-    // connect database collection
-   //let soldiers = client1.database("crimea").collection("soldier");
-   let soldiers=getcollection(&client1,String::from("crimea"),String::from("soldier")).await.unwrap();
-      // Insert some documents into the "mydb.books" collection.
-   //soldiers.insert_many(docs, None).await?;
-
-   // struct to doc
-   // note: insert new doc
-/*    //let person=Person::new("Arigato");
-   let person=Person::new("stPetersburg");
-
-   let doc_pers1 = doc! {
-      "name": person.name,
-   };
-   
-   let rslt1 = soldiers.insert_one(doc_pers1.clone(), None).await?;
- */
-
-// find document
-// Look up one document:
-let soldier: Document = soldiers.find_one(
-    doc! {
-          "name": "stPetersburg"
-    },
-    None,
- ).await?
- .expect("Can't find the document.");
- //println!("solider stPetersburg: {}", soldier);
-//let soldier1=solider;
- 
-//const NAME: &str = "name";
-//let soldiername = soldier.get_str(NAME)?;
-// println!("solider stPetersburg NAME: {}", soldiername);
-
-   let doc2pers=doc2Person(&soldier).unwrap();
-   //println!("solider doc NAME: {}, sex {}", doc2pers.name, doc2pers.sex.to_string)();
-   println!("solider doc NAME: {}, DOB: {}", doc2pers.name, doc2pers.dob);
-
-   //gPerson=Rc::new(doc2pers);
-   //let gPerson=doc2pers.clone();
-   let gPerson=doc2Person(&soldier).unwrap();
-   println!("gPerson doc NAME: {}, DOB: {}", gPerson.name, gPerson.dob);
-    // -------------------------
-    // note:    db connect ends 
-    // -------------------------
-    // note:    game main()-> db main rturns result 
-    //          returns Ok result
-    Ok(())
-}
 
 
 
@@ -679,3 +546,143 @@ async fn main() {
     //          returns Ok result
     //Ok(())
 }
+
+// ====================================
+// ARCIVED CODE CORNER
+// ====================================
+//
+// # db connection utilities
+//
+/* #[tokio::main]
+// note: await.unwrap() requires [#tokio::main]
+async fn dbconnection() -> Result<Client, Box<dyn Error>> {
+    // -----------------------
+    // note:    
+    // returns a db client connection (called the db mod)
+    // -----------------------
+    //let client1 = connect().await.unwrap();
+    let client1 = connectx().await.unwrap();
+    Ok(client1)
+}
+
+#[tokio::main]
+// note: Collection<Document> : Document is the generic type of Collection
+async fn dbcollection(client1:&Client) -> Result<Collection<Document>, Box<dyn Error>> {
+    // -----------------------
+    // note:   
+    // returns a db collection (of documents) given the db client connection
+    // -----------------------
+    let collection1=getcollection(&client1,String::from("crimea"),String::from("soldier")).await.unwrap();
+    Ok(collection1)
+}
+
+#[tokio::main]
+// note: 
+async fn dbdocument(collection1:&Collection<Document>) -> Result<Document, Box<dyn Error>> {
+    // -----------------------
+    // note:   
+    // 
+    let doc1: Document = collection1.find_one(
+            doc! {
+                  "name": "stPetersburdg"
+            },
+            None,
+         )
+         .await?
+         .expect("Can't find the document.");
+
+    Ok(doc1)
+}
+
+#[tokio::main]
+// note: 
+async fn dbcollectdocument(client1:&Client) -> Result<Document, Box<dyn Error>> {
+    // -----------------------
+    // note:   
+    // 
+
+    //let collection1=getcollection(&client1,String::from("crimea"),String::from("soldier")).await.unwrap();
+
+
+    let soldiers=getcollection(&client1,String::from("crimea"),String::from("soldier")).await.unwrap();
+    //println!("soldiers: {:?}", soldiers);
+    
+     let doc1: Document = soldiers.find_one(
+            doc! {
+                  "name": "stPetersburdg"
+            },
+            None,
+         )
+         .await?
+         .expect("Can't find the document."); 
+
+    Ok(doc1)
+} 
+
+#[tokio::main]
+// note:    game main()-> db main rturns result 
+async fn dbtask() -> Result<(), Box<dyn Error>> {
+    // -----------------------
+    // note:    db connect 
+    // returns a db client connection (called the db mod)
+    // -----------------------
+    let client1 = connect().await.unwrap();
+ 
+    // Print the databases in our MongoDB cluster:
+    println!("main:Databases:");
+    for name in client1.list_database_names(None, None).await? {
+       println!("- {}", name);
+    }
+
+    // connect database collection
+   //let soldiers = client1.database("crimea").collection("soldier");
+   let soldiers=getcollection(&client1,String::from("crimea"),String::from("soldier")).await.unwrap();
+      // Insert some documents into the "mydb.books" collection.
+   //soldiers.insert_many(docs, None).await?;
+
+   // struct to doc
+   // note: insert new doc
+/*    //let person=Person::new("Arigato");
+   let person=Person::new("stPetersburg");
+
+   let doc_pers1 = doc! {
+      "name": person.name,
+   };
+   
+   let rslt1 = soldiers.insert_one(doc_pers1.clone(), None).await?;
+ */
+
+// find document
+// Look up one document:
+let soldier: Document = soldiers.find_one(
+    doc! {
+          "name": "stPetersburg"
+    },
+    None,
+ ).await?
+ .expect("Can't find the document.");
+ //println!("solider stPetersburg: {}", soldier);
+//let soldier1=solider;
+ 
+//const NAME: &str = "name";
+//let soldiername = soldier.get_str(NAME)?;
+// println!("solider stPetersburg NAME: {}", soldiername);
+
+   let doc2pers=doc2Person(&soldier).unwrap();
+   //println!("solider doc NAME: {}, sex {}", doc2pers.name, doc2pers.sex.to_string)();
+   println!("solider doc NAME: {}, DOB: {}", doc2pers.name, doc2pers.dob);
+
+   //gPerson=Rc::new(doc2pers);
+   //let gPerson=doc2pers.clone();
+   let gPerson=doc2Person(&soldier).unwrap();
+   println!("gPerson doc NAME: {}, DOB: {}", gPerson.name, gPerson.dob);
+    // -------------------------
+    // note:    db connect ends 
+    // -------------------------
+    // note:    game main()-> db main rturns result 
+    //          returns Ok result
+    Ok(())
+}
+
+
+*/

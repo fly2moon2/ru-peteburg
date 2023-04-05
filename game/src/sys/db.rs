@@ -53,6 +53,38 @@ pub async fn connectx() -> Result<Client, Box<dyn Error>> {
    Ok(client)
 }
 
+
+// note: db connect&get collection ver x - simply parse clientoptions; applicable to cloud db (Mongodb Altas)
+// export environment variable MONGODB_URI in the operating system level 
+// dbname - e.g. creamea
+// collectname - e.g. soldier
+//#[tokio::main]
+pub async fn connect_collectx(dbname:String, collectname:String) -> Result<Collection<Document>, Box<dyn Error>> {
+   // Load the MongoDB connection string from an environment variable:
+   let client_uri =
+      env::var("MONGODB_URI").expect("You must set the MONGODB_URI environment var!");
+
+   let client_options = ClientOptions::parse(&client_uri,).await?;
+   let client = Client::with_options(client_options)?;
+
+   println!("connect_collectx Databases:");
+   for name in client.list_database_names(None, None).await? {
+      println!("- {}", name);
+   }
+
+   let collection = client.database(&dbname).collection(&collectname);
+
+    Ok(collection)
+}
+
+
+// ====================================
+// ARCIVED CODE CORNER
+// ====================================
+//
+// # db connection utilities
+//
+/* 
 // note:    db get document collection
 // returns a db collection from the given db connection client
 pub async fn getcollection(client:&Client, dbname:String, collectionname:String) -> Result<Collection<Document>, Box<dyn Error>> {
@@ -83,29 +115,4 @@ pub async fn connectncollect(dbname:String, collectionname:String) -> Result<Col
 
     Ok(collection)
 }
-
-
-// note: db connect&get collection ver x - simply parse clientoptions; applicable to cloud db (Mongodb Altas)
-// export environment variable MONGODB_URI in the operating system level 
-// dbname - e.g. creamea
-// collectname - e.g. soldier
-//#[tokio::main]
-pub async fn connect_collectx(dbname:String, collectname:String) -> Result<Collection<Document>, Box<dyn Error>> {
-   // Load the MongoDB connection string from an environment variable:
-   let client_uri =
-      env::var("MONGODB_URI").expect("You must set the MONGODB_URI environment var!");
-
-   let client_options = ClientOptions::parse(&client_uri,).await?;
-   let client = Client::with_options(client_options)?;
-
-   println!("connect_collectx Databases:");
-   for name in client.list_database_names(None, None).await? {
-      println!("- {}", name);
-   }
-
-   let collection = client.database(&dbname).collection(&collectname);
-
-    Ok(collection)
-}
-
-
+ */
