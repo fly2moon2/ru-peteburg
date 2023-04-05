@@ -448,6 +448,7 @@ async fn main() {
         // ***************************
         // way 2: find_soldier: panic
         // ***************************
+
         // =====================
         // LEARN
         // calling from main here (since not from #tokio), remove await(), just unwrap()
@@ -455,11 +456,17 @@ async fn main() {
 /*         let dbcollect1=dbcollectx(String::from("crimea"),String::from("soldier")).unwrap();
     
         // LEARN: error not handled. panic
-        let dbdoc1: Document = find_soldier(&dbcollect1).unwrap();
- */
+        let dbdoc1: Document = find_soldier(&dbcollect1).unwrap(); */
+
         // *******************************
         // way 2: find_soldier: panic ENDS
         // *******************************
+        // LEARN: async
+        // https://blog.logrocket.com/a-practical-guide-to-async-in-rust/
+        //use tokio::task;
+        // ref
+        //let res= task::spawn_blocking(move ||analyze(&txt)).await?;
+        //let dbdoc1: Document = task::spawn_blocking(move ||find_soldier(&dbcollect1)).await.unwrap().unwrap();
 /*         let dbdoc1_opt: Option<Document> = dbcollect1.find_one(
                doc! {
                      "name": "stPetersburg"
@@ -583,7 +590,8 @@ async fn main() {
 
         draw_text_ex("Dynamic font scale:", 20.0, 400.0, TextParams::default());
         draw_text_ex(
-            "abcd",
+            //"abcd",
+            &gPerson.name,
             20.0,
             450.0,
             TextParams {
