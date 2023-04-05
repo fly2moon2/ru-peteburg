@@ -52,6 +52,8 @@ use crate::sys::db::connect;
 use crate::sys::db::getcollection;
 //use crate::sys::db::connectncollect;
 use crate::sys::db::connectcld;
+use crate::sys::db::connectx;
+use crate::sys::db::connect_collectx;
 pub mod sys;
 // note:    module call ends
 
@@ -382,7 +384,8 @@ async fn dbconnection() -> Result<Client, Box<dyn Error>> {
     // note:    
     // returns a db client connection (called the db mod)
     // -----------------------
-    let client1 = connect().await.unwrap();
+    //let client1 = connect().await.unwrap();
+    let client1 = connectx().await.unwrap();
     Ok(client1)
 }
 
@@ -431,6 +434,24 @@ async fn dbcollectdocument(client1:&Client) -> Result<Document, Box<dyn Error>> 
      let doc1: Document = soldiers.find_one(
             doc! {
                   "name": "stPetersburdg"
+            },
+            None,
+         )
+         .await?
+         .expect("Can't find the document."); 
+
+    Ok(doc1)
+}
+
+#[tokio::main]
+// note: db doc ver x - get the document
+async fn dbdocx() -> Result<Document, Box<dyn Error>> {
+
+    let soldiers=connect_collectx(String::from("crimea"),String::from("soldier")).await.unwrap();
+    
+     let doc1: Document = soldiers.find_one(
+            doc! {
+                  "name": "stPetersburg"
             },
             None,
          )
@@ -520,9 +541,11 @@ async fn main() {
 //async fn main() -> Result<(), Box<dyn Error>> {
     //dbconnect();
    // let closure_db={
-        //let dbconnect1=dbconnection().unwrap();
-        //let dbcollection1=dbcollection(&dbconnect1).unwrap();
-        //let dbdoc1=dbdocument(&dbcollection1).unwrap();
+/*         let dbconnect1=dbconnection().unwrap();
+        let dbcollection1=dbcollection(&dbconnect1).unwrap();
+        let dbdoc1=dbdocument(&dbcollection1).unwrap(); */
+
+        let dbdoc1=dbdocx().unwrap();
 
         //let dbdoc1=dbdocument(&dbcollection(&dbconnect1).unwrap()).unwrap();
         //let dbdoc1=dbcollectdocument(&dbconnect1).unwrap();
@@ -536,7 +559,7 @@ async fn main() {
          ).await.unwrap(); 
          println!("soldiers: {:?}", zsoldier);
  */
-        dbtask();
+        //dbtask();
 /*         let dbdocs2=connectncollect(String::from("crimea"),String::from("soldier")).await.unwrap();
         let zsoldier: Option<Document> = dbdocs2.find_one(
             doc! {
@@ -546,7 +569,7 @@ async fn main() {
          ).await.unwrap(); 
          println!("soldiers: {:?}", zsoldier); */
 
-        connectcld(); 
+        //connectcld(); 
         gPerson=gPerson.clone();
         println!("gPerson aft dbconnedt NAME: {}, DOB: {}", gPerson.name, gPerson.dob);
     //};
