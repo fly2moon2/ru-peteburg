@@ -48,7 +48,7 @@ use mongodb::bson::doc;
 // -------------------------------
 
 // note:    module call
-use crate::sys::db::connect_collectx;
+use crate::sys::docdb::connect_collectx;
 pub mod sys;
 // note:    module call ends
 
@@ -362,15 +362,15 @@ fn draw_box(pos: Vec2, size: Vec2) {
 
 } */
 
-// note: model
+// note: models/types
 // mod
 // https://dev.to/hackmamba/build-a-rest-api-with-rust-and-mongodb-rocket-version-ah5
 // https://doc.rust-lang.org/book/ch07-02-defining-modules-to-control-scope-and-privacy.html
-use crate::model::uam::Sex;
-use crate::model::uam::Person;
-use crate::model::uam::doc2Person;
+use crate::types::uam::Sex;
+use crate::types::uam::Person;
+use crate::types::uam::doc2Person;
 //use crate::model::code::ActiveStatus;
-pub mod model; // declared in \model\mod.rs
+pub mod types; // declared in \types\mod.rs
 
 
 #[tokio::main]

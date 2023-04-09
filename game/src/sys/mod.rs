@@ -4,4 +4,8 @@ Inline, within curly brackets that replace the semicolon following mod garden
 In the file src/garden.rs
 In the file src/garden/mod.rs */
 // to declare all sub-modules in this folder
+//
+// db module
 pub mod db;
+// document db module for Mongodb
+pub mod docdb;

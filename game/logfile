@@ -1,0 +1,19 @@
+2023-04-08 21:46:57.794 HKT [4832] LOG:  starting PostgreSQL 14.7 (Homebrew) on x86_64-apple-darwin22.1.0, compiled by Apple clang version 14.0.0 (clang-1400.0.29.202), 64-bit
+2023-04-08 21:46:57.795 HKT [4832] LOG:  listening on IPv6 address "::1", port 5432
+2023-04-08 21:46:57.795 HKT [4832] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2023-04-08 21:46:57.796 HKT [4832] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2023-04-08 21:46:57.809 HKT [4833] LOG:  database system was shut down at 2023-04-01 22:01:48 HKT
+2023-04-08 21:46:57.823 HKT [4832] LOG:  database system is ready to accept connections
+2023-04-08 21:48:02.964 HKT [4853] ERROR:  syntax error at or near "create" at character 28
+2023-04-08 21:48:02.964 HKT [4853] STATEMENT:  create database rustwebdev
+	create database rustwebdev;
+2023-04-08 22:15:07.095 HKT [4832] LOG:  received smart shutdown request
+2023-04-08 22:15:07.096 HKT [4832] LOG:  background worker "logical replication launcher" (PID 4839) exited with exit code 1
+2023-04-08 22:15:07.096 HKT [4834] LOG:  shutting down
+2023-04-08 22:15:07.103 HKT [4832] LOG:  database system is shut down
+2023-04-09 13:29:01.122 HKT [1660] LOG:  starting PostgreSQL 14.7 (Homebrew) on x86_64-apple-darwin22.1.0, compiled by Apple clang version 14.0.0 (clang-1400.0.29.202), 64-bit
+2023-04-09 13:29:01.123 HKT [1660] LOG:  listening on IPv6 address "::1", port 5432
+2023-04-09 13:29:01.123 HKT [1660] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2023-04-09 13:29:01.123 HKT [1660] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2023-04-09 13:29:01.136 HKT [1661] LOG:  database system was shut down at 2023-04-08 22:15:07 HKT
+2023-04-09 13:29:01.145 HKT [1660] LOG:  database system is ready to accept connections
