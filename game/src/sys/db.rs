@@ -38,15 +38,18 @@ impl Store {
         }
     }
 
-
+// postgres=# insert into questions values (1, 'title', 'content', null, current_date);
 pub async fn get_questions(
     &self,
     limit: Option<u32>,
     offset: u32
 ) -> Result<Vec<Question>, sqlx::Error> {
-    match sqlx::query("SELECT * from questions LIMIT $1 OFFSET $2")
-        .bind(limit)
-        .bind(offset)
+    //  Error: the relation 'questions' does not exist
+    // https://bobcares.com/blog/postgresql-error-42p01/
+    //match sqlx::query("SELECT * from questions LIMIT $1 OFFSET $2")
+    match sqlx::query("SELECT * from questions")
+      //  .bind(limit)
+      //  .bind(offset)
         .map(|row: PgRow| Question {
             id: QuestionId(row.get("id")),
             title: row.get("title"),

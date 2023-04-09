@@ -17,3 +17,69 @@
 2023-04-09 13:29:01.123 HKT [1660] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
 2023-04-09 13:29:01.136 HKT [1661] LOG:  database system was shut down at 2023-04-08 22:15:07 HKT
 2023-04-09 13:29:01.145 HKT [1660] LOG:  database system is ready to accept connections
+2023-04-09 18:01:11.854 HKT [12382] ERROR:  relation "questions" does not exist at character 15
+2023-04-09 18:01:11.854 HKT [12382] STATEMENT:  SELECT * from questions LIMIT $1 OFFSET $2
+2023-04-09 18:01:49.442 HKT [12414] FATAL:  database "jack" does not exist
+2023-04-09 18:01:55.934 HKT [12419] FATAL:  lock file "postmaster.pid" already exists
+2023-04-09 18:01:55.934 HKT [12419] HINT:  Is another postmaster (PID 1660) running in data directory "/Users/jack/dev/data/psql"?
+2023-04-09 21:32:31.423 HKT [14635] ERROR:  relation "questions" does not exist at character 15
+2023-04-09 21:32:31.423 HKT [14635] STATEMENT:  SELECT * from questions LIMIT $1 OFFSET $2
+2023-04-09 21:34:00.759 HKT [14675] FATAL:  database "rustwebdev0" does not exist
+2023-04-09 21:34:14.011 HKT [14688] ERROR:  relation "questions" does not exist at character 15
+2023-04-09 21:34:14.011 HKT [14688] STATEMENT:  SELECT * from questions LIMIT $1 OFFSET $2
+2023-04-09 21:36:16.883 HKT [12432] ERROR:  syntax error at or near "{" at character 30
+2023-04-09 21:36:16.883 HKT [12432] STATEMENT:  insert into questions values {1, 'title', 'congtent', 'tags'};
+2023-04-09 21:36:27.826 HKT [12432] ERROR:  malformed array literal: "tags" at character 55
+2023-04-09 21:36:27.826 HKT [12432] DETAIL:  Array value must start with "{" or dimension information.
+2023-04-09 21:36:27.826 HKT [12432] STATEMENT:  insert into questions values (1, 'title', 'congtent', 'tags');
+2023-04-09 21:36:56.228 HKT [12432] ERROR:  null value in column "created_on" of relation "questions" violates not-null constraint
+2023-04-09 21:36:56.228 HKT [12432] DETAIL:  Failing row contains (1, title, congtent, null, null).
+2023-04-09 21:36:56.228 HKT [12432] STATEMENT:  insert into questions values (1, 'title', 'congtent', null,null);
+2023-04-09 21:37:06.243 HKT [12432] ERROR:  null value in column "created_on" of relation "questions" violates not-null constraint
+2023-04-09 21:37:06.243 HKT [12432] DETAIL:  Failing row contains (1, title, content, null, null).
+2023-04-09 21:37:06.243 HKT [12432] STATEMENT:  insert into questions values (1, 'title', 'content', null,null);
+2023-04-09 21:38:24.025 HKT [14825] ERROR:  relation "questions" does not exist at character 15
+2023-04-09 21:38:24.025 HKT [14825] STATEMENT:  SELECT * from questions LIMIT $1 OFFSET $2
+2023-04-09 21:40:09.870 HKT [14943] ERROR:  relation "questions" does not exist at character 15
+2023-04-09 21:40:09.870 HKT [14943] STATEMENT:  SELECT * from questions LIMIT $1 OFFSET $2
+2023-04-09 21:42:59.304 HKT [15098] ERROR:  relation "questions" does not exist at character 15
+2023-04-09 21:42:59.304 HKT [15098] STATEMENT:  SELECT * from questions LIMIT $1 OFFSET $2
+2023-04-09 21:43:10.920 HKT [12432] WARNING:  there is no transaction in progress
+2023-04-09 21:44:19.317 HKT [15151] ERROR:  relation "questions" does not exist at character 15
+2023-04-09 21:44:19.317 HKT [15151] STATEMENT:  SELECT * from questions LIMIT $1 OFFSET $2
+2023-04-09 21:45:30.491 HKT [15268] ERROR:  relation "questions" does not exist at character 15
+2023-04-09 21:45:30.491 HKT [15268] STATEMENT:  SELECT * from questions
+2023-04-09 21:46:18.552 HKT [15307] ERROR:  relation "questions" does not exist at character 15
+2023-04-09 21:46:18.552 HKT [15307] STATEMENT:  SELECT * from questions;
+2023-04-09 21:46:39.538 HKT [15326] ERROR:  relation "questionsk" does not exist at character 15
+2023-04-09 21:46:39.538 HKT [15326] STATEMENT:  SELECT * from questionsK
+2023-04-09 21:47:35.086 HKT [12432] ERROR:  syntax error at or near "SELECT" at character 25
+2023-04-09 21:47:35.086 HKT [12432] STATEMENT:  SELECT * from questions
+	SELECT * from questions
+	SELECT * from questions;
+2023-04-09 21:48:29.228 HKT [15442] ERROR:  relation "questions" does not exist at character 15
+2023-04-09 21:48:29.228 HKT [15442] STATEMENT:  SELECT * from questions;
+2023-04-09 21:49:00.389 HKT [15456] ERROR:  relation "questions" does not exist at character 15
+2023-04-09 21:49:00.389 HKT [15456] STATEMENT:  SELECT * from questions;
+2023-04-09 21:51:26.938 HKT [12432] ERROR:  syntax error at or near ";" at character 25
+2023-04-09 21:51:26.938 HKT [12432] STATEMENT:  alter default privileges;
+2023-04-09 21:51:38.898 HKT [12432] ERROR:  syntax error at or near "alter" at character 26
+2023-04-09 21:51:38.898 HKT [12432] STATEMENT:  alter default privileges
+	alter default privileges;
+2023-04-09 21:51:43.565 HKT [12432] ERROR:  syntax error at or near "alter" at character 26
+2023-04-09 21:51:43.565 HKT [12432] STATEMENT:  alter default privileges
+	alter default privileges;
+2023-04-09 21:51:52.798 HKT [12432] ERROR:  syntax error at or near ";" at character 25
+2023-04-09 21:51:52.798 HKT [12432] STATEMENT:  alter default privileges;
+2023-04-09 21:52:54.646 HKT [15637] ERROR:  relation "jack.questions" does not exist at character 15
+2023-04-09 21:52:54.646 HKT [15637] STATEMENT:  SELECT * from jack.questions
+2023-04-09 21:53:45.041 HKT [12432] ERROR:  relation "jack.questions" does not exist at character 15
+2023-04-09 21:53:45.041 HKT [12432] STATEMENT:  SELECT * from jack.questions;
+2023-04-09 21:53:54.687 HKT [12432] ERROR:  relation "rustwebdev.questions" does not exist at character 15
+2023-04-09 21:53:54.687 HKT [12432] STATEMENT:  SELECT * from rustwebdev.questions;
+2023-04-09 21:54:17.292 HKT [12432] ERROR:  relation "postgres.questions" does not exist at character 15
+2023-04-09 21:54:17.292 HKT [12432] STATEMENT:  SELECT * from postgres.questions;
+2023-04-09 21:55:27.828 HKT [12432] ERROR:  relation "rustwebdev.questions" does not exist at character 15
+2023-04-09 21:55:27.828 HKT [12432] STATEMENT:  SELECT * from "rustwebdev"."questions";
+2023-04-09 21:55:45.362 HKT [12432] ERROR:  relation "postgres.questions" does not exist at character 15
+2023-04-09 21:55:45.362 HKT [12432] STATEMENT:  SELECT * from "postgres"."questions";

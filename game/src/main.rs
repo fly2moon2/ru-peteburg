@@ -47,6 +47,7 @@ use mongodb::bson::doc;
 // note: db mongodb - declare ends
 // -------------------------------
 
+use crate::sys::db::Store;
 // note:    module call
 use crate::sys::docdb::connect_collectx;
 pub mod sys;
@@ -370,12 +371,76 @@ use crate::types::uam::Sex;
 use crate::types::uam::Person;
 use crate::types::uam::doc2Person;
 //use crate::model::code::ActiveStatus;
+use crate::types::form::Question;
 pub mod types; // declared in \types\mod.rs
 
+//db
+#[tokio::main]
+async fn dbconnectx() -> Result<Store, sqlx::Error>{
+/*     let log_filter = std::env::var("RUST_LOG").unwrap_or_else(|_| {
+        "handle_errors=warn,practical_rust_book=warn,warp=warn".to_owned()
+    }); */
+ 
+    // if you need to add a username and password, 
+    // the connection would look like:
+    // "postgres://username:password@localhost:5432/rustwebdev"
+    //let store = store::Store::new("postgres://localhost:5432/rustwebdev").await;
+    // original sample code was static value; Store structure organised in separate store.rs
+    // export to env variable instead of static value
+    // export POSTGRESDB_URI=postgres://localhost:5432/rustwebdev
+    // .expect is needed to output the string, instead of Result
+    let store = Store::new(&env::var("POSTGRESDB_URI").expect("You must set the POSTGRESDB_URI environment var!")).await;
+    // let store_filter = warp::any().map(move || store.clone());
+ 
+    Ok(store)
+}
+
+use sqlx::Row;
+use std::collections::HashMap;
 
 #[tokio::main]
+//#[instrument]
+pub async fn get_questions(
+    //params: HashMap<String, String>,
+    store: Store,
+) -> Result<Vec<Question>, sqlx::Error> {
+/*     event!(target: "practical_rust_book", Level::INFO, "querying questions");
+    let mut pagination = Pagination::default();
+
+    if !params.is_empty() {
+        event!(Level::INFO, pagination = true);
+        pagination = extract_pagination(params)?;
+    }
+
+    match store
+        .get_questions(pagination.limit, pagination.offset)
+        .await
+    {
+        Ok(res) => Ok(warp::reply::json(&res)),
+        Err(e) => Err(warp::reject::custom(e)),
+    } */
+
+    // Error: Option expected, not u32
+    // use Some(0u32) to put as Options
+    // Error: the relation 'questions' does not exist
+    // change the LIMIT and OFFSET parameters (e.g. 1,0 respectively) to ensure there is row returned
+    match store
+    .get_questions(Some(1u32), 0u32)
+    .await
+    {
+    Ok(res) => Ok(res),
+    Err(e) => Err(e),
+    }
+
+/*     let store1=store.get_questions(Some(0u32), 10u32).await;
+
+    Ok(store1) */
+}
+
+// doc db
+#[tokio::main]
 // note: db collect ver x - get the document collection
-async fn dbcollectx(dbname:String, collectname:String) -> Result<Collection<Document>, Box<dyn Error>> {
+async fn ddbcollect(dbname:String, collectname:String) -> Result<Collection<Document>, Box<dyn Error>> {
 
     let collect1=connect_collectx(dbname,collectname).await.unwrap();
     
@@ -384,7 +449,7 @@ async fn dbcollectx(dbname:String, collectname:String) -> Result<Collection<Docu
 
 #[tokio::main]
 // note: db doc ver x - get the document
-async fn dbdocx(dbname:String, collectname:String) -> Result<Document, Box<dyn Error>> {
+async fn ddbdoc(dbname:String, collectname:String) -> Result<Document, Box<dyn Error>> {
 
     let soldiers=connect_collectx(dbname,collectname).await.unwrap();
     
@@ -421,28 +486,40 @@ async fn find_soldier(collect1:&Collection<Document>) -> Result<Document, Box<dy
 // note: game engine macroquad
 #[macroquad::main("game")]
 async fn main() {
-    // note:
-    // pass variables to closure
-    // https://rust-unofficial.github.io/patterns/idioms/pass-var-to-closure.html
+
 
     //use std::rc::Rc;
     //let mut gPerson=Rc::new(Person::new("persname"));
     let mut gPerson=Person::new("persAname");
+// ============================
+// note: db (postgresSQL)
+// ============================
+    let dbstore=dbconnectx();
+
+    let gotQuestions=get_questions(dbstore.unwrap()).unwrap();
+
+
+// ============================
+// note: document db (mongodb) 
+// ============================
 //async fn main() -> Result<(), Box<dyn Error>> {
     //dbconnect();
+    // note:
+    // pass variables to closure
+    // https://rust-unofficial.github.io/patterns/idioms/pass-var-to-closure.html
    // let closure_db={
 /*         let dbconnect1=dbconnection().unwrap();
         let dbcollection1=dbcollection(&dbconnect1).unwrap();
         let dbdoc1=dbdocument(&dbcollection1).unwrap(); */
 
         // ***************************
-        // way 1: dbdocx: ok
+        // way 1: ddbdoc: ok
         // ***************************
-        let dbdoc1=dbdocx(String::from("crimea"),String::from("soldier")).unwrap();
+        let dbdoc1=ddbdoc(String::from("crimea"),String::from("soldier")).unwrap();
 
         let gPerson=doc2Person(&dbdoc1).unwrap();
         // ***************************
-        // way 1: dbdocx ENDs
+        // way 1: ddbdoc ENDs
         // ***************************
 
         // ***************************
@@ -453,7 +530,7 @@ async fn main() {
         // LEARN
         // calling from main here (since not from #tokio), remove await(), just unwrap()
         // =====================
-/*         let dbcollect1=dbcollectx(String::from("crimea"),String::from("soldier")).unwrap();
+/*         let dbcollect1=ddbcollect(String::from("crimea"),String::from("soldier")).unwrap();
     
         // LEARN: error not handled. panic
         let dbdoc1: Document = find_soldier(&dbcollect1).unwrap(); */
@@ -542,7 +619,7 @@ async fn main() {
 
         //connectcld(); 
         //gPerson=gPerson.clone();
-        println!("gPerson aft dbdocx NAME: {}, DOB: {}", gPerson.name, gPerson.dob);
+        println!("gPerson aft ddbdoc NAME: {}, DOB: {}", gPerson.name, gPerson.dob);
     //};
 
 
