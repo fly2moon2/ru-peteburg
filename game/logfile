@@ -83,3 +83,27 @@
 2023-04-09 21:55:27.828 HKT [12432] STATEMENT:  SELECT * from "rustwebdev"."questions";
 2023-04-09 21:55:45.362 HKT [12432] ERROR:  relation "postgres.questions" does not exist at character 15
 2023-04-09 21:55:45.362 HKT [12432] STATEMENT:  SELECT * from "postgres"."questions";
+2023-04-09 21:58:29.917 HKT [1660] LOG:  received smart shutdown request
+2023-04-09 21:58:29.917 HKT [1660] LOG:  background worker "logical replication launcher" (PID 1667) exited with exit code 1
+2023-04-09 21:58:29.918 HKT [1662] LOG:  shutting down
+2023-04-09 21:58:29.924 HKT [1660] LOG:  database system is shut down
+2023-04-10 17:19:22.418 HKT [13562] LOG:  starting PostgreSQL 14.7 (Homebrew) on x86_64-apple-darwin22.1.0, compiled by Apple clang version 14.0.0 (clang-1400.0.29.202), 64-bit
+2023-04-10 17:19:22.420 HKT [13562] LOG:  listening on IPv6 address "::1", port 5432
+2023-04-10 17:19:22.421 HKT [13562] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2023-04-10 17:19:22.421 HKT [13562] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2023-04-10 17:19:22.437 HKT [13563] LOG:  database system was shut down at 2023-04-09 21:58:29 HKT
+2023-04-10 17:19:22.451 HKT [13562] LOG:  database system is ready to accept connections
+2023-04-10 17:25:18.945 HKT [13589] ERROR:  relation "quiestions" does not exist at character 15
+2023-04-10 17:25:18.945 HKT [13589] STATEMENT:  select * from quiestions;
+2023-04-10 17:25:53.087 HKT [13589] ERROR:  syntax error at or near "1" at character 24
+2023-04-10 17:25:53.087 HKT [13589] STATEMENT:  insert into questions (1,'title',content,null);
+2023-04-10 17:26:05.511 HKT [13589] ERROR:  syntax error at or near "{" at character 23
+2023-04-10 17:26:05.511 HKT [13589] STATEMENT:  insert into questions {1,'title',content,null};
+2023-04-10 17:26:55.534 HKT [13589] ERROR:  column "content" does not exist at character 41
+2023-04-10 17:26:55.534 HKT [13589] HINT:  There is a column named "content" in table "questions", but it cannot be referenced from this part of the query.
+2023-04-10 17:26:55.534 HKT [13589] STATEMENT:  insert into questions values (1,'title',content,null);
+2023-04-10 17:29:06.849 HKT [13934] ERROR:  cannot drop table questions because other objects depend on it
+2023-04-10 17:29:06.849 HKT [13934] DETAIL:  constraint answers_corresponding_question_fkey on table answers depends on table questions
+2023-04-10 17:29:06.849 HKT [13934] HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+2023-04-10 17:29:06.849 HKT [13934] STATEMENT:  drop table questions;
+2023-04-10 17:30:53.598 HKT [14060] LOG:  could not receive data from client: Connection reset by peer

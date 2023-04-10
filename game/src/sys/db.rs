@@ -46,10 +46,9 @@ pub async fn get_questions(
 ) -> Result<Vec<Question>, sqlx::Error> {
     //  Error: the relation 'questions' does not exist
     // https://bobcares.com/blog/postgresql-error-42p01/
-    //match sqlx::query("SELECT * from questions LIMIT $1 OFFSET $2")
-    match sqlx::query("SELECT * from questions")
-      //  .bind(limit)
-      //  .bind(offset)
+    match sqlx::query("SELECT * from questions LIMIT $1 OFFSET $2")
+        .bind(limit)
+        .bind(offset)
         .map(|row: PgRow| Question {
             id: QuestionId(row.get("id")),
             title: row.get("title"),

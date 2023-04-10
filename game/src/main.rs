@@ -422,10 +422,8 @@ pub async fn get_questions(
 
     // Error: Option expected, not u32
     // use Some(0u32) to put as Options
-    // Error: the relation 'questions' does not exist
-    // change the LIMIT and OFFSET parameters (e.g. 1,0 respectively) to ensure there is row returned
     match store
-    .get_questions(Some(1u32), 0u32)
+    .get_questions(Some(0u32), 0u32)
     .await
     {
     Ok(res) => Ok(res),
