@@ -421,9 +421,9 @@ pub async fn get_questions(
     } */
 
     // Error: Option expected, not u32
-    // use Some(0u32) to put as Options
+    // use e.g. Some(3u32) to put as Options (limit to show up to 3 records, starting from record 1)
     match store
-    .get_questions(Some(0u32), 0u32)
+    .get_questions(Some(3u32), 0u32)
     .await
     {
     Ok(res) => Ok(res),
@@ -487,15 +487,18 @@ async fn main() {
 
 
     //use std::rc::Rc;
-    //let mut gPerson=Rc::new(Person::new("persname"));
-    let mut gPerson=Person::new("persAname");
+    //let mut g_person=Rc::new(Person::new("persname"));
+    let mut g_person=Person::new("persAname");
 // ============================
 // note: db (postgresSQL)
 // ============================
     let dbstore=dbconnectx();
 
-    let gotQuestions=get_questions(dbstore.unwrap()).unwrap();
+    let got_questions=get_questions(dbstore.unwrap()).unwrap();
 
+    for got_question in &got_questions {
+        println!("Question title {}, content {}", got_question.title, got_question.content);
+    }
 
 // ============================
 // note: document db (mongodb) 
@@ -515,7 +518,7 @@ async fn main() {
         // ***************************
         let dbdoc1=ddbdoc(String::from("crimea"),String::from("soldier")).unwrap();
 
-        let gPerson=doc2Person(&dbdoc1).unwrap();
+        let g_person=doc2Person(&dbdoc1).unwrap();
         // ***************************
         // way 1: ddbdoc ENDs
         // ***************************
@@ -590,8 +593,8 @@ async fn main() {
             None => doc!{},
         }; */
 
-        //let gPerson=doc2Person(&dbdoc1_rslt).unwrap();
-        //println!("gPerson doc NAME: {}, DOB: {}", gPerson.name, gPerson.dob);
+        //let g_person=doc2Person(&dbdoc1_rslt).unwrap();
+        //println!("g_person doc NAME: {}, DOB: {}", g_person.name, g_person.dob);
 
         //let dbdoc1=dbdocument(&dbcollection(&dbconnect1).unwrap()).unwrap();
         //let dbdoc1=dbcollectdocument(&dbconnect1).unwrap();
@@ -616,8 +619,8 @@ async fn main() {
          println!("soldiers: {:?}", zsoldier); */
 
         //connectcld(); 
-        //gPerson=gPerson.clone();
-        println!("gPerson aft ddbdoc NAME: {}, DOB: {}", gPerson.name, gPerson.dob);
+        //g_person=g_person.clone();
+        println!("g_person aft ddbdoc NAME: {}, DOB: {}", g_person.name, g_person.dob);
     //};
 
 
@@ -652,7 +655,7 @@ async fn main() {
 
         for font_size in (30..100).step_by(20) {
             //let text = "abcdef";
-            let text = &gPerson.name;
+            let text = &g_person.name;
             let params = TextParams {
                 font,
                 font_size,
@@ -666,7 +669,7 @@ async fn main() {
         draw_text_ex("Dynamic font scale:", 20.0, 400.0, TextParams::default());
         draw_text_ex(
             //"abcd",
-            &gPerson.name,
+            &g_person.name,
             20.0,
             450.0,
             TextParams {
@@ -851,10 +854,10 @@ let soldier: Document = soldiers.find_one(
    //println!("solider doc NAME: {}, sex {}", doc2pers.name, doc2pers.sex.to_string)();
    println!("solider doc NAME: {}, DOB: {}", doc2pers.name, doc2pers.dob);
 
-   //gPerson=Rc::new(doc2pers);
-   //let gPerson=doc2pers.clone();
-   let gPerson=doc2Person(&soldier).unwrap();
-   println!("gPerson doc NAME: {}, DOB: {}", gPerson.name, gPerson.dob);
+   //g_person=Rc::new(doc2pers);
+   //let g_person=doc2pers.clone();
+   let g_person=doc2Person(&soldier).unwrap();
+   println!("g_person doc NAME: {}, DOB: {}", g_person.name, g_person.dob);
     // -------------------------
     // note:    db connect ends 
     // -------------------------

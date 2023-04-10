@@ -107,3 +107,14 @@
 2023-04-10 17:29:06.849 HKT [13934] HINT:  Use DROP ... CASCADE to drop the dependent objects too.
 2023-04-10 17:29:06.849 HKT [13934] STATEMENT:  drop table questions;
 2023-04-10 17:30:53.598 HKT [14060] LOG:  could not receive data from client: Connection reset by peer
+2023-04-10 21:08:50.735 HKT [13945] ERROR:  syntax error at or near "2" at character 43
+2023-04-10 21:08:50.735 HKT [13945] STATEMENT:  insert into questions values (2,’2title','2content',null);
+	insert into questions values (3,’3title','3content',null);
+2023-04-10 21:09:47.265 HKT [17237] ERROR:  syntax error at or near "2" at character 43
+2023-04-10 21:09:47.265 HKT [17237] STATEMENT:  insert into questions values (2,’2title','2content',null);
+	insert into questions values (3,’3title','3content',null);
+2023-04-10 21:13:06.827 HKT [17524] LOG:  could not receive data from client: Connection reset by peer
+2023-04-10 21:17:27.096 HKT [17732] LOG:  could not receive data from client: Connection reset by peer
+2023-04-10 21:18:32.194 HKT [17840] LOG:  could not receive data from client: Connection reset by peer
+2023-04-10 21:19:00.395 HKT [17879] LOG:  could not receive data from client: Connection reset by peer
+2023-04-10 21:28:57.847 HKT [18419] LOG:  could not receive data from client: Connection reset by peer
