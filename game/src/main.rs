@@ -2,7 +2,8 @@
 // note: game macroquad 
 // -------------------
 use macroquad::prelude::*;
-
+// note: warp
+use warp::Filter;
 
 //use macroquad_font_renderer::Fonts;
 //use macroquad_tiled as tiled;
@@ -479,12 +480,23 @@ async fn find_soldier(collect1:&Collection<Document>) -> Result<Document, Box<dy
     Ok(doc1)
 }
 
+#[tokio::main]
+async fn warper() {
+    // note: warp
+    // create a path Filter
+    let hello = warp::path("hello").map(|| format!("Hello, World!"));
+
+    // start the server and pass the route filter to it
+    warp::serve(hello).run(([127, 0, 0, 1], 3030)).await;
+}
 
 
 // note: game engine macroquad
 #[macroquad::main("game")]
 async fn main() {
 
+    //calls warper would pause to listen to localhost/hello path
+    //warper();
 
     //use std::rc::Rc;
     //let mut g_person=Rc::new(Person::new("persname"));
