@@ -7,5 +7,7 @@ In the file src/garden/mod.rs */
 //
 // db module
 pub mod db;
-// document db module for Mongodb
+// document db [mongodb]
 pub mod docdb;
+// web socket [tungstenite]
+pub mod wsock;

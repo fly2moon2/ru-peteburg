@@ -393,6 +393,7 @@ async fn dbconnectx() -> Result<Store, sqlx::Error>{
     let store = Store::new(&env::var("POSTGRESDB_URI").expect("You must set the POSTGRESDB_URI environment var!")).await;
     // let store_filter = warp::any().map(move || store.clone());
  
+    log::debug!("dbconnectx store...");
     Ok(store)
 }
 
@@ -494,6 +495,8 @@ async fn warper() {
 // note: game engine macroquad
 #[macroquad::main("game")]
 async fn main() {
+
+    pretty_env_logger::init();
 
     //calls warper would pause to listen to localhost/hello path
     //warper();

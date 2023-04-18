@@ -1,0 +1,11 @@
+/Users/jack/dev/spaces/ruspaces/ru-peteburg/server/target/debug/deps/serde_urlencoded-2ee5e01c4423ee84.rmeta: /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/lib.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/de.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/ser/mod.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/ser/key.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/ser/pair.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/ser/part.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/ser/value.rs
+
+/Users/jack/dev/spaces/ruspaces/ru-peteburg/server/target/debug/deps/serde_urlencoded-2ee5e01c4423ee84.d: /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/lib.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/de.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/ser/mod.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/ser/key.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/ser/pair.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/ser/part.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/ser/value.rs
+
+/Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/lib.rs:
+/Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/de.rs:
+/Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/ser/mod.rs:
+/Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/ser/key.rs:
+/Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/ser/pair.rs:
+/Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/ser/part.rs:
+/Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/serde_urlencoded-0.7.1/src/ser/value.rs:

@@ -1,0 +1,13 @@
+/Users/jack/dev/spaces/ruspaces/ru-peteburg/server/target/debug/deps/url-f50c181df9c88aaa.rmeta: /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/lib.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/host.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/origin.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/parser.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/path_segments.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/slicing.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/quirks.rs
+
+/Users/jack/dev/spaces/ruspaces/ru-peteburg/server/target/debug/deps/liburl-f50c181df9c88aaa.rlib: /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/lib.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/host.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/origin.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/parser.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/path_segments.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/slicing.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/quirks.rs
+
+/Users/jack/dev/spaces/ruspaces/ru-peteburg/server/target/debug/deps/url-f50c181df9c88aaa.d: /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/lib.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/host.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/origin.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/parser.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/path_segments.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/slicing.rs /Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/quirks.rs
+
+/Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/lib.rs:
+/Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/host.rs:
+/Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/origin.rs:
+/Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/parser.rs:
+/Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/path_segments.rs:
+/Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/slicing.rs:
+/Users/jack/.cargo/registry/src/github.com-1ecc6299db9ec823/url-2.3.1/src/quirks.rs:
