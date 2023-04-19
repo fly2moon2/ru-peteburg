@@ -11,3 +11,5 @@ pub mod db;
 pub mod docdb;
 // web socket [tungstenite]
 pub mod wsock;
+// environment variables/properties
+pub mod env;

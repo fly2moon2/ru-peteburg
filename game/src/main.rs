@@ -48,10 +48,10 @@ use mongodb::bson::doc;
 // note: db mongodb - declare ends
 // -------------------------------
 
-use crate::sys::db::Store;
+use crate::core::db::Store;
 // note:    module call
-use crate::sys::docdb::connect_collectx;
-pub mod sys;
+use crate::core::docdb::connect_collectx;
+pub mod core;
 // note:    module call ends
 
 //const NOTO_SANS: &[u8] = include_bytes!("../assets/fonts/NotoSans-Regular.ttf");
@@ -497,6 +497,24 @@ async fn warper() {
 async fn main() {
 
     pretty_env_logger::init();
+use crate::core::env::get_player;
+    let players=get_player();
+    for (name, id) in &players {
+        println!("{name:?} is id:{id}");
+    }
+    use crate::core::env::get_propss;
+    let propss=get_propss();
+    for (key, val) in &propss {
+        println!("{key:?} value:{val:?}");
+    }
+
+    use crate::core::env::{Prop, PropSet};
+    use crate::core::env::test_prop_set;
+    let prop_set=test_prop_set();
+
+    for (prop_key, prop_val) in &prop_set.props {
+        println!("{prop_key:?} value:{prop_val:?}");
+    }
 
     //calls warper would pause to listen to localhost/hello path
     //warper();
