@@ -5,7 +5,11 @@ use std::collections::HashMap;
 // Prop - application property/environment variable - key, value construct
 // PropSet - locale (EN), and properties (a HashMap of Prop)
 // ========================================================================
-#[derive(Hash, Eq, PartialEq, Debug)]
+
+#[derive(Debug,Clone)]
+pub struct Locale (String);
+
+#[derive(Debug,Clone)]
 pub struct Prop {
     key: String,
     value: String,
@@ -14,6 +18,22 @@ pub struct Prop {
 impl Prop {
     fn new(key: String, value: String) -> Prop {
         Prop { key: key, value: value }
+    }
+}
+
+// HashMap of Prop (application properties)
+// 1st element is the (K)ey, 2nd element is the (V)alue
+// HashMap implementation prevents duplicate key
+#[derive(Debug,Clone)]
+pub struct Props {
+    pub props:HashMap<String, String>,
+}
+
+impl Props {
+    fn new() -> Props {
+        Props {
+            props: HashMap::new(),
+        }
     }
 }
 
