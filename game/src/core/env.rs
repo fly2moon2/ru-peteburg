@@ -47,12 +47,12 @@ impl Props {
     pub fn find(
         &self,
         prop_key: String,
-    ) -> Prop {
+    ) -> Option<Prop> {
         match &self.props.get(&prop_key) {
             //Some(prop_val) => println!("{prop_key}: {prop_val}"),
-            Some(prop_val) => Prop::new(prop_key.to_string(), prop_val.to_string()),
+            Some(prop_val) => Some(Prop::new(prop_key.to_string(), prop_val.to_string())),
             //None => println!("{prop_key} is not found.")
-            None => Prop::new("".to_string(), "".to_string()),
+            None => None,
         }
     }
 }

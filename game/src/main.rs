@@ -524,8 +524,13 @@ use crate::core::env::get_player;
         println!("prop_key {prop_key:?}, prop_val:{prop_val:?}");
     }  
 
-    let prop1=props1.find("CH".to_string());
-    println!("found prop1 prop_key {0:?}, prop_val {1:?}",prop1.key,prop1.val);
+    let prop1_opt=props1.find("CH".to_string());
+
+    match prop1_opt {
+        Some(prop1)=>println!("found prop1 prop_key {0:?}, prop_val {1:?}",prop1.key,prop1.val),
+        None => println!("Cannot found the property!"),
+    }
+
     //calls warper would pause to listen to localhost/hello path
     //warper();
 
