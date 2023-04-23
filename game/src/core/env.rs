@@ -30,10 +30,18 @@ pub struct Props {
 }
 
 impl Props {
-    fn new() -> Props {
+    pub fn new() -> Props {
         Props {
             props: HashMap::new(),
         }
+    }
+
+    pub fn join(
+        &mut self, // must be mutable
+        prop_key: String,
+        prop_val: String,
+    ) {
+        self.props.insert(prop_key, prop_val);
     }
 }
 
@@ -43,7 +51,7 @@ pub struct PropSet  {
 }
 
 impl PropSet {
-    fn new() -> PropSet {
+    pub fn new() -> PropSet {
         PropSet {
             locale: "EN".to_string(),  // locale as the key; (EN)glish by default
             props: HashMap::new(),
@@ -51,7 +59,7 @@ impl PropSet {
     }
 
     /// Join is used to add a new Prop into the hashmap
-    fn join(
+    pub fn join(
         &mut self, // must be mutable
         locale: &str,  
         prop: Prop,

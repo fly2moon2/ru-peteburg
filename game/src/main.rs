@@ -508,13 +508,21 @@ use crate::core::env::get_player;
         println!("{key:?} value:{val:?}");
     }
 
-    use crate::core::env::{Prop, PropSet};
+    use crate::core::env::{Prop, Props,PropSet};
     use crate::core::env::test_prop_set;
     let prop_set=test_prop_set();
 
     for (prop_key, prop_val) in &prop_set.props {
         println!("{prop_key:?} value:{prop_val:?}");
     }
+
+    let mut props1 = Props::new();
+    props1.join("EN".to_string(),"English".to_string());
+    props1.join("CH".to_string(),"Chinese".to_string());
+
+    for (prop_key, prop_val) in &props1.props {
+        println!("prop_key {prop_key:?}, prop_val:{prop_val:?}");
+    }  
 
     //calls warper would pause to listen to localhost/hello path
     //warper();
