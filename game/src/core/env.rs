@@ -11,13 +11,13 @@ pub struct Locale (String);
 
 #[derive(Debug,Clone)]
 pub struct Prop {
-    key: String,
-    value: String,
+    pub key: String,
+    pub val: String,
 }
 
 impl Prop {
-    fn new(key: String, value: String) -> Prop {
-        Prop { key: key, value: value }
+    fn new(key: String, val: String) -> Prop {
+        Prop { key: key, val: val }
     }
 }
 
@@ -42,6 +42,18 @@ impl Props {
         prop_val: String,
     ) {
         self.props.insert(prop_key, prop_val);
+    }
+
+    pub fn find(
+        &self,
+        prop_key: String,
+    ) -> Prop {
+        match &self.props.get(&prop_key) {
+            //Some(prop_val) => println!("{prop_key}: {prop_val}"),
+            Some(prop_val) => Prop::new(prop_key.to_string(), prop_val.to_string()),
+            //None => println!("{prop_key} is not found.")
+            None => Prop::new("".to_string(), "".to_string()),
+        }
     }
 }
 

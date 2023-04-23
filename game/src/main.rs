@@ -524,6 +524,8 @@ use crate::core::env::get_player;
         println!("prop_key {prop_key:?}, prop_val:{prop_val:?}");
     }  
 
+    let prop1=props1.find("CH".to_string());
+    println!("found prop1 prop_key {0:?}, prop_val {1:?}",prop1.key,prop1.val);
     //calls warper would pause to listen to localhost/hello path
     //warper();
 
