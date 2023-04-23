@@ -524,12 +524,25 @@ use crate::core::env::get_player;
         println!("prop_key {prop_key:?}, prop_val:{prop_val:?}");
     }  
 
+    // option way 1 - match
     let prop1_opt=props1.find("CH".to_string());
 
     match prop1_opt {
         Some(prop1)=>println!("found prop1 prop_key {0:?}, prop_val {1:?}",prop1.key,prop1.val),
         None => println!("Cannot found the property!"),
     }
+
+    // option way 2 - if let
+    // https://blog.logrocket.com/understanding-rust-option-results-enums/
+    // https://doc.rust-lang.org/rust-by-example/flow_control/if_let.html
+    let prop_opt_typ: Option<Prop>=None;    // must initialise before use
+    let prop2_opt=props1.find("EN".to_string());
+
+    if let Some(prop2) = prop_opt_typ {
+        println!("Option get from if let prop1 prop_key {0:?}, prop_val {1:?}",prop2.key,prop2.val);
+    }
+
+
 
     //calls warper would pause to listen to localhost/hello path
     //warper();
