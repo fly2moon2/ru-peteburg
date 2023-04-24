@@ -1,9 +1,11 @@
+#[derive(Debug)]
 pub enum TwoPointDirection {
     From,
     To,
     Nil,
 }
 
+#[derive(Debug)]
 pub enum CompassDirection {
     North,
     East,
@@ -12,6 +14,7 @@ pub enum CompassDirection {
     Central,
 }
 
+#[derive(Debug)]
 pub enum DataType {
     Number,
     String,

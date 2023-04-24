@@ -3,11 +3,38 @@ use std::collections::HashMap;
 // ========================================================================
 // HashMap example
 // Prop - application property/environment variable - key, value construct
-// PropSet - locale (EN), and properties (a HashMap of Prop)
+// Props - locale (EN), Staging Environment (DEV/PROD)
+// and properties (a HashMap of Prop)
 // ========================================================================
 
+#[derive(Debug)]
+pub enum StagingEnvironment {
+    DEV,
+    UAT,
+    SIT,
+    PROD{label:String}, // label is used when there is a need to refine meaning of PRODuction env. (e.g. PROD, DR, etc.)
+}
+
 #[derive(Debug,Clone)]
-pub struct Locale (String);
+pub struct Locale {
+    pub code: String,
+    pub description: String,
+}
+
+impl Locale {
+    // description is optional
+    pub fn new(code: String, descr_opt: Option<String>) -> Locale {
+        let mut some_descr:String;
+/*         if let Some(descr)=some_descr {
+            some_descr=descr;
+        } */
+        match descr_opt {
+            Some(descr)=>some_descr=descr,
+            None => some_descr="".to_string(),
+        }
+        Locale { code: code, description: some_descr }
+    }
+}
 
 #[derive(Debug,Clone)]
 pub struct Prop {
@@ -26,6 +53,8 @@ impl Prop {
 // HashMap implementation prevents duplicate key
 #[derive(Debug,Clone)]
 pub struct Props {
+    /*pub locale:Locale,
+    pub env:StagingEnvironment,*/
     pub props:HashMap<String, String>,
 }
 
@@ -54,6 +83,22 @@ impl Props {
     ) {
         // force each property key in uppercase to ensure subsequenty matching is exact
         self.props.insert(prop_key.to_uppercase(), prop_val);
+    }
+
+    // removes a Property from the collection
+    pub fn remove(
+        &mut self, // must be mutable
+        prop: Prop,
+    ) {
+        self.remove_with_raw_data(prop.key);
+    }
+
+    // same use as remove, accepts raw data (key in String) for common usage
+    pub fn remove_with_raw_data(
+        &mut self, // must be mutable
+        prop_key: String,
+    ) {
+        self.props.remove(&prop_key);
     }
 
     // returns a Property when a matching key is found

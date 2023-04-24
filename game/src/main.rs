@@ -508,7 +508,7 @@ use crate::core::env::get_player;
         println!("{key:?} value:{val:?}");
     }
 
-    use crate::core::env::{Prop, Props,PropSet};
+    use crate::core::env::{Locale, Prop, Props,PropSet};
     use crate::core::env::test_prop_set;
     let prop_set=test_prop_set();
 
@@ -552,6 +552,14 @@ use crate::core::env::get_player;
         println!("PROP2: prop_key {prop_key:?}, prop_val:{prop_val:?}");
     }  
 
+    props2.remove_with_raw_data("gm".to_string().to_uppercase());
+
+    for (prop_key, prop_val) in &props2.props {
+        println!("PROP2 aft removed: prop_key {prop_key:?}, prop_val:{prop_val:?}");
+    }  
+
+    let locale_en = Locale::new("IT".to_string(),Some("Italian".to_string()));  // or put None for null description
+    println!("LOCALE: code {:?} descr {:?}",locale_en.code, locale_en.description );
     //calls warper would pause to listen to localhost/hello path
     //warper();
 
