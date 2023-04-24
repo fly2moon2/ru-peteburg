@@ -7,7 +7,7 @@ use std::collections::HashMap;
 // and properties (a HashMap of Prop)
 // ========================================================================
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum StagingEnvironment {
     DEV,
     UAT,
@@ -29,7 +29,7 @@ impl Locale {
             some_descr=descr;
         } */
         match descr_opt {
-            Some(descr)=>some_descr=descr,
+            Some(descr1)=>some_descr=descr1,
             None => some_descr="".to_string(),
         }
         Locale { code: code, description: some_descr }
@@ -53,14 +53,36 @@ impl Prop {
 // HashMap implementation prevents duplicate key
 #[derive(Debug,Clone)]
 pub struct Props {
-    /*pub locale:Locale,
-    pub env:StagingEnvironment,*/
+    pub locale:Locale,
+    pub env:StagingEnvironment, 
     pub props:HashMap<String, String>,
 }
 
 impl Props {
     pub fn new() -> Props {
         Props {
+            locale:Locale::new("EN".to_string(),None),
+            env:StagingEnvironment::DEV,
+            // properties collection defined as HashMap, instead of struct Prop
+            // to take advantage of unique key mechanism
+            props: HashMap::new(),
+        }
+    }
+
+    pub fn new_with_keyset(locale_opt:Option<Locale>, env_opt:Option<StagingEnvironment>) -> Props {
+        let mut some_locale:Locale;
+        let mut some_env:StagingEnvironment;
+        match locale_opt {
+            Some(locale1)=>some_locale=locale1,
+            None => some_locale=Locale::new("EN".to_string(),None),
+        }
+        match env_opt {
+            Some(env1)=>some_env=env1,
+            None => some_env=StagingEnvironment::DEV,
+        }
+        Props {
+            locale:some_locale,
+            env:some_env,
             // properties collection defined as HashMap, instead of struct Prop
             // to take advantage of unique key mechanism
             props: HashMap::new(),
