@@ -1,3 +1,6 @@
+// a notatioun/symbol for current status/position
+const NOTATION_CURRENT: String = ".";
+
 #[derive(Debug)]
 pub enum TwoPointDirection {
     From,

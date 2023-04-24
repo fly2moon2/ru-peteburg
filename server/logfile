@@ -61,3 +61,5 @@
 2023-04-24 17:22:17.840 HKT [8000] LOG:  could not receive data from client: Connection reset by peer
 2023-04-24 19:42:49.424 HKT [12029] LOG:  could not receive data from client: Connection reset by peer
 2023-04-24 20:03:25.593 HKT [13010] LOG:  could not receive data from client: Connection reset by peer
+2023-04-24 20:45:18.644 HKT [15114] LOG:  could not receive data from client: Connection reset by peer
+2023-04-24 20:53:57.440 HKT [15580] LOG:  could not receive data from client: Connection reset by peer

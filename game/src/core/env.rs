@@ -13,6 +13,7 @@ pub enum StagingEnvironment {
     UAT,
     SIT,
     PROD{label:String}, // label is used when there is a need to refine meaning of PRODuction env. (e.g. PROD, DR, etc.)
+    UNDEFINED,
 }
 
 #[derive(Debug,Clone)]
@@ -22,17 +23,19 @@ pub struct Locale {
 }
 
 impl Locale {
+    // default to "." (current), if code is not given
     // description is optional
-    pub fn new(code: String, descr_opt: Option<String>) -> Locale {
-        let mut some_descr:String;
-/*         if let Some(descr)=some_descr {
+    pub fn new(code_opt: Option<String>, descr_opt: Option<String>) -> Locale {
+        let some_code=code_opt.unwrap_or(".".to_string());
+        let mut some_descr:String="".to_string();
+        if let Some(descr)=descr_opt {
             some_descr=descr;
-        } */
-        match descr_opt {
+        }
+/*         match descr_opt {
             Some(descr1)=>some_descr=descr1,
             None => some_descr="".to_string(),
-        }
-        Locale { code: code, description: some_descr }
+        } */
+        Locale { code: some_code, description: some_descr }
     }
 }
 
@@ -61,8 +64,8 @@ pub struct Props {
 impl Props {
     pub fn new() -> Props {
         Props {
-            locale:Locale::new("EN".to_string(),None),
-            env:StagingEnvironment::DEV,
+            locale:Locale::new(None,None),
+            env:StagingEnvironment::UNDEFINED,
             // properties collection defined as HashMap, instead of struct Prop
             // to take advantage of unique key mechanism
             props: HashMap::new(),
@@ -74,7 +77,7 @@ impl Props {
         let mut some_env:StagingEnvironment;
         match locale_opt {
             Some(locale1)=>some_locale=locale1,
-            None => some_locale=Locale::new("EN".to_string(),None),
+            None => some_locale=Locale::new(None,None),
         }
         match env_opt {
             Some(env1)=>some_env=env1,

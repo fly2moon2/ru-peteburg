@@ -558,7 +558,7 @@ use crate::core::env::get_player;
         println!("PROP2 aft removed: prop_key {prop_key:?}, prop_val:{prop_val:?}");
     }  
 
-    let locale_en = Locale::new("IT".to_string(),Some("Italian".to_string()));  // or put None for null description
+    let locale_en = Locale::new(None,Some("Italian".to_string()));  // or put None for null description
     println!("LOCALE: code {:?} descr {:?}",locale_en.code, locale_en.description );
     //calls warper would pause to listen to localhost/hello path
     //warper();
