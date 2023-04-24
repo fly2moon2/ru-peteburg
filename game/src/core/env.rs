@@ -16,7 +16,7 @@ pub struct Prop {
 }
 
 impl Prop {
-    fn new(key: String, val: String) -> Prop {
+    pub fn new(key: String, val: String) -> Prop {
         Prop { key: key, val: val }
     }
 }
@@ -32,18 +32,31 @@ pub struct Props {
 impl Props {
     pub fn new() -> Props {
         Props {
+            // properties collection defined as HashMap, instead of struct Prop
+            // to take advantage of unique key mechanism
             props: HashMap::new(),
         }
     }
 
+    // a Property joins as member
     pub fn join(
+        &mut self, // must be mutable
+        prop: Prop,
+    ) {
+        self.join_with_raw_data(prop.key, prop.val);
+    }
+
+    // same use as join, accepts raw data (key,value pair in String) for common usage
+    pub fn join_with_raw_data(
         &mut self, // must be mutable
         prop_key: String,
         prop_val: String,
     ) {
-        self.props.insert(prop_key, prop_val);
+        // force each property key in uppercase to ensure subsequenty matching is exact
+        self.props.insert(prop_key.to_uppercase(), prop_val);
     }
 
+    // returns a Property when a matching key is found
     pub fn find(
         &self,
         prop_key: String,

@@ -517,8 +517,8 @@ use crate::core::env::get_player;
     }
 
     let mut props1 = Props::new();
-    props1.join("EN".to_string(),"English".to_string());
-    props1.join("CH".to_string(),"Chinese".to_string());
+    props1.join_with_raw_data("En".to_string(),"English".to_string());
+    props1.join_with_raw_data("cH".to_string(),"Chinese".to_string());
 
     for (prop_key, prop_val) in &props1.props {
         println!("prop_key {prop_key:?}, prop_val:{prop_val:?}");
@@ -542,7 +542,15 @@ use crate::core::env::get_player;
         println!("Option get from if let prop1 prop_key {0:?}, prop_val {1:?}",prop2.key,prop2.val);
     }
 
+    let mut props2 = Props::new();
+    let prop2a = Prop::new("fR".to_string(),"French".to_string());
+    let prop2b = Prop::new("gm".to_string(),"Germany".to_string());
+    props2.join(prop2a);
+    props2.join(prop2b);
 
+    for (prop_key, prop_val) in &props2.props {
+        println!("PROP2: prop_key {prop_key:?}, prop_val:{prop_val:?}");
+    }  
 
     //calls warper would pause to listen to localhost/hello path
     //warper();
