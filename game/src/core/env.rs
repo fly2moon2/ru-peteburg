@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use crate::core::element::AS_THIS;
 
 // ========================================================================
 // HashMap example
@@ -26,7 +27,7 @@ impl Locale {
     // default to "." (current), if code is not given
     // description is optional
     pub fn new(code_opt: Option<String>, descr_opt: Option<String>) -> Locale {
-        let some_code=code_opt.unwrap_or(".".to_string());
+        let some_code=code_opt.unwrap_or(AS_THIS.to_string());
         let mut some_descr:String="".to_string();
         if let Some(descr)=descr_opt {
             some_descr=descr;
@@ -51,19 +52,20 @@ impl Prop {
     }
 }
 
-// HashMap of Prop (application properties)
-// 1st element is the (K)ey, 2nd element is the (V)alue
-// HashMap implementation prevents duplicate key
+/// PropSet: 
+// HashMap of Prop (application properties) as well as locale and/or environment to define the context
+/// 1st element is the (K)ey, 2nd element is the (V)alue
+/// HashMap implementation prevents duplicate key
 #[derive(Debug,Clone)]
-pub struct Props {
+pub struct PropSet {
     pub locale:Locale,
     pub env:StagingEnvironment, 
     pub props:HashMap<String, String>,
 }
 
-impl Props {
-    pub fn new() -> Props {
-        Props {
+impl PropSet {
+    pub fn new() -> PropSet {
+        PropSet {
             locale:Locale::new(None,None),
             env:StagingEnvironment::UNDEFINED,
             // properties collection defined as HashMap, instead of struct Prop
@@ -72,7 +74,7 @@ impl Props {
         }
     }
 
-    pub fn new_with_keyset(locale_opt:Option<Locale>, env_opt:Option<StagingEnvironment>) -> Props {
+    pub fn new_with_keyset(locale_opt:Option<Locale>, env_opt:Option<StagingEnvironment>) -> PropSet {
         let mut some_locale:Locale;
         let mut some_env:StagingEnvironment;
         match locale_opt {
@@ -83,13 +85,29 @@ impl Props {
             Some(env1)=>some_env=env1,
             None => some_env=StagingEnvironment::DEV,
         }
-        Props {
+        PropSet {
             locale:some_locale,
             env:some_env,
             // properties collection defined as HashMap, instead of struct Prop
             // to take advantage of unique key mechanism
             props: HashMap::new(),
         }
+    }
+
+    // set the locale
+    pub fn set_locale(
+        &mut self, // must be mutable
+        locale: Locale,
+    ) {
+        self.locale=locale;
+    }
+
+    // set the environment
+    pub fn set_env(
+        &mut self, // must be mutable
+        env: StagingEnvironment,
+    ) {
+        self.env=env;
     }
 
     // a Property joins as member
@@ -140,7 +158,8 @@ impl Props {
     }
 }
 
-pub struct PropSet  {
+// testing hashmap
+/* pub struct PropSet  {
     pub locale: String,
     pub props: HashMap<String, Prop>, // the hash map owns the struct
 }
@@ -178,7 +197,7 @@ pub fn test_prop_set() -> PropSet {
   
     prop_set
   
-  }
+  } */
 // ========================================================================
 // Prop, PropSet ENDs
 // ========================================================================
@@ -222,7 +241,7 @@ let vikings = HashMap::from([
 
 } */
 
-pub fn get_propss()->HashMap<String,String>{
+/* pub fn get_propss()->HashMap<String,String>{
     // type inference lets us omit an explicit type signature (which
     // would be `HashMap<&str, u8>` in this example)(i.e. let mut props:HashMap<&str,u8>=HashMap::new();)
     let mut props = HashMap::new();
@@ -270,7 +289,9 @@ player_stats.entry("health2".to_string()).or_insert(100);
 /* player_stats.entry("defence").or_insert_with(random_stat_buff); */
 
 player_stats
-}
+} */
+
+
 /* 
 Q: HaspMap Struct
 https://stackoverflow.com/questions/54039307/creation-of-a-hashmap-with-struct-in-rust

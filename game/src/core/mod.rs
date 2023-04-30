@@ -13,3 +13,5 @@ pub mod docdb;
 pub mod wsock;
 // environment variables/properties
 pub mod env;
+// element variables/properties
+pub mod element;

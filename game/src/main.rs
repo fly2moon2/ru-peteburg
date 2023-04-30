@@ -497,7 +497,7 @@ async fn warper() {
 async fn main() {
 
     pretty_env_logger::init();
-use crate::core::env::get_player;
+/* use crate::core::env::get_player;
     let players=get_player();
     for (name, id) in &players {
         println!("{name:?} is id:{id}");
@@ -506,17 +506,11 @@ use crate::core::env::get_player;
     let propss=get_propss();
     for (key, val) in &propss {
         println!("{key:?} value:{val:?}");
-    }
+    } */
 
-    use crate::core::env::{Locale, Prop, Props,PropSet};
-    use crate::core::env::test_prop_set;
-    let prop_set=test_prop_set();
+    use crate::core::env::{Locale, StagingEnvironment, Prop,PropSet};
 
-    for (prop_key, prop_val) in &prop_set.props {
-        println!("{prop_key:?} value:{prop_val:?}");
-    }
-
-    let mut props1 = Props::new();
+    let mut props1 = PropSet::new();
     props1.join_with_raw_data("En".to_string(),"English".to_string());
     props1.join_with_raw_data("cH".to_string(),"Chinese".to_string());
 
@@ -542,14 +536,16 @@ use crate::core::env::get_player;
         println!("Option get from if let prop1 prop_key {0:?}, prop_val {1:?}",prop2.key,prop2.val);
     }
 
-    let mut props2 = Props::new();
+    let mut props2 = PropSet::new();
     let prop2a = Prop::new("fR".to_string(),"French".to_string());
     let prop2b = Prop::new("gm".to_string(),"Germany".to_string());
     props2.join(prop2a);
     props2.join(prop2b);
+    props2.set_locale(Locale{code:"jp".to_string(),description:"Japapnese".to_string()});
+    props2.set_env(StagingEnvironment::DEV);
 
     for (prop_key, prop_val) in &props2.props {
-        println!("PROP2: prop_key {prop_key:?}, prop_val:{prop_val:?}");
+        println!("PROP2: locale {:?} env {:?} prop_key {prop_key:?}, prop_val:{prop_val:?}",props2.locale,props2.env);
     }  
 
     props2.remove_with_raw_data("gm".to_string().to_uppercase());
