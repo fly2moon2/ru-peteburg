@@ -1,4 +1,6 @@
 use std::collections::HashMap;
+use serde::{Deserialize, Serialize};
+use serde_json::{Result, Value};
 use crate::core::element::AS_THIS;
 
 // ========================================================================
@@ -40,7 +42,7 @@ impl Locale {
     }
 }
 
-#[derive(Debug,Clone)]
+#[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct Prop {
     pub key: String,
     pub val: String,
@@ -116,6 +118,14 @@ impl PropSet {
         prop: Prop,
     ) {
         self.join_with_raw_data(prop.key, prop.val);
+    }
+
+    // property in the form of JSON untyped value joins as member
+    pub fn join_from_json_untyp(
+        &mut self, // must be mutable
+        json_untyp: Value,
+    ) {
+        self.join_with_raw_data(json_untyp["key"].to_string(),json_untyp["val"].to_string());
     }
 
     // same use as join, accepts raw data (key,value pair in String) for common usage
