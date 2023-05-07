@@ -508,7 +508,7 @@ async fn main() {
         println!("{key:?} value:{val:?}");
     } */
 
-    use crate::core::env::{Locale, StagingEnvironment, Prop,PropSet};
+    use crate::core::env::{Locale, StagingEnvironment, Prop, PropSet};
 
     let mut props1 = PropSet::new();
     props1.join_with_raw_data("En".to_string(),"English".to_string());
@@ -558,6 +558,10 @@ async fn main() {
     println!("LOCALE: code {:?} descr {:?}",locale_en.code, locale_en.description );
     //calls warper would pause to listen to localhost/hello path
     //warper();
+
+    use crate::core::envfa::{test_json_stat_read};
+
+    test_json_stat_read(String::from("./assets/missy.json"));
 
     //use std::rc::Rc;
     //let mut g_person=Rc::new(Person::new("persname"));

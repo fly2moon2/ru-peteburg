@@ -10,6 +10,7 @@ bson = { version = "2.6.1", features = ["chrono-0_4"] } # Needed for using chron
 chrono = "0.4.24" # Used for setting DateTimes
 serde = "1.0.160"
 serde_json = "1.0.96"
+serde_derive = "1.0.162"
 sqlx = {version = "0.5",features = [ "runtime-tokio-rustls", "migrate", "postgres" ]}
 tokio = { version = "1.27", features = ["full"] }
 warp = "0.3.4"

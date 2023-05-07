@@ -1,0 +1,38 @@
+{
+    "food":[
+        {
+            "key": "db_url",
+            "val": "mongodb://localhost:27017/"
+        },
+        {
+            "id": 2,
+            "name": "kibble",
+            "missy_comment": "I can live without it"
+        },
+        {
+            "id": 3,
+            "name": "chicken",
+            "missy_comment": "I really like it a lot"
+        }
+    ],
+    "missy_food_schedule":[
+        {
+            "date": 20220228,
+            "quantity": 1,
+            "food": 1,
+            "missy_grumpiness": 0
+        },
+        {
+            "date": 20220227,
+            "quantity": 2,
+            "food": 1,
+            "missy_grumpiness": 10
+        },
+        {
+            "date": 20220226,
+            "quantity": 3,
+            "food": 3,
+            "missy_grumpiness": 1
+        }
+    ]
+}

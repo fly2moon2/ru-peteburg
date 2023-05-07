@@ -108,3 +108,34 @@
 2023-05-03 21:35:17.711 HKT [3307] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
 2023-05-03 21:35:17.756 HKT [3308] LOG:  database system was shut down at 2023-04-30 22:40:57 HKT
 2023-05-03 21:35:17.810 HKT [3307] LOG:  database system is ready to accept connections
+2023-05-03 21:55:43.617 HKT [3307] LOG:  received smart shutdown request
+2023-05-03 21:55:43.619 HKT [3307] LOG:  background worker "logical replication launcher" (PID 3314) exited with exit code 1
+2023-05-03 21:55:43.619 HKT [3309] LOG:  shutting down
+2023-05-03 21:55:43.624 HKT [3307] LOG:  database system is shut down
+2023-05-06 16:04:28.132 HKT [4859] LOG:  starting PostgreSQL 14.7 (Homebrew) on x86_64-apple-darwin22.1.0, compiled by Apple clang version 14.0.0 (clang-1400.0.29.202), 64-bit
+2023-05-06 16:04:28.134 HKT [4859] LOG:  listening on IPv6 address "::1", port 5432
+2023-05-06 16:04:28.134 HKT [4859] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2023-05-06 16:04:28.135 HKT [4859] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2023-05-06 16:04:28.147 HKT [4860] LOG:  database system was shut down at 2023-05-03 21:55:43 HKT
+2023-05-06 16:04:28.155 HKT [4859] LOG:  database system is ready to accept connections
+2023-05-06 16:50:10.384 HKT [6823] LOG:  could not receive data from client: Connection reset by peer
+2023-05-06 17:37:58.087 HKT [4859] LOG:  received smart shutdown request
+2023-05-06 17:37:58.089 HKT [4859] LOG:  background worker "logical replication launcher" (PID 4866) exited with exit code 1
+2023-05-06 17:37:58.089 HKT [4861] LOG:  shutting down
+2023-05-06 17:37:58.097 HKT [4859] LOG:  database system is shut down
+2023-05-06 21:06:03.974 HKT [1719] LOG:  starting PostgreSQL 14.7 (Homebrew) on x86_64-apple-darwin22.1.0, compiled by Apple clang version 14.0.0 (clang-1400.0.29.202), 64-bit
+2023-05-06 21:06:03.976 HKT [1719] LOG:  listening on IPv6 address "::1", port 5432
+2023-05-06 21:06:03.976 HKT [1719] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2023-05-06 21:06:03.976 HKT [1719] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2023-05-06 21:06:03.995 HKT [1720] LOG:  database system was shut down at 2023-05-06 17:37:58 HKT
+2023-05-06 21:06:04.023 HKT [1719] LOG:  database system is ready to accept connections
+2023-05-06 22:06:56.726 HKT [1719] LOG:  received smart shutdown request
+2023-05-06 22:06:56.727 HKT [1719] LOG:  background worker "logical replication launcher" (PID 1726) exited with exit code 1
+2023-05-06 22:06:56.727 HKT [1721] LOG:  shutting down
+2023-05-06 22:06:56.735 HKT [1719] LOG:  database system is shut down
+2023-05-07 17:56:02.388 HKT [6505] LOG:  starting PostgreSQL 14.7 (Homebrew) on x86_64-apple-darwin22.1.0, compiled by Apple clang version 14.0.0 (clang-1400.0.29.202), 64-bit
+2023-05-07 17:56:02.390 HKT [6505] LOG:  listening on IPv6 address "::1", port 5432
+2023-05-07 17:56:02.390 HKT [6505] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2023-05-07 17:56:02.391 HKT [6505] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2023-05-07 17:56:02.403 HKT [6506] LOG:  database system was shut down at 2023-05-06 22:06:56 HKT
+2023-05-07 17:56:02.412 HKT [6505] LOG:  database system is ready to accept connections

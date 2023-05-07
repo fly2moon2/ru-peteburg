@@ -15,3 +15,5 @@ pub mod wsock;
 pub mod env;
 // element variables/properties
 pub mod element;
+// environment features advanced
+pub mod envfa;

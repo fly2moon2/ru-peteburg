@@ -42,6 +42,66 @@ impl Locale {
     }
 }
 
+/// EnvProp
+/// is next generation of Prop - environment properties
+#[derive(Debug,Clone,Serialize,Deserialize)]
+pub struct EnvProp {
+    pub key: String,
+    pub locale_props:HashMap<String, String>,
+}
+
+impl EnvProp {
+    pub fn new() -> EnvProp {
+        EnvProp {
+            key: String::from(""),
+            // properties collection defined as HashMap, instead of struct Prop
+            // to take advantage of unique key mechanism
+            locale_props: HashMap::new(),
+        }
+    }
+
+    pub fn new_with_key(a_key: String) -> EnvProp {
+        EnvProp {
+            key: a_key,
+            locale_props: HashMap::new(),
+        }
+    }
+
+    // same use as join, accepts raw data (key,value pair in String) for common usage
+    pub fn join_with_raw_data(
+            &mut self, // must be mutable
+            locale: String,
+            prop_val: String,
+        ) {
+            // force each property key in uppercase to ensure subsequenty matching is exact
+            self.locale_props.insert(locale.to_uppercase(), prop_val);
+        }
+}
+
+
+
+/// EnvPropSet
+/// EnvProp set
+#[derive(Debug,Clone)]
+pub struct EnvPropSet {
+    pub env:StagingEnvironment, 
+    pub env_props:Vec<EnvProp>,
+}
+
+impl EnvPropSet {
+    pub fn new() -> EnvPropSet {
+        EnvPropSet {
+            env: StagingEnvironment::DEV,
+            // properties collection defined as HashMap, instead of struct Prop
+            // to take advantage of unique key mechanism
+            env_props: Vec::new(),
+        }
+    }
+}   
+
+
+/// Prop
+/// vanilla version of properties
 #[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct Prop {
     pub key: String,
