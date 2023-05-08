@@ -1,38 +1,138 @@
-{
-    "food":[
-        {
-            "key": "db_url",
-            "val": "mongodb://localhost:27017/"
+{"env_props": {
+    "run_env": "dev",
+    "locale":"en",
+    "run_env_strategy":"Default on no match",
+    "locale_strategy":"Default on no match",
+    "db_url": {
+        "dev": {
+            ".":"postgres://localhost:5432/rustwebdev"
         },
-        {
-            "id": 2,
-            "name": "kibble",
-            "missy_comment": "I can live without it"
+        "prod(site01)": {
+            ".":"postgres://localhost:5431/rustwebdev"
         },
-        {
-            "id": 3,
-            "name": "chicken",
-            "missy_comment": "I really like it a lot"
+        "prod(site02)": {
+            ".":"postgres://localhost:5430/rustwebdev"
+        },
+        "run_env_strategy":"Error on no match"
+    },
+    "docdb_url": {
+        "dev": {
+            ".":"mongodb://localhost:27017/"
+        },
+        "run_env_strategy":"Error on no match"
+    },
+    "label_username": {
+        ".": {
+            ".":"User Name",
+            "jp":"利用者名",
+            "ch":"用户名"
         }
-    ],
-    "missy_food_schedule":[
-        {
-            "date": 20220228,
-            "quantity": 1,
-            "food": 1,
-            "missy_grumpiness": 0
-        },
-        {
-            "date": 20220227,
-            "quantity": 2,
-            "food": 1,
-            "missy_grumpiness": 10
-        },
-        {
-            "date": 20220226,
-            "quantity": 3,
-            "food": 3,
-            "missy_grumpiness": 1
+    },
+    "label_password": {
+        ".": {
+            ".":"Password",
+            "jp":"暗号",
+            "ch":"密码"
         }
-    ]
-}
+    },
+    "label_login": {
+        ".": {
+            ".":"Login",
+            "jp":"ログイン",
+            "ch":"登入",
+            "fr":"connexion"
+        }
+    },
+    "label_refresh": {
+        ".": {
+            ".":"Refresh",
+            "jp":"リフレッシュ",
+            "ch":"刷新"
+        }
+    },
+    "label_find": {
+        ".": {
+            ".":"Find",
+            "jp":"探索",
+            "ch":"搜寻"
+        }
+    },
+    "label_edit": {
+        ".": {
+            ".":"Edit",
+            "jp":"編み上げる",
+            "ch":"编辑"
+        }
+    },
+    "label_add": {
+        ".": {
+            ".":"Add",
+            "jp":"付ける",
+            "ch":"加入"
+        }
+    },
+    "label_insert": {
+        ".": {
+            ".":"Insert",
+            "jp":"入れる",
+            "ch":"插入"
+        }
+    },
+    "label_update": {
+        ".": {
+            ".":"Update",
+            "jp":"アップデート",
+            "ch":"更新"
+        }
+    },
+    "label_delete": {
+        ".": {
+            ".":"Delete",
+            "jp":"消す",
+            "ch":"删除"
+        }
+    },
+    "label_confirm": {
+        ".": {
+            ".":"Confirm",
+            "jp":"確たる",
+            "ch":"确认"
+        }
+    },
+    "label_cancel": {
+        ".": {
+            ".":"Cancel",
+            "jp":"キャンセル",
+            "ch":"取消"
+        }
+    },
+    "label_undo": {
+        ".": {
+            ".":"Undo",
+            "jp":"アンドゥ",
+            "ch":"撤消"
+        }
+    },
+    "label_reset": {
+        ".": {
+            ".":"Reset",
+            "jp":"組み替える",
+            "ch":"重置"
+        }
+    },
+    "label_save": {
+        ".": {
+            ".":"Save",
+            "jp":"保存記録",
+            "ch":"保存"
+        }
+    },
+    "label_exit": {
+        ".": {
+            ".":"Exit",
+            "jp":"出口",
+            "ch":"退出",
+            "fr":"sortie"
+        }
+    }
+}}   

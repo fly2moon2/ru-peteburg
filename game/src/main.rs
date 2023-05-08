@@ -509,7 +509,7 @@ async fn main() {
     } */
 
 
-    use crate::core::env::{Locale, StagingEnvironment, Prop, PropSet, EnvProp, EnvPropSet};
+    use crate::core::env::{Locale, RunEnvironment, Prop, PropSet, EnvProp, EnvPropSet};
 
     let mut envprop1 = EnvProp::new_with_key("label_login".to_string());
     envprop1.join(Locale::new(Some("en".to_string()), None),"Login".to_string());
@@ -551,7 +551,7 @@ async fn main() {
     props2.join(prop2a);
     props2.join(prop2b);
     props2.set_locale(Locale{code:"jp".to_string(),description:"Japapnese".to_string()});
-    props2.set_env(StagingEnvironment::DEV);
+    props2.set_env(RunEnvironment::DEV);
 
     for (prop_key, prop_val) in &props2.props {
         println!("PROP2: locale {:?} env {:?} prop_key {prop_key:?}, prop_val:{prop_val:?}",props2.locale,props2.env);

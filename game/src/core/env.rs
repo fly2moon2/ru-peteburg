@@ -6,16 +6,16 @@ use crate::core::element::AS_CURRENT;
 // ========================================================================
 // HashMap example
 // Prop - application property/environment variable - key, value construct
-// Props - locale (EN), Staging Environment (DEV/PROD)
+// Props - locale (EN), Running Environment (DEV/PROD)
 // and properties (a HashMap of Prop)
 // ========================================================================
 
 #[derive(Debug, Clone)]
-pub enum StagingEnvironment {
+pub enum RunEnvironment {
     DEV,
     UAT,
     SIT,
-    PROD{label:String}, // label is used when there is a need to refine meaning of PRODuction env. (e.g. PROD, DR, etc.)
+    PROD{label:String}, // label is used when there is a need to refine meaning of PRODuction env. (e.g. site01, DR, etc.)
     UNDEFINED,
 }
 
@@ -82,14 +82,14 @@ impl EnvProp {
 /// EnvProp set
 #[derive(Debug,Clone)]
 pub struct EnvPropSet {
-    pub env:StagingEnvironment, 
+    pub env:RunEnvironment, 
     pub env_props:Vec<EnvProp>,
 }
 
 impl EnvPropSet {
     pub fn new() -> EnvPropSet {
         EnvPropSet {
-            env: StagingEnvironment::DEV,
+            env: RunEnvironment::DEV,
             // properties collection defined as HashMap, instead of struct Prop
             // to take advantage of unique key mechanism
             env_props: Vec::new(),
@@ -119,7 +119,7 @@ impl Prop {
 #[derive(Debug,Clone)]
 pub struct PropSet {
     pub locale:Locale,
-    pub env:StagingEnvironment, 
+    pub env:RunEnvironment, 
     pub props:HashMap<String, String>,
 }
 
@@ -127,23 +127,23 @@ impl PropSet {
     pub fn new() -> PropSet {
         PropSet {
             locale:Locale::new(None,None),
-            env:StagingEnvironment::UNDEFINED,
+            env:RunEnvironment::UNDEFINED,
             // properties collection defined as HashMap, instead of struct Prop
             // to take advantage of unique key mechanism
             props: HashMap::new(),
         }
     }
 
-    pub fn new_with_keyset(locale_opt:Option<Locale>, env_opt:Option<StagingEnvironment>) -> PropSet {
+    pub fn new_with_keyset(locale_opt:Option<Locale>, env_opt:Option<RunEnvironment>) -> PropSet {
         let mut some_locale:Locale;
-        let mut some_env:StagingEnvironment;
+        let mut some_env:RunEnvironment;
         match locale_opt {
             Some(locale1)=>some_locale=locale1,
             None => some_locale=Locale::new(None,None),
         }
         match env_opt {
             Some(env1)=>some_env=env1,
-            None => some_env=StagingEnvironment::DEV,
+            None => some_env=RunEnvironment::DEV,
         }
         PropSet {
             locale:some_locale,
@@ -165,7 +165,7 @@ impl PropSet {
     // set the environment
     pub fn set_env(
         &mut self, // must be mutable
-        env: StagingEnvironment,
+        env: RunEnvironment,
     ) {
         self.env=env;
     }
