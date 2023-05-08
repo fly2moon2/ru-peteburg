@@ -1,5 +1,5 @@
 // a notatioun/symbol for this/current status/position
-pub const AS_THIS:&str = ".";
+pub const AS_CURRENT:&str = ".";
 // a notatioun/symbol for one level up, parent/ancestor path
 pub const AS_UP_LEVEL:&str = "..";
 // a notatioun/symbol for home path

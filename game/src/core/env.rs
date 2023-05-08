@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::{Result, Value};
-use crate::core::element::AS_THIS;
+use crate::core::element::AS_CURRENT;
 
 // ========================================================================
 // HashMap example
@@ -19,7 +19,8 @@ pub enum StagingEnvironment {
     UNDEFINED,
 }
 
-#[derive(Debug,Clone)]
+/// hash, partialeq, eq, serialisze, deserialize is needed for putting the struct inside hashmap
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Locale {
     pub code: String,
     pub description: String,
@@ -29,11 +30,12 @@ impl Locale {
     // default to "." (current), if code is not given
     // description is optional
     pub fn new(code_opt: Option<String>, descr_opt: Option<String>) -> Locale {
-        let some_code=code_opt.unwrap_or(AS_THIS.to_string());
-        let mut some_descr:String="".to_string();
+        let some_code=code_opt.unwrap_or(AS_CURRENT.to_string());
+        let some_descr=descr_opt.unwrap_or("".to_string());
+/*         let mut some_descr:String="".to_string();
         if let Some(descr)=descr_opt {
             some_descr=descr;
-        }
+        } */
 /*         match descr_opt {
             Some(descr1)=>some_descr=descr1,
             None => some_descr="".to_string(),
@@ -47,15 +49,13 @@ impl Locale {
 #[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct EnvProp {
     pub key: String,
-    pub locale_props:HashMap<String, String>,
+    pub locale_props:HashMap<Locale, String>,
 }
 
 impl EnvProp {
     pub fn new() -> EnvProp {
         EnvProp {
             key: String::from(""),
-            // properties collection defined as HashMap, instead of struct Prop
-            // to take advantage of unique key mechanism
             locale_props: HashMap::new(),
         }
     }
@@ -67,14 +67,12 @@ impl EnvProp {
         }
     }
 
-    // same use as join, accepts raw data (key,value pair in String) for common usage
-    pub fn join_with_raw_data(
+    pub fn join(
             &mut self, // must be mutable
-            locale: String,
-            prop_val: String,
+            a_locale: Locale,
+            a_prop_val: String,
         ) {
-            // force each property key in uppercase to ensure subsequenty matching is exact
-            self.locale_props.insert(locale.to_uppercase(), prop_val);
+            self.locale_props.insert(a_locale, a_prop_val);
         }
 }
 
