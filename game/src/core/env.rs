@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::{Result, Value};
-use crate::core::element::AS_CURRENT;
+use crate::core::element::GeneralPosSymbol;
 
 // ========================================================================
 // HashMap example
@@ -19,6 +19,37 @@ pub enum RunEnvironment {
     UNDEFINED,
 }
 
+/// Locale
+/// CURRENT -   is special, meaning the current/default locale;
+///             when given locale cannot be found for a property (EnvProp), 
+///             default property value would be used (subject to locale_strategy in app_properties.json)
+/// ref. https://stackoverflow.com/questions/36928569/how-can-i-create-enums-with-constant-values-in-rust
+/// hash, partialeq, eq, serialisze, deserialize is needed for putting the struct inside hashmap
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Localeex {
+    CURRENT,
+    ENGLISH,
+    CHINESE,
+    JAPANESE,
+    FRENCH,
+    ITALIAN,
+    GERMAN,
+}
+
+impl Localeex{
+    pub fn value(&self) -> String {
+        match *self {
+            Localeex::CURRENT => GeneralPosSymbol::Current.value(),
+            Localeex::ENGLISH => "EN".to_string(),
+            Localeex::CHINESE => "CH".to_string(),
+            Localeex::JAPANESE => "JP".to_string(),
+            Localeex::FRENCH => "FR".to_string(),
+            Localeex::ITALIAN => "IT".to_string(),
+            Localeex::GERMAN => "GR".to_string(),
+        }
+    }
+}
+
 /// hash, partialeq, eq, serialisze, deserialize is needed for putting the struct inside hashmap
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Locale {
@@ -30,7 +61,7 @@ impl Locale {
     // default to "." (current), if code is not given
     // description is optional
     pub fn new(code_opt: Option<String>, descr_opt: Option<String>) -> Locale {
-        let some_code=code_opt.unwrap_or(AS_CURRENT.to_string());
+        let some_code=code_opt.unwrap_or(GeneralPosSymbol::Current.value());
         let some_descr=descr_opt.unwrap_or("".to_string());
 /*         let mut some_descr:String="".to_string();
         if let Some(descr)=descr_opt {

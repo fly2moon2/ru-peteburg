@@ -152,3 +152,4 @@
 2023-05-08 12:01:54.694 HKT [3018] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
 2023-05-08 12:01:54.708 HKT [3019] LOG:  database system was shut down at 2023-05-07 20:32:47 HKT
 2023-05-08 12:01:54.716 HKT [3018] LOG:  database system is ready to accept connections
+2023-05-08 21:02:38.651 HKT [14220] LOG:  could not receive data from client: Connection reset by peer
