@@ -39,7 +39,7 @@ pub enum Localeex {
 impl Localeex{
     pub fn value(&self) -> String {
         match *self {
-            Localeex::CURRENT => GeneralPosSymbol::Current.value(),
+            Localeex::CURRENT => GeneralPosSymbol::CURRENT.value(),
             Localeex::ENGLISH => "EN".to_string(),
             Localeex::CHINESE => "CH".to_string(),
             Localeex::JAPANESE => "JP".to_string(),
@@ -61,7 +61,7 @@ impl Locale {
     // default to "." (current), if code is not given
     // description is optional
     pub fn new(code_opt: Option<String>, descr_opt: Option<String>) -> Locale {
-        let some_code=code_opt.unwrap_or(GeneralPosSymbol::Current.value());
+        let some_code=code_opt.unwrap_or(GeneralPosSymbol::CURRENT.value());
         let some_descr=descr_opt.unwrap_or("".to_string());
 /*         let mut some_descr:String="".to_string();
         if let Some(descr)=descr_opt {

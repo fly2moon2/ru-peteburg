@@ -1,35 +1,56 @@
 /* // a notatioun/symbol for this/current status/position
-pub const AS_CURRENT:&str = ".";
-// a notatioun/symbol for one level up, parent/ancestor path
-pub const AS_UP_LEVEL:&str = "..";
-// a notatioun/symbol for home path
-pub const AS_HOME:&str = "~";
-// a notatioun/symbol for never
-pub const AS_NEVER_SEPARATOR:&str = "!";
-// a notatioun/symbol for path separator (Unix/Linux standard)
-pub const AS_PATH_SEPARATOR:&str = "/"; */
+pub const AS_CURRENT:&str = ".";*/
 
 /// GeneralPosSymbol:
 /// symbols/1-2 characters representing general position concept
+/// CURRENT  - a notatioun/symbol for this/current status/position
+/// UP_LEVEL - a notatioun/symbol for one level up, parent/ancestor path
 #[derive(Debug)]
 pub enum GeneralPosSymbol {
-    Current,
-    UpLevel,
-    Home,
-    NeverSeparator,
-    PathSeparator,
+    CURRENT,
+    UP_LEVEL,
+    HOME,
+    NEVER,
+    PATH,
 }
 
 impl GeneralPosSymbol{
     pub fn value(&self) -> String {
         match *self {
-            GeneralPosSymbol::Current => ".".to_string(),
-            GeneralPosSymbol::UpLevel => "..".to_string(),
-            GeneralPosSymbol::Home => "~".to_string(),
-            GeneralPosSymbol::NeverSeparator => "!".to_string(),
-            GeneralPosSymbol::PathSeparator => "/".to_string(),
+            GeneralPosSymbol::CURRENT => ".".to_string(),
+            GeneralPosSymbol::UP_LEVEL => "..".to_string(),
+            GeneralPosSymbol::HOME => "~".to_string(),
+            GeneralPosSymbol::NEVER => "!".to_string(),
+            GeneralPosSymbol::PATH => "/".to_string(),
         }
     }
+}
+
+/// Domain
+#[derive(Debug)]
+pub enum Domain {
+    CURRENT,
+    COMMON,
+    SECURITY,
+}
+
+impl Domain{
+    pub fn value(&self) -> String {
+        match *self {
+            Domain::CURRENT => GeneralPosSymbol::CURRENT.value(),
+            Domain::COMMON => "CMN".to_string(),
+            Domain::SECURITY => "SQT".to_string(),
+        }
+    }
+}
+
+/// Relationship
+#[derive(Debug)]
+pub enum Relationship {
+    CURRENT,
+    IS_A,
+    HAS_A,
+    FROM_TO,
 }
 
 /// OnNoMatchStrategy:
