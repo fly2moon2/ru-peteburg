@@ -509,14 +509,14 @@ async fn main() {
     } */
 
 
-    use crate::core::env::{Locale, RunEnvironment, Prop, PropSet, EnvProp, EnvPropSet};
+    use crate::core::env::{Locale, Localeex, RunEnvironment, Prop, PropSet, EnvProp, EnvPropSet};
 
     let mut envprop1 = EnvProp::new_with_key("label_login".to_string());
-    envprop1.join(Locale::new(Some("en".to_string()), None),"Login".to_string());
-    envprop1.join(Locale::new(Some("sp".to_string()), None),"Splogn".to_string());
+    envprop1.join(Localeex::ENGLISH,"Login".to_string());
+    envprop1.join(Localeex::CURRENT,"Splogn".to_string());
 
     for (a_locale, a_prop_val) in &envprop1.locale_props {
-        println!("EnvProp locale a_locale.code, prop_val:{a_prop_val:?}");
+        println!("EnvProp locale: {a_locale:?}, prop_val:{a_prop_val:?}");
     }  
 
     let mut props1 = PropSet::new();

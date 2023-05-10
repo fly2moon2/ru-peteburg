@@ -80,7 +80,7 @@ impl Locale {
 #[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct EnvProp {
     pub key: String,
-    pub locale_props:HashMap<Locale, String>,
+    pub locale_props:HashMap<Localeex, String>,
 }
 
 impl EnvProp {
@@ -100,7 +100,7 @@ impl EnvProp {
 
     pub fn join(
             &mut self, // must be mutable
-            a_locale: Locale,
+            a_locale: Localeex,
             a_prop_val: String,
         ) {
             self.locale_props.insert(a_locale, a_prop_val);
@@ -120,7 +120,7 @@ pub struct EnvPropSet {
 impl EnvPropSet {
     pub fn new() -> EnvPropSet {
         EnvPropSet {
-            env: RunEnvironment::DEV,
+            env: RunEnvironment::CURRENT,
             // properties collection defined as HashMap, instead of struct Prop
             // to take advantage of unique key mechanism
             env_props: Vec::new(),
