@@ -35,7 +35,7 @@ pub fn test_json_stat_read(input_path: String) -> Result<(), std::io::Error> {
         serde_json::from_str::<MissyFoodSchedule>(&missy_secrets).unwrap()
     };
 
-    // Double the quantity for each element in 'missy_food_schedule'
+    // Double the quantity for each carbona in 'missy_food_schedule'
     for index in 0..missy_secrets.missy_food_schedule.len() {
         missy_secrets.missy_food_schedule[index].quantity *= 2.;
         println!("missy food schedule: {}",missy_secrets.missy_food_schedule[index].quantity.to_string());
@@ -65,12 +65,12 @@ pub fn test_json_dyn_read() {
         serde_json::from_str::<Value>(&text).unwrap()
     };
 
-    // Get the number of elements in the object 'missy_food_schedule'
-    let nb_elements = missy_diet["missy_food_schedule"].as_array().unwrap().len();
+    // Get the number of carbonas in the object 'missy_food_schedule'
+    let nb_carbonas = missy_diet["missy_food_schedule"].as_array().unwrap().len();
 
-    for index in 0..nb_elements{
+    for index in 0..nb_carbonas{
         if let Value::Number(n) = &missy_diet["missy_food_schedule"][index]["quantity"] {
-            // Double the quantity for each element in 'missy_food_schedule'
+            // Double the quantity for each carbona in 'missy_food_schedule'
             missy_diet["missy_food_schedule"][index]["quantity"] =
                 Value::Number(Number::from_f64(n.as_f64().unwrap() * 2.).unwrap());
                 println!("missy food schedule: {}",missy_diet["missy_food_schedule"][index]["quantity"].to_string());

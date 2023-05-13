@@ -1,3 +1,5 @@
+use serde::{Deserialize, Serialize};
+
 /* // a notatioun/symbol for this/current status/position
 pub const AS_CURRENT:&str = ".";*/
 
@@ -53,25 +55,27 @@ pub enum Relationship {
     FROM_TO,
 }
 
-/// OnNoMatchStrategy:
-/// strategy when given value is not found/matched
+/// DataAvailStrategy:
+/// strategy when specific data/value is not found/unavailable
 /// e.g. used in (EnvProp) app_properties.json (Inherit from upper level if not defined)
-/// DefaultOnNoMatch -  fall back to the default when no match is found,
-/// ErrOnNoMatch - matched value is required; error/exception when no match is found, 
+/// DefaultOnUnavail -  fall back to the default when no match is found,
+/// ErrOnUnavail - matched value is required; error/exception when no match is found, 
 /// Inherit      - not to define strategy at this level; inherit strategy from upper level instead 
-#[derive(Debug)]
-pub enum OnNoMatchStrategy {
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum DataAvailStrategy {
     Inherit,
-    DefaultOnNoMatch,
-    ErrOnNoMatch,
+    SilentOnUnavail,
+    DefaultOnUnavail,
+    ErrOnUnavail,
 }
 
-impl OnNoMatchStrategy{
+impl DataAvailStrategy{
     pub fn value(&self) -> String {
         match *self {
-            OnNoMatchStrategy::Inherit => "Inherit".to_string(),
-            OnNoMatchStrategy::DefaultOnNoMatch => "Default on no match".to_string(),
-            OnNoMatchStrategy::ErrOnNoMatch => "Error on no match".to_string(),
+            DataAvailStrategy::Inherit => "Inherit".to_string(),
+            DataAvailStrategy::SilentOnUnavail => "Silence on no data found".to_string(),
+            DataAvailStrategy::DefaultOnUnavail => "Default on no data found".to_string(),
+            DataAvailStrategy::ErrOnUnavail => "Error on no data found".to_string(),
         }
     }
 }
@@ -85,7 +89,7 @@ pub enum DataReadErr {
 }
 /// Error enum for data writing errors
 ///
-/// unnamed String elements are for field name or other description
+/// unnamed String carbonas are for field name or other description
 #[derive(Debug)]
 pub enum DataWriteErr {
     RecordNotFoundForUpdate,

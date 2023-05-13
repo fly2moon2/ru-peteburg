@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::{Result, Value};
-use crate::core::element::GeneralPosSymbol;
+use crate::core::carbona::{GeneralPosSymbol, DataAvailStrategy};
 
 // ========================================================================
 // HashMap example
@@ -34,10 +34,11 @@ pub enum Localeex {
     FRENCH,
     ITALIAN,
     GERMAN,
+    SPANISH,
 }
 
 impl Localeex{
-    pub fn value(&self) -> String {
+    pub fn code(&self) -> String {
         match *self {
             Localeex::CURRENT => GeneralPosSymbol::CURRENT.value(),
             Localeex::ENGLISH => "EN".to_string(),
@@ -46,6 +47,7 @@ impl Localeex{
             Localeex::FRENCH => "FR".to_string(),
             Localeex::ITALIAN => "IT".to_string(),
             Localeex::GERMAN => "GR".to_string(),
+            Localeex::SPANISH => "SP".to_string(),
         }
     }
 }
@@ -80,6 +82,8 @@ impl Locale {
 #[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct EnvProp {
     pub key: String,
+    pub run_env_strategy:DataAvailStrategy,
+    pub locale_strategy:DataAvailStrategy,
     pub locale_props:HashMap<Localeex, String>,
 }
 
@@ -87,24 +91,47 @@ impl EnvProp {
     pub fn new() -> EnvProp {
         EnvProp {
             key: String::from(""),
+            run_env_strategy:DataAvailStrategy::DefaultOnUnavail,
+            locale_strategy:DataAvailStrategy::DefaultOnUnavail,
             locale_props: HashMap::new(),
         }
     }
-
+/* 
     pub fn new_with_key(a_key: String) -> EnvProp {
         EnvProp {
             key: a_key,
             locale_props: HashMap::new(),
         }
+    } */
+
+    /// new & fill data at one go
+    pub fn new_born(a_key: String, a_re_stgy: DataAvailStrategy, a_loc_stgy: DataAvailStrategy, a_loc: Localeex, a_prop_val: String) -> EnvProp {
+        let mut o_env_prop = EnvProp {
+            key: a_key,
+            run_env_strategy: a_re_stgy,
+            locale_strategy: a_loc_stgy,
+            locale_props: HashMap::new(),
+        };
+        o_env_prop.add_locale_prop(a_loc, a_prop_val);
+        o_env_prop
     }
 
-    pub fn join(
-            &mut self, // must be mutable
-            a_locale: Localeex,
-            a_prop_val: String,
-        ) {
-            self.locale_props.insert(a_locale, a_prop_val);
-        }
+    /// add to & delete from locale properties
+    pub fn add_locale_prop(
+        &mut self, // must be mutable
+        a_loc: Localeex,
+        a_prop_val: String,
+    ) {
+        self.locale_props.insert(a_loc, a_prop_val);
+    }
+
+    pub fn del_locale_prop(
+        &mut self, // must be mutable
+        a_loc: Localeex,
+    ) {
+        self.locale_props.remove(&a_loc);
+    }
+
 }
 
 
@@ -113,19 +140,44 @@ impl EnvProp {
 /// EnvProp set
 #[derive(Debug,Clone)]
 pub struct EnvPropSet {
-    pub env:RunEnvironment, 
-    pub env_props:Vec<EnvProp>,
+    pub run_env:RunEnvironment, 
+    pub default_locale:Localeex,
+    pub run_env_strategy:DataAvailStrategy,
+    pub locale_strategy:DataAvailStrategy,
+    /// key (property key of EnvProp) is string to facilitate record searching, 
+    /// followed by the whole EnvProp object
+    pub env_props:HashMap<String, EnvProp>,
 }
 
 impl EnvPropSet {
-    pub fn new() -> EnvPropSet {
+    /// new with mandatory field values set
+    /// env_props to be added afterwards
+    pub fn new(a_run_env: RunEnvironment, a_def_locale:Localeex, a_run_env_strategy:DataAvailStrategy, a_locale_strategy:DataAvailStrategy) -> EnvPropSet {
         EnvPropSet {
-            env: RunEnvironment::CURRENT,
-            // properties collection defined as HashMap, instead of struct Prop
-            // to take advantage of unique key mechanism
-            env_props: Vec::new(),
+            run_env: a_run_env,
+            default_locale: a_def_locale,
+            run_env_strategy: a_run_env_strategy,
+            locale_strategy: a_locale_strategy,
+            env_props: HashMap::new(),
         }
     }
+
+    /// add an EnvProp to env_props
+    pub fn add_env_prop(
+        &mut self, // must be mutable
+        a_env_prop_key: String,
+        a_env_prop: EnvProp,
+    ) {
+        self.env_props.insert(a_env_prop_key, a_env_prop);
+    }
+
+    pub fn del_env_prop(
+        &mut self, // must be mutable
+        a_env_prop_key: String,
+    ) {
+        self.env_props.remove(&a_env_prop_key);
+    }
+
 }   
 
 
@@ -145,7 +197,7 @@ impl Prop {
 
 /// PropSet: 
 // HashMap of Prop (application properties) as well as locale and/or environment to define the context
-/// 1st element is the (K)ey, 2nd element is the (V)alue
+/// 1st carbona is the (K)ey, 2nd carbona is the (V)alue
 /// HashMap implementation prevents duplicate key
 #[derive(Debug,Clone)]
 pub struct PropSet {
