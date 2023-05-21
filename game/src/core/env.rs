@@ -150,12 +150,13 @@ impl EnvPropPack {
     }
 
     // returns a Property when a matching key is found
-    pub fn get_val(&self, a_key: EnvPropKey) -> Option<EnvPropVal> {
+    pub fn get_val(&self, a_key: EnvPropKey) {
+    //pub fn get_val(&self, a_key: EnvPropKey) -> Option<EnvPropVal> {
         match &self.key_vals.get(&a_key) {
-            //Some(prop_val) => println!("{prop_key}: {prop_val}"),
-            Some(a_val) => Some(a_val),
-            //None => println!("{prop_key} is not found.")
-            None => None,
+            Some(a_val) => println!("{:?}: {a_val}",a_key.prop_key),
+            //Some(a_val) => Some(a_val),
+            None => println!("{:?} is not found.",a_key.prop_key)
+            //None => None,
         }
     }
 

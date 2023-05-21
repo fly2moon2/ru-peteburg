@@ -509,8 +509,15 @@ async fn main() {
     } */
 
 
-    use crate::core::env::{Locale, Localeex, RunEnvironment, Prop, PropSet, EnvPropPack};
+    use crate::core::env::{Locale, Localeex, RunEnvironment, Prop, PropSet, EnvPropKey, EnvPropPack};
     use crate::core::elements::{OnDataAvailStrategy};
+
+    let mut env_prop_key1 = EnvPropKey::new_born("theme".into(), None, None);
+
+    let mut epp1_kv=HashMap::new();
+
+    epp1_kv.insert(env_prop_key1,"theme prop value");
+    let mut env_prop_pack1 = EnvPropPack::new_born(epp1_kv.into(), None, None);
 
 /*     let mut env_prop1 = EnvProp::new_with_key("label_login".to_string());
     env_prop1.join(Localeex::ENGLISH,"Login".to_string());
