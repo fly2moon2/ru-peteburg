@@ -1,8 +1,8 @@
 {"env_props": {
-    "run_env": "dev",
-    "locale":"en",
-    "run_env_strategy":"Default on no match",
-    "locale_strategy":"Default on no match",
+    "run_env": "DEV",
+    "locale":"EN",
+    "run_env_strategy":"DEFAULT_ON_UNAVAIL",
+    "locale_strategy":"DEFAULT_ON_UNAVAIL",
     "db_url": {
         "dev": {
             ".":"postgres://localhost:5432/rustwebdev"
@@ -13,13 +13,13 @@
         "prod(site02)": {
             ".":"postgres://localhost:5430/rustwebdev"
         },
-        "run_env_strategy":"Error on no match"
+        "run_env_strategy":"ERR_ON_UNAVAIL"
     },
     "docdb_url": {
         "dev": {
             ".":"mongodb://localhost:27017/"
         },
-        "run_env_strategy":"Error on no match"
+        "run_env_strategy":"ERR_ON_UNAVAIL"
     },
     "label_username": {
         ".": {

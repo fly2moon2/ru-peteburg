@@ -509,21 +509,21 @@ async fn main() {
     } */
 
 
-    use crate::core::env::{Locale, Localeex, RunEnvironment, Prop, PropSet, EnvProp, EnvPropSet};
-    use crate::core::carbona::{DataAvailStrategy};
+    use crate::core::env::{Locale, Localeex, RunEnvironment, Prop, PropSet, EnvPropPack};
+    use crate::core::elements::{OnDataAvailStrategy};
 
 /*     let mut env_prop1 = EnvProp::new_with_key("label_login".to_string());
     env_prop1.join(Localeex::ENGLISH,"Login".to_string());
     env_prop1.join(Localeex::CURRENT,"Splogn".to_string()); */
 
-    let mut env_prop1 = EnvProp::new_born("label_login".to_string(),DataAvailStrategy::DefaultOnUnavail, DataAvailStrategy::DefaultOnUnavail,Localeex::ENGLISH,"Login".to_string());
+ /*    let mut env_prop1 = EnvProp::new_born("label_login".to_string(),Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL),Some(Localeex::ENGLISH),Some("Login".to_string()));
     env_prop1.add_locale_prop(Localeex::SPANISH,"Spanish Logn".to_string());
     for (a_locale, a_prop_val) in &env_prop1.locale_props {
         println!("EnvProp locale: {a_locale:?}, prop_val:{a_prop_val:?}");
     }  
 
-/*     let mut env_prop_set1 = EnvProp::new(RunEnvironment::DEV, Localeex::ENGLISH, DataAvailStrategy::ErrOnUnavail, DataAvailStrategy::DefaultOnUnavail);
-    env_prop_set1.add_env_prop(env_prop1); */
+    let mut env_prop_set1 = EnvPropSet::new_born(RunEnvironment::DEV, Localeex::ENGLISH, OnDataAvailStrategy::ERR_ON_UNAVAIL, OnDataAvailStrategy::DEFAULT_ON_UNAVAIL, Some(env_prop1));
+    // env_prop_set1.add_env_prop(env_prop1); */
 
     let mut props1 = PropSet::new();
     props1.join_with_raw_data("En".to_string(),"English".to_string());

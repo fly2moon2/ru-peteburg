@@ -3,27 +3,31 @@ use serde::{Deserialize, Serialize};
 /* // a notatioun/symbol for this/current status/position
 pub const AS_CURRENT:&str = ".";*/
 
-/// GeneralPosSymbol:
+/// GeneralSymbol:
 /// symbols/1-2 characters representing general position concept
 /// CURRENT  - a notatioun/symbol for this/current status/position
 /// UP_LEVEL - a notatioun/symbol for one level up, parent/ancestor path
 #[derive(Debug)]
-pub enum GeneralPosSymbol {
+pub enum GeneralSymbol {
     CURRENT,
     UP_LEVEL,
     HOME,
     NEVER,
     PATH,
+    BACK,
+    NEXT,
 }
 
-impl GeneralPosSymbol{
-    pub fn value(&self) -> String {
+impl GeneralSymbol{
+    pub fn symbol(&self) -> String {
         match *self {
-            GeneralPosSymbol::CURRENT => ".".to_string(),
-            GeneralPosSymbol::UP_LEVEL => "..".to_string(),
-            GeneralPosSymbol::HOME => "~".to_string(),
-            GeneralPosSymbol::NEVER => "!".to_string(),
-            GeneralPosSymbol::PATH => "/".to_string(),
+            GeneralSymbol::CURRENT => ".".to_string(),
+            GeneralSymbol::UP_LEVEL => "..".to_string(),
+            GeneralSymbol::HOME => "~".to_string(),
+            GeneralSymbol::NEVER => "!".to_string(),
+            GeneralSymbol::PATH => "/".to_string(),
+            GeneralSymbol::BACK => "<".to_string(),
+            GeneralSymbol::NEXT => ">".to_string(),
         }
     }
 }
@@ -37,9 +41,17 @@ pub enum Domain {
 }
 
 impl Domain{
-    pub fn value(&self) -> String {
+/*     pub fn new_born(code: &str) -> Domain {
+        match code {
+            GeneralSymbol::CURRENT.symbol() => Domain::CURRENT,
+            "CMN" => Domain::COMMON,
+            "SQT" => Domain::SECURITY,
+        }
+    } */
+
+    pub fn code(&self) -> String {
         match *self {
-            Domain::CURRENT => GeneralPosSymbol::CURRENT.value(),
+            Domain::CURRENT => GeneralSymbol::CURRENT.symbol(),
             Domain::COMMON => "CMN".to_string(),
             Domain::SECURITY => "SQT".to_string(),
         }
@@ -55,29 +67,18 @@ pub enum Relationship {
     FROM_TO,
 }
 
-/// DataAvailStrategy:
-/// strategy when specific data/value is not found/unavailable
-/// e.g. used in (EnvProp) app_properties.json (Inherit from upper level if not defined)
-/// DefaultOnUnavail -  fall back to the default when no match is found,
-/// ErrOnUnavail - matched value is required; error/exception when no match is found, 
-/// Inherit      - not to define strategy at this level; inherit strategy from upper level instead 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum DataAvailStrategy {
-    Inherit,
-    SilentOnUnavail,
-    DefaultOnUnavail,
-    ErrOnUnavail,
-}
-
-impl DataAvailStrategy{
-    pub fn value(&self) -> String {
-        match *self {
-            DataAvailStrategy::Inherit => "Inherit".to_string(),
-            DataAvailStrategy::SilentOnUnavail => "Silence on no data found".to_string(),
-            DataAvailStrategy::DefaultOnUnavail => "Default on no data found".to_string(),
-            DataAvailStrategy::ErrOnUnavail => "Error on no data found".to_string(),
-        }
-    }
+/// OnDataAvailStrategy:
+/// strategy when specific data/value is found/available vs. not found/unavailable
+/// e.g. used in (EnvProp) app_properties.json (INHERIT from upper level if not defined)
+/// DEFAULT_ON_UNAVAIL -  fall back to the default when no match is found,
+/// ERR_ON_UNAVAIL - matched value is required; error/exception when no match is found, 
+/// INHERIT      - not to define strategy at this level; INHERIT strategy from upper level instead 
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
+pub enum OnDataAvailStrategy {
+    INHERIT,
+    SILENT_ON_UNAVIL,
+    DEFAULT_ON_UNAVAIL,
+    ERR_ON_UNAVAIL,
 }
 
 /// DataReadErr

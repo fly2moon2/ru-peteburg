@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::{Result, Value};
-use crate::core::carbona::{GeneralPosSymbol, DataAvailStrategy};
+use crate::core::elements::{GeneralSymbol, OnDataAvailStrategy};
 
 // ========================================================================
 // HashMap example
@@ -10,13 +10,13 @@ use crate::core::carbona::{GeneralPosSymbol, DataAvailStrategy};
 // and properties (a HashMap of Prop)
 // ========================================================================
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub enum RunEnvironment {
+    CURRENT,
     DEV,
     UAT,
     SIT,
     PROD{label:String}, // label is used when there is a need to refine meaning of PRODuction env. (e.g. site01, DR, etc.)
-    UNDEFINED,
 }
 
 /// Locale
@@ -38,9 +38,23 @@ pub enum Localeex {
 }
 
 impl Localeex{
+/*     pub fn new_born(code:&str) -> Localeex {
+        match code {
+            GeneralSymbol::CURRENT.symbol() => Localeex::CURRENT => GeneralSymbol::CURRENT.symbol(),
+            "EN".to_string() => Localeex::ENGLISH,
+            "CH".to_string() => Localeex::CHINESE,
+            "JP".to_string() => Localeex::JAPANESE,
+            "FR".to_string() => Localeex::FRENCH,
+            "IT".to_string() => Localeex::ITALIAN,
+            "GR".to_string()=> Localeex::GERMAN,
+            "SP".to_string() => Localeex::SPANISH,      
+        }
+    } */
+
+
     pub fn code(&self) -> String {
         match *self {
-            Localeex::CURRENT => GeneralPosSymbol::CURRENT.value(),
+            Localeex::CURRENT => GeneralSymbol::CURRENT.symbol(),
             Localeex::ENGLISH => "EN".to_string(),
             Localeex::CHINESE => "CH".to_string(),
             Localeex::JAPANESE => "JP".to_string(),
@@ -63,7 +77,7 @@ impl Locale {
     // default to "." (current), if code is not given
     // description is optional
     pub fn new(code_opt: Option<String>, descr_opt: Option<String>) -> Locale {
-        let some_code=code_opt.unwrap_or(GeneralPosSymbol::CURRENT.value());
+        let some_code=code_opt.unwrap_or(GeneralSymbol::CURRENT.symbol());
         let some_descr=descr_opt.unwrap_or("".to_string());
 /*         let mut some_descr:String="".to_string();
         if let Some(descr)=descr_opt {
@@ -77,46 +91,89 @@ impl Locale {
     }
 }
 
-/// EnvProp
-/// is next generation of Prop - environment properties
-#[derive(Debug,Clone,Serialize,Deserialize)]
-pub struct EnvProp {
-    pub key: String,
-    pub run_env_strategy:DataAvailStrategy,
-    pub locale_strategy:DataAvailStrategy,
-    pub locale_props:HashMap<Localeex, String>,
+
+
+
+/// EnvPropPack
+/// one or many environment properties, by running environment & locale
+
+/// EnvPropKey
+/// compound key of an environment property
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
+pub struct EnvPropKey {
+    pub prop_key: String,
+    pub run_env: RunEnvironment,
+    pub locale: Localeex,
 }
 
-impl EnvProp {
-    pub fn new() -> EnvProp {
-        EnvProp {
-            key: String::from(""),
-            run_env_strategy:DataAvailStrategy::DefaultOnUnavail,
-            locale_strategy:DataAvailStrategy::DefaultOnUnavail,
-            locale_props: HashMap::new(),
-        }
-    }
-/* 
-    pub fn new_with_key(a_key: String) -> EnvProp {
-        EnvProp {
-            key: a_key,
-            locale_props: HashMap::new(),
+impl EnvPropKey {
+/*     /// vanilla new
+    ///  only key is mandatory, whereas the remaining properties are default
+    pub fn new(a_key: String) -> EnvProp {
+        EnvPropKey {
+            prop_key: a_key,
+            run_env: RunEnvironment::CURRENT,
+            locale: Localeex::CURRENT,
         }
     } */
+    
+    pub fn new_born(a_key: String, a_run_env: Option<RunEnvironment>, a_locale: Option<Localeex>) -> EnvPropKey {
+        EnvPropKey {
+            prop_key: a_key,
+            run_env: if a_run_env.is_none() {a_run_env.unwrap()} else {RunEnvironment::CURRENT},
+            locale: if a_locale.is_none() {a_locale.unwrap()} else {Localeex::CURRENT},
+        }
+    }
+}
 
-    /// new & fill data at one go
-    pub fn new_born(a_key: String, a_re_stgy: DataAvailStrategy, a_loc_stgy: DataAvailStrategy, a_loc: Localeex, a_prop_val: String) -> EnvProp {
-        let mut o_env_prop = EnvProp {
-            key: a_key,
-            run_env_strategy: a_re_stgy,
-            locale_strategy: a_loc_stgy,
-            locale_props: HashMap::new(),
-        };
-        o_env_prop.add_locale_prop(a_loc, a_prop_val);
-        o_env_prop
+/* #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
+pub struct EnvPropVal (String); */
+
+// type alias
+type EnvPropVal=String;
+
+//#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct EnvPropPack {
+    pub key_vals:HashMap<EnvPropKey, EnvPropVal>,
+    pub run_env_strategy:OnDataAvailStrategy,
+    pub locale_strategy:OnDataAvailStrategy,
+}
+
+impl EnvPropPack {
+    pub fn new_born(a_key_vals: HashMap<EnvPropKey, EnvPropVal>, a_re_stgy: Option<OnDataAvailStrategy>, a_loc_stgy: Option<OnDataAvailStrategy>) -> EnvPropPack {
+        EnvPropPack {
+            key_vals: a_key_vals,
+            run_env_strategy: if a_re_stgy.is_none() {OnDataAvailStrategy::INHERIT} else {a_re_stgy.unwrap()},
+            locale_strategy: if a_loc_stgy.is_none() {OnDataAvailStrategy::INHERIT} else {a_loc_stgy.unwrap()},
+        }
     }
 
-    /// add to & delete from locale properties
+    // returns a Property when a matching key is found
+    pub fn get_val(&self, a_key: EnvPropKey) -> Option<EnvPropVal> {
+        match &self.key_vals.get(&a_key) {
+            //Some(prop_val) => println!("{prop_key}: {prop_val}"),
+            Some(a_val) => Some(a_val),
+            //None => println!("{prop_key} is not found.")
+            None => None,
+        }
+    }
+
+/*     pub fn get_prop(&self, a_cur_run_env: RunEnvironment, a_cur_locale: Localeex, a_parent_re_stgy: Option<OnDataAvailStrategy>, a_parent_loc_stgy: Option<OnDataAvailStrategy>) -> String {
+        if self.env_prop_key.run_env==a_cur_run_env {
+            if self.env_prop_key.locale==a_cur_locale {
+
+            } else {
+
+            }
+        } else {
+
+        }
+        
+        self.env_prop_val
+    } */
+
+/*     /// add to & delete from locale properties
     pub fn add_locale_prop(
         &mut self, // must be mutable
         a_loc: Localeex,
@@ -130,39 +187,54 @@ impl EnvProp {
         a_loc: Localeex,
     ) {
         self.locale_props.remove(&a_loc);
-    }
-
+    } */
 }
 
 
-
+/* 
 /// EnvPropSet
 /// EnvProp set
 #[derive(Debug,Clone)]
 pub struct EnvPropSet {
     pub run_env:RunEnvironment, 
-    pub default_locale:Localeex,
-    pub run_env_strategy:DataAvailStrategy,
-    pub locale_strategy:DataAvailStrategy,
+    pub locale:Localeex,
+    pub run_env_strategy:OnDataAvailStrategy,
+    pub locale_strategy:OnDataAvailStrategy,
     /// key (property key of EnvProp) is string to facilitate record searching, 
     /// followed by the whole EnvProp object
-    pub env_props:HashMap<String, EnvProp>,
+    pub env_props:HashMap<EnvPropKey, EnvProp>,
 }
 
 impl EnvPropSet {
-    /// new with mandatory field values set
-    /// env_props to be added afterwards
-    pub fn new(a_run_env: RunEnvironment, a_def_locale:Localeex, a_run_env_strategy:DataAvailStrategy, a_locale_strategy:DataAvailStrategy) -> EnvPropSet {
+    /// vanilla new
+    /// only running environment is mandatory, whereas the remaining properties are default
+    pub fn new(a_run_env: RunEnvironment) -> EnvPropSet {
         EnvPropSet {
+            run_env: a_run_env,
+            default_locale: Localeex::CURRENT,
+            run_env_strategy: OnDataAvailStrategy::DEFAULT_ON_UNAVAIL,
+            locale_strategy: OnDataAvailStrategy::DEFAULT_ON_UNAVAIL,
+            env_props: HashMap::new(),
+        }
+    }
+
+    /// new & fill data at one go
+    /// all arguments except env property are mandatory
+    pub fn new_born(a_run_env: RunEnvironment, a_def_locale:Localeex, a_run_env_strategy:OnDataAvailStrategy, a_locale_strategy:OnDataAvailStrategy, a_env_prop:Option<EnvProp>) -> EnvPropSet {
+        let mut o_env_prop = EnvPropSet {
             run_env: a_run_env,
             default_locale: a_def_locale,
             run_env_strategy: a_run_env_strategy,
             locale_strategy: a_locale_strategy,
             env_props: HashMap::new(),
+        };
+        if !a_env_prop.is_none() {
+            o_env_prop.add_env_prop(a_env_prop.clone().unwrap().key, a_env_prop.unwrap());
         }
+        o_env_prop
     }
 
-    /// add an EnvProp to env_props
+    /// add to & delete from an EnvProp to env_props
     pub fn add_env_prop(
         &mut self, // must be mutable
         a_env_prop_key: String,
@@ -178,8 +250,24 @@ impl EnvPropSet {
         self.env_props.remove(&a_env_prop_key);
     }
 
+    // returns an env property when a matching key is found
+    pub fn get_env_prop(
+        &self,
+        a_env_prop_key: String,
+    ) -> Option<EnvProp> {
+        match &self.env_props.get(&a_env_prop_key) {
+            //Some(prop_val) => println!("{prop_key}: {prop_val}"),
+            Some(o_env_prop) => Some(EnvProp::new(a_env_prop_key.to_string(), prop_val.to_string())),
+/*             key: a_key,
+            run_env_strategy:OnDataAvailStrategy::INHERIT,
+            locale_strategy:OnDataAvailStrategy::INHERIT,
+            locale_props: HashMap::new(), */
+            //None => println!("{prop_key} is not found.")
+            None => None,
+        }
+    }
 }   
-
+ */
 
 /// Prop
 /// vanilla version of properties
@@ -210,7 +298,7 @@ impl PropSet {
     pub fn new() -> PropSet {
         PropSet {
             locale:Locale::new(None,None),
-            env:RunEnvironment::UNDEFINED,
+            env:RunEnvironment::CURRENT,
             // properties collection defined as HashMap, instead of struct Prop
             // to take advantage of unique key mechanism
             props: HashMap::new(),
