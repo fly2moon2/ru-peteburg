@@ -120,8 +120,8 @@ impl EnvPropKey {
     pub fn new_born(a_key: String, a_run_env: Option<RunEnvironment>, a_locale: Option<Localeex>) -> EnvPropKey {
         EnvPropKey {
             prop_key: a_key,
-            run_env: if a_run_env.is_none() {a_run_env.unwrap()} else {RunEnvironment::CURRENT},
-            locale: if a_locale.is_none() {a_locale.unwrap()} else {Localeex::CURRENT},
+            run_env: if a_run_env.is_none() {RunEnvironment::CURRENT} else {a_run_env.unwrap()},
+            locale: if a_locale.is_none() {Localeex::CURRENT} else {a_locale.unwrap()},
         }
     }
 }

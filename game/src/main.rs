@@ -512,12 +512,14 @@ async fn main() {
     use crate::core::env::{Locale, Localeex, RunEnvironment, Prop, PropSet, EnvPropKey, EnvPropPack};
     use crate::core::elements::{OnDataAvailStrategy};
 
-    let mut env_prop_key1 = EnvPropKey::new_born("theme".into(), None, None);
+    let mut env_prop_key1 = EnvPropKey::new_born("EnvPropPack theme".into(), None, None);
 
     let mut epp1_kv=HashMap::new();
 
-    epp1_kv.insert(env_prop_key1,"theme prop value");
-    let mut env_prop_pack1 = EnvPropPack::new_born(epp1_kv.into(), None, None);
+    epp1_kv.insert(env_prop_key1.clone(),"EnvPropPack theme prop value".to_string());
+    let mut env_prop_pack1 = EnvPropPack::new_born(epp1_kv, None, None);
+
+    env_prop_pack1.get_val(env_prop_key1);
 
 /*     let mut env_prop1 = EnvProp::new_with_key("label_login".to_string());
     env_prop1.join(Localeex::ENGLISH,"Login".to_string());
