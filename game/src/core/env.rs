@@ -150,7 +150,7 @@ impl EnvPropPack {
     }
 
     // returns a Property when a matching key is found
-    pub fn get_val(&self, a_key: EnvPropKey) {
+    pub fn get_prop_direct(&self, a_key: EnvPropKey) {
     //pub fn get_val(&self, a_key: EnvPropKey) -> Option<EnvPropVal> {
         match &self.key_vals.get(&a_key) {
             Some(a_val) => println!("{:?}: {a_val}",a_key.prop_key),
@@ -160,9 +160,23 @@ impl EnvPropPack {
         }
     }
 
-/*     pub fn get_prop(&self, a_cur_run_env: RunEnvironment, a_cur_locale: Localeex, a_parent_re_stgy: Option<OnDataAvailStrategy>, a_parent_loc_stgy: Option<OnDataAvailStrategy>) -> String {
-        if self.env_prop_key.run_env==a_cur_run_env {
-            if self.env_prop_key.locale==a_cur_locale {
+    /// get property value with raw data, i.e. not single unit of EnvPropKey but individual field of the composite key
+    /// - a_prop_key: property key to find
+    /// - a_run_env: running environment to find; likely the current running environment of the app
+    /// - a_locale: locale to find; likely the current locale of the app
+    pub fn get_prop(&self, a_prop_key: String, a_run_env: RunEnvironment, a_locale: Localeex, a_parent_re_stgy: Option<OnDataAvailStrategy>, a_parent_loc_stgy: Option<OnDataAvailStrategy>) -> Option<EnvPropVal> {
+        
+        let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key, Some(a_run_env), Some(a_locale));
+
+        let mut o_prop_val = "".to_string();
+
+        match &self.key_vals.get(&a_env_prop_key) {
+            Some(a_val) => o_prop_val = a_val.to_string(),
+            None => o_prop_val = "".to_string(),
+        }
+
+/*         if self.env_prop_key.run_env==a_run_env {
+            if self.env_prop_key.locale==a_run_locale {
 
             } else {
 
@@ -171,8 +185,10 @@ impl EnvPropPack {
 
         }
         
-        self.env_prop_val
-    } */
+        self.env_prop_val */
+
+        Some(o_prop_val)
+    }
 
 /*     /// add to & delete from locale properties
     pub fn add_locale_prop(

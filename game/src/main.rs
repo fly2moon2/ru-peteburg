@@ -519,7 +519,21 @@ async fn main() {
     epp1_kv.insert(env_prop_key1.clone(),"EnvPropPack theme prop value".to_string());
     let mut env_prop_pack1 = EnvPropPack::new_born(epp1_kv, None, None);
 
-    env_prop_pack1.get_val(env_prop_key1);
+    env_prop_pack1.get_prop_direct(env_prop_key1);
+
+    let mut epp2_kv=HashMap::new();
+    let mut env_prop_key2 = EnvPropKey::new_born("city".into(), Some(RunEnvironment::DEV), Some(Localeex::ENGLISH));
+    let mut env_prop_key2a = EnvPropKey::new_born("city".into(), Some(RunEnvironment::DEV), Some(Localeex::CHINESE));
+    let mut env_prop_key2b = EnvPropKey::new_born("city".into(), Some(RunEnvironment::DEV), Some(Localeex::JAPANESE));
+    
+    epp2_kv.insert(env_prop_key2.clone(),"city of angels".to_string());
+    epp2_kv.insert(env_prop_key2a.clone(),"天使之城".to_string());
+    epp2_kv.insert(env_prop_key2b.clone(),"エンジェル・シティ".to_string());
+    let mut env_prop_pack2 = EnvPropPack::new_born(epp2_kv, None, None);
+
+    let mut epp2_v = env_prop_pack2.get_prop("city".to_string(),RunEnvironment::DEV, Localeex::JAPANESE, None, None).unwrap();
+
+    println!("epp2_v: {:?}", epp2_v);
 
 /*     let mut env_prop1 = EnvProp::new_with_key("label_login".to_string());
     env_prop1.join(Localeex::ENGLISH,"Login".to_string());
