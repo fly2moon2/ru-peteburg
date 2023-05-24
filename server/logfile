@@ -233,3 +233,4 @@
 2023-05-24 21:20:11.453 HKT [5004] LOG:  database system is ready to accept connections
 2023-05-24 21:24:38.530 HKT [5274] LOG:  could not receive data from client: Connection reset by peer
 2023-05-24 21:28:18.274 HKT [5570] LOG:  could not receive data from client: Connection reset by peer
+2023-05-24 22:21:20.935 HKT [6638] LOG:  could not receive data from client: Connection reset by peer

@@ -166,7 +166,7 @@ impl EnvPropPack {
     /// - a_locale: locale to find; likely the current locale of the app
     pub fn get_prop(&self, a_prop_key: String, a_run_env: RunEnvironment, a_locale: Localeex, a_parent_re_stgy: Option<OnDataAvailStrategy>, a_parent_loc_stgy: Option<OnDataAvailStrategy>) -> Option<EnvPropVal> {
         
-        let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key, Some(a_run_env), Some(a_locale));
+        let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env.clone()), Some(a_locale.clone()));
 
         let mut o_prop_val = "".to_string();
 
@@ -175,6 +175,14 @@ impl EnvPropPack {
             None => o_prop_val = "".to_string(),
         }
 
+        /// if not value is found the given locale, try getting from current locale 
+        if o_prop_val == "".to_string() {
+            let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key, Some(a_run_env), Some(Localeex::CURRENT));
+            match &self.key_vals.get(&a_env_prop_key) {
+                Some(a_val2) => o_prop_val = a_val2.to_string(),
+                None => o_prop_val = "".to_string(),
+            }
+        }
 /*         if self.env_prop_key.run_env==a_run_env {
             if self.env_prop_key.locale==a_run_locale {
 
