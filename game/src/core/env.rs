@@ -1,7 +1,8 @@
 use std::collections::HashMap;
+//use std::result::Result;
 use serde::{Deserialize, Serialize};
 use serde_json::{Result, Value};
-use crate::core::elements::{GeneralSymbol, OnDataAvailStrategy};
+use crate::core::elements::{GeneralSymbol, OnDataAvailStrategy, ErrorOnthefly};
 
 // ========================================================================
 // HashMap example
@@ -141,6 +142,15 @@ pub struct EnvPropPack {
 }
 
 impl EnvPropPack {
+    // EXpress version of new_born
+    // each element of EnvPropKey and EnvPropVal is laid down and inserted into key_vals at one go
+    pub fn new_born_ex(a_prop_key: String, a_run_env: RunEnvironment, a_locale: Localeex, a_prop_val: EnvPropVal, a_re_stgy: Option<OnDataAvailStrategy>, a_loc_stgy: Option<OnDataAvailStrategy>) -> EnvPropPack {
+        let epkey1 = EnvPropKey::new_born(a_prop_key, Some(a_run_env), Some(a_locale));
+        let mut epkv1=HashMap::new();
+        epkv1.insert(epkey1,a_prop_val);
+        EnvPropPack::new_born(epkv1, a_re_stgy, a_loc_stgy)
+    }
+
     pub fn new_born(a_key_vals: HashMap<EnvPropKey, EnvPropVal>, a_re_stgy: Option<OnDataAvailStrategy>, a_loc_stgy: Option<OnDataAvailStrategy>) -> EnvPropPack {
         EnvPropPack {
             key_vals: a_key_vals,
@@ -150,7 +160,7 @@ impl EnvPropPack {
     }
 
     // returns a Property when a matching key is found
-    pub fn get_prop_direct(&self, a_key: EnvPropKey) {
+    pub fn get_prop(&self, a_key: EnvPropKey) {
     //pub fn get_val(&self, a_key: EnvPropKey) -> Option<EnvPropVal> {
         match &self.key_vals.get(&a_key) {
             Some(a_val) => println!("{:?}: {a_val}",a_key.prop_key),
@@ -160,11 +170,12 @@ impl EnvPropPack {
         }
     }
 
-    /// get property value with raw data, i.e. not single unit of EnvPropKey but individual field of the composite key
+    /// get property value with individual elements, 
+    /// i.e. not single unit of EnvPropKey but individual field of the composite key
     /// - a_prop_key: property key to find
     /// - a_run_env: running environment to find; likely the current running environment of the app
     /// - a_locale: locale to find; likely the current locale of the app
-    pub fn get_prop(&self, a_prop_key: String, a_run_env: RunEnvironment, a_locale: Localeex, a_parent_re_stgy: Option<OnDataAvailStrategy>, a_parent_loc_stgy: Option<OnDataAvailStrategy>) -> Option<EnvPropVal> {
+    pub fn get_prop_ex(&self, a_prop_key: String, a_run_env: RunEnvironment, a_locale: Localeex, a_parent_re_stgy: Option<OnDataAvailStrategy>, a_parent_loc_stgy: Option<OnDataAvailStrategy>) -> std::result::Result<Option<EnvPropVal>,ErrorOnthefly> {
         
         let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env.clone()), Some(a_locale.clone()));
 
@@ -183,6 +194,12 @@ impl EnvPropPack {
                 None => o_prop_val = "".to_string(),
             }
         }
+
+        if o_prop_val == "".to_string() {
+            Err(ErrorOnthefly::RecordNotFound)
+        } else {
+            Ok(Some(o_prop_val))
+        }   
 /*         if self.env_prop_key.run_env==a_run_env {
             if self.env_prop_key.locale==a_run_locale {
 
@@ -195,7 +212,7 @@ impl EnvPropPack {
         
         self.env_prop_val */
 
-        Some(o_prop_val)
+       // Some(o_prop_val)
     }
 
 /*     /// add to & delete from locale properties

@@ -81,6 +81,32 @@ pub enum OnDataAvailStrategy {
     ERR_ON_UNAVAIL,
 }
 
+/// ErrorOnthefly - 
+/// simply a custom enum for errors, purposely not to name as Error / Err
+/// to differentiate itself from common libraries
+/// unnamed String elements are for field name or other description
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
+pub enum ErrorOnthefly {
+    /// date read errors
+    RecordNotFound,
+    TooManyRecordFound{no_of_rec_expected:String,no_of_rec_found:String},
+    /// data write/input errors
+    RecordNotFoundForUpdate,
+    TooManyRecordFoundForUpdate{no_of_rec_expected:String,no_of_rec_found:String},
+    DuplicateKey,
+    RequiredFieldBlank(String),
+    UnacceptedValue(String),
+    /// io problem
+    IOProblem(String),
+}
+
+/* /// AppErr
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
+pub enum AppErr {
+    (DataErr),
+}
+ */
+/* 
 /// DataReadErr
 #[derive(Debug)]
 pub enum DataReadErr {
@@ -105,7 +131,7 @@ pub enum DataWriteErr {
 pub enum DataErr {
     CannotRead(DataReadErr),
     CannotWrite(DataWriteErr),
-}
+} */
 
 #[derive(Debug)]
 pub enum TwoPointDirection {
