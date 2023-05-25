@@ -175,9 +175,54 @@ impl EnvPropPack {
     /// - a_prop_key: property key to find
     /// - a_run_env: running environment to find; likely the current running environment of the app
     /// - a_locale: locale to find; likely the current locale of the app
+    /// output:
+    /// - o_prop_val (EnvPropVal) or Erroronthefly
     pub fn get_prop_ex(&self, a_prop_key: String, a_run_env: RunEnvironment, a_locale: Localeex, a_parent_re_stgy: Option<OnDataAvailStrategy>, a_parent_loc_stgy: Option<OnDataAvailStrategy>) -> std::result::Result<EnvPropVal,ErrorOnthefly> {
-        
-        let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env.clone()), Some(a_locale.clone()));
+        let mut is_condition_met: bool = false;
+        let mut loop_cnt: i8 = 0;
+
+        /// blank, means not found
+        let mut o_prop_val = "".to_string();
+
+        /// Loop up to 4 times for 4 retries with different conditions
+        /// Try 0: Both RunEnvironment & Locale must match
+        /// then next loop if not found ...
+        /// Try 1: RunEnvironment default to current, whereas Locale must match
+        /// then next loop if not found ...
+        /// Try 2: Both RunEnvironment & Locale default to current
+        /// then next loop if not found ...
+        /// Try 3: RunEnvironment must match, whereas Locale default to current
+        ///
+        /// * Default to Current is allowed provided that corresponding conditions are met for RunEnv & Locale strategies respectively:
+        /// a. strategy is to get default; or
+        /// b. strategy is to get inherit and the parent strategy is to get default
+        while o_prop_val == "".to_string() && loop_cnt <= 3 {
+            /// check if strategy conditions are met (Try 0 - no strategy check is required)
+            let mut is_condition_met = match loop_cnt {
+                0 => true,
+                1 => (self.run_env_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.run_env_strategy==OnDataAvailStrategy::INHERIT && a_parent_re_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))),
+                2 => (self.run_env_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.run_env_strategy==OnDataAvailStrategy::INHERIT && a_parent_re_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))) && (self.locale_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.locale_strategy==OnDataAvailStrategy::INHERIT && a_parent_loc_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))),
+                3 => (self.locale_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.locale_strategy==OnDataAvailStrategy::INHERIT && a_parent_loc_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))),
+                _ => (self.locale_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.locale_strategy==OnDataAvailStrategy::INHERIT && a_parent_loc_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))),
+            };
+            if o_prop_val == "".to_string() && is_condition_met {
+                let mut a_env_prop_key = match loop_cnt {
+                    0 => EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env.clone()), Some(a_locale.clone())),
+                    1 => EnvPropKey::new_born(a_prop_key.clone(), Some(RunEnvironment::Current), Some(a_locale.clone())),
+                    2 => EnvPropKey::new_born(a_prop_key.clone(), Some(RunEnvironment::Current), Some(Localeex::Current)),
+                    3 => EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env.clone()), Some(Localeex::Current)),
+                    _ => EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env.clone()), Some(Localeex::Current)),
+                };
+                /// get property value, given the EnvPropKey - composite of prop key, running environment & locale
+                match &self.key_vals.get(&a_env_prop_key) {
+                    Some(a_val) => o_prop_val = a_val.clone().to_string(),
+                    None => o_prop_val = "".to_string(),
+                }
+            }
+            loop_cnt = loop_cnt + 1;
+        }
+
+/*         let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env.clone()), Some(a_locale.clone()));
 
         let mut o_prop_val = "".to_string();
 
@@ -228,27 +273,15 @@ impl EnvPropPack {
                     None => o_prop_val = "".to_string(),
                 }
             }
-        }
+        } */
 
         if o_prop_val == "".to_string() {
-            //Err(ErrorOnthefly::RecordNotFound)
-            Err(ErrorOnthefly::IOProblem("cannot find the key!".to_string()))
+            Err(ErrorOnthefly::RecordNotFound)
+            //Err(ErrorOnthefly::IOProblem("cannot find the key!".to_string()))
         } else {
             Ok(o_prop_val)
         }   
-/*         if self.env_prop_key.run_env==a_run_env {
-            if self.env_prop_key.locale==a_run_locale {
 
-            } else {
-
-            }
-        } else {
-
-        }
-        
-        self.env_prop_val */
-
-       // Some(o_prop_val)
     }
 
 /*     /// add to & delete from locale properties

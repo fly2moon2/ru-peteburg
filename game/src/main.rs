@@ -539,9 +539,9 @@ async fn main() {
 
     println!("epp2_val: {:?}", epp2_val);
 
-    let mut eppack3 = EnvPropPack::new_born_ex("layout".to_string(), RunEnvironment::DEV, Localeex::German, "German layout".to_string(), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL));
-    eppack3.key_vals.insert(EnvPropKey::new_born("layout".into(), Some(RunEnvironment::Current), Some(Localeex::Chinese)),"Current layout".to_string());
-    let epp3_val = eppack3.get_prop_ex("layout".to_string(),RunEnvironment::DEV, Localeex::English, None, None);
+    let mut eppack3 = EnvPropPack::new_born_ex("layout".to_string(), RunEnvironment::DEV, Localeex::German, "German layout".to_string(), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::INHERIT));
+    eppack3.key_vals.insert(EnvPropKey::new_born("layout".into(), Some(RunEnvironment::Current), Some(Localeex::Current)),"Current layout".to_string());
+    let epp3_val = eppack3.get_prop_ex("layout".to_string(),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL));
 
     if epp3_val.is_err() {
         println!("epp3_val Err: {:?}", epp3_val.err().unwrap());
