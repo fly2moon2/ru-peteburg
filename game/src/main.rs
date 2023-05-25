@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+#![allow(unused_imports, unused_variables, unused_doc_comments)]
 // -------------------
 // note: game macroquad 
 // -------------------
