@@ -540,10 +540,14 @@ async fn main() {
     println!("epp2_val: {:?}", epp2_val);
 
     let mut eppack3 = EnvPropPack::new_born_ex("layout".to_string(), RunEnvironment::DEV, Localeex::GERMAN, "GERMAN layout".to_string(), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL));
-    eppack3.key_vals.insert(EnvPropKey::new_born("layout".into(), Some(RunEnvironment::DEV), Some(Localeex::CURRENT)),"CURRENT layout".to_string());
-    let mut epp3_val = eppack3.get_prop_ex("layout".to_string(),RunEnvironment::DEV, Localeex::ENGLISH, None, None);
+    eppack3.key_vals.insert(EnvPropKey::new_born("layout".into(), Some(RunEnvironment::CURRENT), Some(Localeex::ENGLISH)),"CURRENT layout".to_string());
+    let epp3_val = eppack3.get_prop_ex("layout".to_string(),RunEnvironment::DEV, Localeex::ENGLISH, None, None);
 
-    println!("epp3_val: {:?}", epp3_val);
+    if epp3_val.is_err() {
+        println!("epp3_val Err: {:?}", epp3_val.err().unwrap());
+    } else {
+        println!("epp3_val Ok: {:?}", epp3_val.ok().unwrap());
+    }
 
 /*     let mut env_prop1 = EnvProp::new_with_key("label_login".to_string());
     env_prop1.join(Localeex::ENGLISH,"Login".to_string());
