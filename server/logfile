@@ -245,3 +245,4 @@
 2023-05-25 09:59:38.068 HKT [3417] LOG:  database system was shut down at 2023-05-24 22:34:12 HKT
 2023-05-25 09:59:38.078 HKT [3416] LOG:  database system is ready to accept connections
 2023-05-25 15:16:39.329 HKT [7215] LOG:  could not receive data from client: Connection reset by peer
+2023-05-25 18:53:03.764 HKT [11430] LOG:  could not receive data from client: Connection reset by peer

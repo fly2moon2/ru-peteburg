@@ -531,15 +531,15 @@ async fn main() {
     epp2_kv.insert(env_prop_key2a.clone(),"天使之城".to_string());
     epp2_kv.insert(env_prop_key2b.clone(),"エンジェル・シティ".to_string());
     epp2_kv.insert(env_prop_key2c.clone(),"EN city of angels EN".to_string());
-    let mut env_prop_pack2 = EnvPropPack::new_born(epp2_kv, None, None);
+    let mut env_prop_pack2 = EnvPropPack::new_born(epp2_kv, Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL));
 
     let mut epp2_val = env_prop_pack2.get_prop_ex("city".to_string(),RunEnvironment::DEV, Localeex::ITALIAN, None, None).unwrap();
 
     println!("epp2_val: {:?}", epp2_val);
 
-    let mut eppack3 = EnvPropPack::new_born_ex("layout".to_string(), RunEnvironment::DEV, Localeex::GERMAN, "GERMAN layout".to_string(), None, None);
-
-    let mut epp3_val = eppack3.get_prop_ex("layout".to_string(),RunEnvironment::DEV, Localeex::ENGLISH, None, None).unwrap();
+    let mut eppack3 = EnvPropPack::new_born_ex("layout".to_string(), RunEnvironment::DEV, Localeex::GERMAN, "GERMAN layout".to_string(), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL));
+    eppack3.key_vals.insert(EnvPropKey::new_born("layout".into(), Some(RunEnvironment::DEV), Some(Localeex::CURRENT)),"CURRENT layout".to_string());
+    let mut epp3_val = eppack3.get_prop_ex("layout".to_string(),RunEnvironment::DEV, Localeex::ENGLISH, None, None);
 
     println!("epp3_val: {:?}", epp3_val);
 

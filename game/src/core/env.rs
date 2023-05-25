@@ -175,30 +175,65 @@ impl EnvPropPack {
     /// - a_prop_key: property key to find
     /// - a_run_env: running environment to find; likely the current running environment of the app
     /// - a_locale: locale to find; likely the current locale of the app
-    pub fn get_prop_ex(&self, a_prop_key: String, a_run_env: RunEnvironment, a_locale: Localeex, a_parent_re_stgy: Option<OnDataAvailStrategy>, a_parent_loc_stgy: Option<OnDataAvailStrategy>) -> std::result::Result<Option<EnvPropVal>,ErrorOnthefly> {
+    pub fn get_prop_ex(&self, a_prop_key: String, a_run_env: RunEnvironment, a_locale: Localeex, a_parent_re_stgy: Option<OnDataAvailStrategy>, a_parent_loc_stgy: Option<OnDataAvailStrategy>) -> std::result::Result<EnvPropVal,ErrorOnthefly> {
         
         let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env.clone()), Some(a_locale.clone()));
 
         let mut o_prop_val = "".to_string();
 
         match &self.key_vals.get(&a_env_prop_key) {
-            Some(a_val) => o_prop_val = a_val.to_string(),
+            Some(a_val) => o_prop_val = a_val.clone().to_string(),
             None => o_prop_val = "".to_string(),
         }
 
-        /// if not value is found the given locale, try getting from current locale 
+        /// Try 1:
+        /// if value is not found, try getting from current runenvironment 
+        /// 1st try with the given locale
+        /// provided that:
+        /// a. strategy is to get default; or
+        /// b. strategy is to get inherit and the parent strategy is to get default
         if o_prop_val == "".to_string() {
-            let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key, Some(a_run_env), Some(Localeex::CURRENT));
-            match &self.key_vals.get(&a_env_prop_key) {
-                Some(a_val2) => o_prop_val = a_val2.to_string(),
-                None => o_prop_val = "".to_string(),
+            if (self.run_env_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.run_env_strategy==OnDataAvailStrategy::INHERIT && a_parent_re_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))) {
+                let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(RunEnvironment::CURRENT), Some(a_locale));
+                match &self.key_vals.get(&a_env_prop_key) {
+                    Some(a_val) => o_prop_val = a_val.clone().to_string(),
+                    None => o_prop_val = "".to_string(),
+                }
+
+                /// Try 2:
+                /// if still not found, try getting from current runenvironment 
+                /// next try with current locale as well
+                /// provided that both the runenv both locale strategies get to default
+                if o_prop_val == "".to_string() {
+                    if (self.locale_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.locale_strategy==OnDataAvailStrategy::INHERIT && a_parent_loc_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))) {
+                        let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(RunEnvironment::CURRENT), Some(Localeex::CURRENT));
+                        match &self.key_vals.get(&a_env_prop_key) {
+                            Some(a_val) => o_prop_val = a_val.clone().to_string(),
+                            None => o_prop_val = "".to_string(),
+                        }
+                    }
+                }
+             }
+        }
+
+
+        /// Try 3:
+        /// if still not found, try getting from current locale, but with the given runenv 
+        /// provided that the locale strategy get to default
+        if o_prop_val == "".to_string() {
+            if (self.locale_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.locale_strategy==OnDataAvailStrategy::INHERIT && a_parent_loc_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))) {
+                let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env), Some(Localeex::CURRENT));
+                match &self.key_vals.get(&a_env_prop_key) {
+                    Some(a_val) => o_prop_val = a_val.clone().to_string(),
+                    None => o_prop_val = "".to_string(),
+                }
             }
         }
 
         if o_prop_val == "".to_string() {
             Err(ErrorOnthefly::RecordNotFound)
         } else {
-            Ok(Some(o_prop_val))
+            Ok(o_prop_val)
         }   
 /*         if self.env_prop_key.run_env==a_run_env {
             if self.env_prop_key.locale==a_run_locale {
