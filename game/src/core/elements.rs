@@ -1,33 +1,33 @@
 use serde::{Deserialize, Serialize};
 
 /* // a notatioun/symbol for this/current status/position
-pub const AS_CURRENT:&str = ".";*/
+pub const AS_Current:&str = ".";*/
 
 /// GeneralSymbol:
 /// symbols/1-2 characters representing general position concept
-/// CURRENT  - a notatioun/symbol for this/current status/position
-/// UP_LEVEL - a notatioun/symbol for one level up, parent/ancestor path
+/// Current  - a notatioun/symbol for this/current status/position
+/// UpLevel - a notatioun/symbol for one level up, parent/ancestor Path
 #[derive(Debug)]
 pub enum GeneralSymbol {
-    CURRENT,
-    UP_LEVEL,
-    HOME,
-    NEVER,
-    PATH,
-    BACK,
-    NEXT,
+    Current,
+    UpLevel,
+    Home,
+    Never,
+    Path,
+    Back,
+    Next,
 }
 
 impl GeneralSymbol{
     pub fn symbol(&self) -> String {
         match *self {
-            GeneralSymbol::CURRENT => ".".to_string(),
-            GeneralSymbol::UP_LEVEL => "..".to_string(),
-            GeneralSymbol::HOME => "~".to_string(),
-            GeneralSymbol::NEVER => "!".to_string(),
-            GeneralSymbol::PATH => "/".to_string(),
-            GeneralSymbol::BACK => "<".to_string(),
-            GeneralSymbol::NEXT => ">".to_string(),
+            GeneralSymbol::Current => ".".to_string(),
+            GeneralSymbol::UpLevel => "..".to_string(),
+            GeneralSymbol::Home => "~".to_string(),
+            GeneralSymbol::Never => "!".to_string(),
+            GeneralSymbol::Path => "/".to_string(),
+            GeneralSymbol::Back => "<".to_string(),
+            GeneralSymbol::Next => ">".to_string(),
         }
     }
 }
@@ -35,25 +35,25 @@ impl GeneralSymbol{
 /// Domain
 #[derive(Debug)]
 pub enum Domain {
-    CURRENT,
-    COMMON,
-    SECURITY,
+    Current,
+    Common,
+    Security,
 }
 
 impl Domain{
 /*     pub fn new_born(code: &str) -> Domain {
         match code {
-            GeneralSymbol::CURRENT.symbol() => Domain::CURRENT,
-            "CMN" => Domain::COMMON,
+            GeneralSymbol::Current.symbol() => Domain::Current,
+            "CMN" => Domain::Common,
             "SQT" => Domain::SECURITY,
         }
     } */
 
     pub fn code(&self) -> String {
         match *self {
-            Domain::CURRENT => GeneralSymbol::CURRENT.symbol(),
-            Domain::COMMON => "CMN".to_string(),
-            Domain::SECURITY => "SQT".to_string(),
+            Domain::Current => GeneralSymbol::Current.symbol(),
+            Domain::Common => "CMN".to_string(),
+            Domain::Security => "SQT".to_string(),
         }
     }
 }
@@ -61,16 +61,16 @@ impl Domain{
 /// Relationship
 #[derive(Debug)]
 pub enum Relationship {
-    CURRENT,
-    IS_A,
-    HAS_A,
-    FROM_TO,
+    Current,
+    IsA,
+    HasA,
+    FromTo,
 }
 
 /// OnDataAvailStrategy:
 /// strategy when specific data/value is found/available vs. not found/unavailable
 /// e.g. used in (EnvProp) app_properties.json (INHERIT from upper level if not defined)
-/// DEFAULT_ON_UNAVAIL -  fall back to the default when no match is found,
+/// DEFAULT_ON_UNAVAIL -  fall Back to the default when no match is found,
 /// ERR_ON_UNAVAIL - matched value is required; error/exception when no match is found, 
 /// INHERIT      - not to define strategy at this level; INHERIT strategy from upper level instead 
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
@@ -98,6 +98,36 @@ pub enum ErrorOnthefly {
     UnacceptedValue(String),
     /// io problem
     IOProblem(String),
+}
+
+
+#[derive(Debug)]
+pub enum TwoPointDirection {
+    From,
+    To,
+    Nil,
+}
+
+#[derive(Debug)]
+pub enum CompassDirection {
+    North,
+    East,
+    South,
+    West,
+    Central,
+}
+
+#[derive(Debug)]
+pub enum DataTyp {
+    Number,
+    String,
+}
+
+#[derive(Debug)]
+pub struct DataSpecs {
+    typ: DataTyp,
+    size: u8,
+    required: bool,
 }
 
 /* /// AppErr
@@ -132,32 +162,3 @@ pub enum DataErr {
     CannotRead(DataReadErr),
     CannotWrite(DataWriteErr),
 } */
-
-#[derive(Debug)]
-pub enum TwoPointDirection {
-    From,
-    To,
-    Nil,
-}
-
-#[derive(Debug)]
-pub enum CompassDirection {
-    North,
-    East,
-    South,
-    West,
-    Central,
-}
-
-#[derive(Debug)]
-pub enum DataTyp {
-    Number,
-    String,
-}
-
-#[derive(Debug)]
-pub struct DataSpecs {
-    typ: DataTyp,
-    size: u8,
-    required: bool,
-}

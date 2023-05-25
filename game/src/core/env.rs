@@ -13,7 +13,7 @@ use crate::core::elements::{GeneralSymbol, OnDataAvailStrategy, ErrorOnthefly};
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub enum RunEnvironment {
-    CURRENT,
+    Current,
     DEV,
     UAT,
     SIT,
@@ -21,48 +21,48 @@ pub enum RunEnvironment {
 }
 
 /// Locale
-/// CURRENT -   is special, meaning the current/default locale;
+/// Current -   is special, meaning the current/default locale;
 ///             when given locale cannot be found for a property (EnvProp), 
 ///             default property value would be used (subject to locale_strategy in app_properties.json)
 /// ref. https://stackoverflow.com/questions/36928569/how-can-i-create-enums-with-constant-values-in-rust
 /// hash, partialeq, eq, serialisze, deserialize is needed for putting the struct inside hashmap
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Localeex {
-    CURRENT,
-    ENGLISH,
-    CHINESE,
-    JAPANESE,
-    FRENCH,
-    ITALIAN,
-    GERMAN,
-    SPANISH,
+    Current,
+    English,
+    Chinese,
+    Japanese,
+    French,
+    Italian,
+    German,
+    Spanish,
 }
 
 impl Localeex{
 /*     pub fn new_born(code:&str) -> Localeex {
         match code {
-            GeneralSymbol::CURRENT.symbol() => Localeex::CURRENT => GeneralSymbol::CURRENT.symbol(),
-            "EN".to_string() => Localeex::ENGLISH,
-            "CH".to_string() => Localeex::CHINESE,
-            "JP".to_string() => Localeex::JAPANESE,
-            "FR".to_string() => Localeex::FRENCH,
-            "IT".to_string() => Localeex::ITALIAN,
-            "GR".to_string()=> Localeex::GERMAN,
-            "SP".to_string() => Localeex::SPANISH,      
+            GeneralSymbol::Current.symbol() => Localeex::Current => GeneralSymbol::Current.symbol(),
+            "EN".to_string() => Localeex::English,
+            "CH".to_string() => Localeex::Chinese,
+            "JP".to_string() => Localeex::Japanese,
+            "FR".to_string() => Localeex::French,
+            "IT".to_string() => Localeex::Italian,
+            "GR".to_string()=> Localeex::German,
+            "SP".to_string() => Localeex::Spanish,      
         }
     } */
 
 
     pub fn code(&self) -> String {
         match *self {
-            Localeex::CURRENT => GeneralSymbol::CURRENT.symbol(),
-            Localeex::ENGLISH => "EN".to_string(),
-            Localeex::CHINESE => "CH".to_string(),
-            Localeex::JAPANESE => "JP".to_string(),
-            Localeex::FRENCH => "FR".to_string(),
-            Localeex::ITALIAN => "IT".to_string(),
-            Localeex::GERMAN => "GR".to_string(),
-            Localeex::SPANISH => "SP".to_string(),
+            Localeex::Current => GeneralSymbol::Current.symbol(),
+            Localeex::English => "EN".to_string(),
+            Localeex::Chinese => "CH".to_string(),
+            Localeex::Japanese => "JP".to_string(),
+            Localeex::French => "FR".to_string(),
+            Localeex::Italian => "IT".to_string(),
+            Localeex::German => "GR".to_string(),
+            Localeex::Spanish => "SP".to_string(),
         }
     }
 }
@@ -78,7 +78,7 @@ impl Locale {
     // default to "." (current), if code is not given
     // description is optional
     pub fn new(code_opt: Option<String>, descr_opt: Option<String>) -> Locale {
-        let some_code=code_opt.unwrap_or(GeneralSymbol::CURRENT.symbol());
+        let some_code=code_opt.unwrap_or(GeneralSymbol::Current.symbol());
         let some_descr=descr_opt.unwrap_or("".to_string());
 /*         let mut some_descr:String="".to_string();
         if let Some(descr)=descr_opt {
@@ -113,16 +113,16 @@ impl EnvPropKey {
     pub fn new(a_key: String) -> EnvProp {
         EnvPropKey {
             prop_key: a_key,
-            run_env: RunEnvironment::CURRENT,
-            locale: Localeex::CURRENT,
+            run_env: RunEnvironment::Current,
+            locale: Localeex::Current,
         }
     } */
     
     pub fn new_born(a_key: String, a_run_env: Option<RunEnvironment>, a_locale: Option<Localeex>) -> EnvPropKey {
         EnvPropKey {
             prop_key: a_key,
-            run_env: if a_run_env.is_none() {RunEnvironment::CURRENT} else {a_run_env.unwrap()},
-            locale: if a_locale.is_none() {Localeex::CURRENT} else {a_locale.unwrap()},
+            run_env: if a_run_env.is_none() {RunEnvironment::Current} else {a_run_env.unwrap()},
+            locale: if a_locale.is_none() {Localeex::Current} else {a_locale.unwrap()},
         }
     }
 }
@@ -194,7 +194,7 @@ impl EnvPropPack {
         /// b. strategy is to get inherit and the parent strategy is to get default
         if o_prop_val == "".to_string() {
             if (self.run_env_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.run_env_strategy==OnDataAvailStrategy::INHERIT && a_parent_re_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))) {
-                let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(RunEnvironment::CURRENT), Some(a_locale));
+                let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(RunEnvironment::Current), Some(a_locale));
                 match &self.key_vals.get(&a_env_prop_key) {
                     Some(a_val) => o_prop_val = a_val.clone().to_string(),
                     None => o_prop_val = "".to_string(),
@@ -206,7 +206,7 @@ impl EnvPropPack {
                 /// provided that both the runenv both locale strategies get to default
                 if o_prop_val == "".to_string() {
                     if (self.locale_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.locale_strategy==OnDataAvailStrategy::INHERIT && a_parent_loc_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))) {
-                        let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(RunEnvironment::CURRENT), Some(Localeex::CURRENT));
+                        let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(RunEnvironment::Current), Some(Localeex::Current));
                         match &self.key_vals.get(&a_env_prop_key) {
                             Some(a_val) => o_prop_val = a_val.clone().to_string(),
                             None => o_prop_val = "".to_string(),
@@ -222,7 +222,7 @@ impl EnvPropPack {
         /// provided that the locale strategy get to default
         if o_prop_val == "".to_string() {
             if (self.locale_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.locale_strategy==OnDataAvailStrategy::INHERIT && a_parent_loc_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))) {
-                let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env), Some(Localeex::CURRENT));
+                let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env), Some(Localeex::Current));
                 match &self.key_vals.get(&a_env_prop_key) {
                     Some(a_val) => o_prop_val = a_val.clone().to_string(),
                     None => o_prop_val = "".to_string(),
@@ -231,7 +231,8 @@ impl EnvPropPack {
         }
 
         if o_prop_val == "".to_string() {
-            Err(ErrorOnthefly::RecordNotFound)
+            //Err(ErrorOnthefly::RecordNotFound)
+            Err(ErrorOnthefly::IOProblem("cannot find the key!".to_string()))
         } else {
             Ok(o_prop_val)
         }   
@@ -288,7 +289,7 @@ impl EnvPropSet {
     pub fn new(a_run_env: RunEnvironment) -> EnvPropSet {
         EnvPropSet {
             run_env: a_run_env,
-            default_locale: Localeex::CURRENT,
+            default_locale: Localeex::Current,
             run_env_strategy: OnDataAvailStrategy::DEFAULT_ON_UNAVAIL,
             locale_strategy: OnDataAvailStrategy::DEFAULT_ON_UNAVAIL,
             env_props: HashMap::new(),
@@ -375,7 +376,7 @@ impl PropSet {
     pub fn new() -> PropSet {
         PropSet {
             locale:Locale::new(None,None),
-            env:RunEnvironment::CURRENT,
+            env:RunEnvironment::Current,
             // properties collection defined as HashMap, instead of struct Prop
             // to take advantage of unique key mechanism
             props: HashMap::new(),

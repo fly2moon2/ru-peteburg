@@ -524,10 +524,10 @@ async fn main() {
     env_prop_pack1.get_prop(env_prop_key1);
 
     let mut epp2_kv=HashMap::new();
-    let mut env_prop_key2 = EnvPropKey::new_born("city".into(), Some(RunEnvironment::DEV), Some(Localeex::CURRENT));
-    let mut env_prop_key2a = EnvPropKey::new_born("city".into(), Some(RunEnvironment::DEV), Some(Localeex::CHINESE));
-    let mut env_prop_key2b = EnvPropKey::new_born("city".into(), Some(RunEnvironment::DEV), Some(Localeex::JAPANESE));
-    let mut env_prop_key2c = EnvPropKey::new_born("city".into(), Some(RunEnvironment::DEV), Some(Localeex::ENGLISH));
+    let mut env_prop_key2 = EnvPropKey::new_born("city".into(), Some(RunEnvironment::DEV), Some(Localeex::Current));
+    let mut env_prop_key2a = EnvPropKey::new_born("city".into(), Some(RunEnvironment::DEV), Some(Localeex::Chinese));
+    let mut env_prop_key2b = EnvPropKey::new_born("city".into(), Some(RunEnvironment::DEV), Some(Localeex::Japanese));
+    let mut env_prop_key2c = EnvPropKey::new_born("city".into(), Some(RunEnvironment::DEV), Some(Localeex::English));
 
     epp2_kv.insert(env_prop_key2.clone(),"city of angels".to_string());
     epp2_kv.insert(env_prop_key2a.clone(),"天使之城".to_string());
@@ -535,13 +535,13 @@ async fn main() {
     epp2_kv.insert(env_prop_key2c.clone(),"EN city of angels EN".to_string());
     let mut env_prop_pack2 = EnvPropPack::new_born(epp2_kv, Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL));
 
-    let mut epp2_val = env_prop_pack2.get_prop_ex("city".to_string(),RunEnvironment::DEV, Localeex::ITALIAN, None, None).unwrap();
+    let mut epp2_val = env_prop_pack2.get_prop_ex("city".to_string(),RunEnvironment::DEV, Localeex::Italian, None, None).unwrap();
 
     println!("epp2_val: {:?}", epp2_val);
 
-    let mut eppack3 = EnvPropPack::new_born_ex("layout".to_string(), RunEnvironment::DEV, Localeex::GERMAN, "GERMAN layout".to_string(), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL));
-    eppack3.key_vals.insert(EnvPropKey::new_born("layout".into(), Some(RunEnvironment::CURRENT), Some(Localeex::ENGLISH)),"CURRENT layout".to_string());
-    let epp3_val = eppack3.get_prop_ex("layout".to_string(),RunEnvironment::DEV, Localeex::ENGLISH, None, None);
+    let mut eppack3 = EnvPropPack::new_born_ex("layout".to_string(), RunEnvironment::DEV, Localeex::German, "German layout".to_string(), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL));
+    eppack3.key_vals.insert(EnvPropKey::new_born("layout".into(), Some(RunEnvironment::Current), Some(Localeex::Chinese)),"Current layout".to_string());
+    let epp3_val = eppack3.get_prop_ex("layout".to_string(),RunEnvironment::DEV, Localeex::English, None, None);
 
     if epp3_val.is_err() {
         println!("epp3_val Err: {:?}", epp3_val.err().unwrap());
@@ -550,16 +550,16 @@ async fn main() {
     }
 
 /*     let mut env_prop1 = EnvProp::new_with_key("label_login".to_string());
-    env_prop1.join(Localeex::ENGLISH,"Login".to_string());
-    env_prop1.join(Localeex::CURRENT,"Splogn".to_string()); */
+    env_prop1.join(Localeex::English,"Login".to_string());
+    env_prop1.join(Localeex::Current,"Splogn".to_string()); */
 
- /*    let mut env_prop1 = EnvProp::new_born("label_login".to_string(),Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL),Some(Localeex::ENGLISH),Some("Login".to_string()));
-    env_prop1.add_locale_prop(Localeex::SPANISH,"Spanish Logn".to_string());
+ /*    let mut env_prop1 = EnvProp::new_born("label_login".to_string(),Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL),Some(Localeex::English),Some("Login".to_string()));
+    env_prop1.add_locale_prop(Localeex::Spanish,"Spanish Logn".to_string());
     for (a_locale, a_prop_val) in &env_prop1.locale_props {
         println!("EnvProp locale: {a_locale:?}, prop_val:{a_prop_val:?}");
     }  
 
-    let mut env_prop_set1 = EnvPropSet::new_born(RunEnvironment::DEV, Localeex::ENGLISH, OnDataAvailStrategy::ERR_ON_UNAVAIL, OnDataAvailStrategy::DEFAULT_ON_UNAVAIL, Some(env_prop1));
+    let mut env_prop_set1 = EnvPropSet::new_born(RunEnvironment::DEV, Localeex::English, OnDataAvailStrategy::ERR_ON_UNAVAIL, OnDataAvailStrategy::DEFAULT_ON_UNAVAIL, Some(env_prop1));
     // env_prop_set1.add_env_prop(env_prop1); */
 
     let mut props1 = PropSet::new();
