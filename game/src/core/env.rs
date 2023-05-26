@@ -17,7 +17,7 @@ pub enum RunEnvironment {
     DEV,
     UAT,
     SIT,
-    PROD{label:String}, // label is used when there is a need to refine meaning of PRODuction env. (e.g. site01, DR, etc.)
+    PROD(String), // label is used when there is a need to refine meaning of PRODuction env. (e.g. site01, DR, etc.)
 }
 
 /// Locale
@@ -176,10 +176,11 @@ impl EnvPropPack {
     /// - a_run_env: running environment to find; likely the current running environment of the app
     /// - a_locale: locale to find; likely the current locale of the app
     /// output:
-    /// - o_prop_val (EnvPropVal) or Erroronthefly
+    /// - o_prop_val (EnvPropVal) or ErrorOnthefly
     pub fn get_prop_ex(&self, a_prop_key: String, a_run_env: RunEnvironment, a_locale: Localeex, a_parent_re_stgy: Option<OnDataAvailStrategy>, a_parent_loc_stgy: Option<OnDataAvailStrategy>) -> std::result::Result<EnvPropVal,ErrorOnthefly> {
         let mut is_condition_met: bool = false;
-        let mut loop_cnt: i8 = 0;
+        let mut try_cnt: i8 = 0;
+        let try_cnt_lmt = 3;
 
         /// blank, means not found
         let mut o_prop_val = "".to_string();
@@ -196,30 +197,34 @@ impl EnvPropPack {
         /// * Default to Current is allowed provided that corresponding conditions are met for RunEnv & Locale strategies respectively:
         /// a. strategy is to get default; or
         /// b. strategy is to get inherit and the parent strategy is to get default
-        while o_prop_val == "".to_string() && loop_cnt <= 3 {
+        while o_prop_val == "".to_string() && try_cnt <= try_cnt_lmt {
             /// check if strategy conditions are met (Try 0 - no strategy check is required)
-            let mut is_condition_met = match loop_cnt {
+            let mut is_condition_met = match try_cnt {
                 0 => true,
                 1 => (self.run_env_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.run_env_strategy==OnDataAvailStrategy::INHERIT && a_parent_re_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))),
                 2 => (self.run_env_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.run_env_strategy==OnDataAvailStrategy::INHERIT && a_parent_re_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))) && (self.locale_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.locale_strategy==OnDataAvailStrategy::INHERIT && a_parent_loc_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))),
                 3 => (self.locale_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.locale_strategy==OnDataAvailStrategy::INHERIT && a_parent_loc_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))),
-                _ => (self.locale_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.locale_strategy==OnDataAvailStrategy::INHERIT && a_parent_loc_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))),
+                _ => false,
             };
             if o_prop_val == "".to_string() && is_condition_met {
-                let mut a_env_prop_key = match loop_cnt {
+                let mut a_env_prop_key = match try_cnt {
                     0 => EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env.clone()), Some(a_locale.clone())),
                     1 => EnvPropKey::new_born(a_prop_key.clone(), Some(RunEnvironment::Current), Some(a_locale.clone())),
                     2 => EnvPropKey::new_born(a_prop_key.clone(), Some(RunEnvironment::Current), Some(Localeex::Current)),
                     3 => EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env.clone()), Some(Localeex::Current)),
-                    _ => EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env.clone()), Some(Localeex::Current)),
+                    _ => EnvPropKey::new_born(a_prop_key.clone(), None, None),
                 };
+                ///
                 /// get property value, given the EnvPropKey - composite of prop key, running environment & locale
-                match &self.key_vals.get(&a_env_prop_key) {
-                    Some(a_val) => o_prop_val = a_val.clone().to_string(),
-                    None => o_prop_val = "".to_string(),
+                /// exceptional if try_cnt exceeds limit
+                if try_cnt <= try_cnt_lmt {
+                    match &self.key_vals.get(&a_env_prop_key) {
+                        Some(a_val) => o_prop_val = a_val.clone().to_string(),
+                        None => o_prop_val = "".to_string(),
+                    }
                 }
             }
-            loop_cnt = loop_cnt + 1;
+            try_cnt = try_cnt + 1;
         }
 
 /*         let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env.clone()), Some(a_locale.clone()));
@@ -277,7 +282,6 @@ impl EnvPropPack {
 
         if o_prop_val == "".to_string() {
             Err(ErrorOnthefly::RecordNotFound)
-            //Err(ErrorOnthefly::IOProblem("cannot find the key!".to_string()))
         } else {
             Ok(o_prop_val)
         }   
@@ -725,3 +729,60 @@ fn main() {
 }
 
      */
+
+#[cfg(test)]
+mod tests {
+    /// Note this useful idiom: importing names from outer (for mod tests) scope.
+    use super::*;
+    use rand::distributions::{Alphanumeric, DistString};
+    use rand::Rng;
+    //use iif::iif;
+
+
+    /// setup and return an env property pack with testing data
+    fn test_setup_env_prop_pack(a_epp_key: &str) -> EnvPropPack {
+        let t_epp_key = a_epp_key.to_string();
+        let mut t_eppack = EnvPropPack::new_born_ex(t_epp_key.clone(), RunEnvironment::DEV, Localeex::Chinese, "退出".to_string(), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::INHERIT));
+        t_eppack.key_vals.insert(EnvPropKey::new_born(t_epp_key.clone(), Some(RunEnvironment::Current), Some(Localeex::Current)),"Quit".to_string());
+        t_eppack.key_vals.insert(EnvPropKey::new_born(t_epp_key.clone(), Some(RunEnvironment::PROD("DR server1".to_string())), Some(Localeex::Japanese)),"やめる".to_string());
+
+        t_eppack 
+    }
+
+    /// ok for exact match of key, run env & locale
+    #[test]
+    fn test_get_env_prop_exact_ok() {  
+        /// property key for testing is randomly generated value of a random len between 1 to 100
+        let t_epp_key = Alphanumeric.sample_string(&mut rand::thread_rng(), rand::thread_rng().gen_range(1..100));
+        let t_eppack_val = test_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::PROD("DR server1".to_string()), Localeex::Japanese, Some(OnDataAvailStrategy::ERR_ON_UNAVAIL), Some(OnDataAvailStrategy::ERR_ON_UNAVAIL));
+        assert_eq!(t_eppack_val.ok().unwrap(), "やめる".to_string());    
+    }
+
+    /// error for exact match of key, run env & locale
+    #[test]
+    fn test_get_env_prop_exact_err() {  
+        let t_epp_key = "quit".to_string();
+        let t_eppack_val = test_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::Japanese, Some(OnDataAvailStrategy::ERR_ON_UNAVAIL), Some(OnDataAvailStrategy::ERR_ON_UNAVAIL));
+        assert_eq!(t_eppack_val.err().unwrap(), ErrorOnthefly::RecordNotFound);    
+    }
+
+    /// ok inherit parent/up-one-level locale strategy that defaults to get the current locale when given locale is not found
+    #[test]
+    fn test_get_env_prop_inherit_cur_ok() {  
+        let t_epp_key = "quit".to_string();
+        let t_eppack_val = test_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL));
+        assert_eq!(t_eppack_val.ok().unwrap(), "Quit".to_string());    
+    }
+
+    /// error inherit parent/up-one-level locale strategy that returns error when given locale is not found
+    #[test]
+    fn test_get_env_prop_inherit_cur_err() {  
+        let t_epp_key = "quit".to_string();
+        let t_eppack_val = test_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::ERR_ON_UNAVAIL));
+        assert_eq!(t_eppack_val.err().unwrap(), ErrorOnthefly::RecordNotFound);    
+    }
+
+
+
+
+}

@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 
+
 /* // a notatioun/symbol for this/current status/position
 pub const AS_Current:&str = ".";*/
 
@@ -129,6 +130,9 @@ pub struct DataSpecs {
     size: u8,
     required: bool,
 }
+
+
+
 
 /* /// AppErr
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]

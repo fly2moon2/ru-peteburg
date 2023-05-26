@@ -543,10 +543,12 @@ async fn main() {
     eppack3.key_vals.insert(EnvPropKey::new_born("layout".into(), Some(RunEnvironment::Current), Some(Localeex::Current)),"Current layout".to_string());
     let epp3_val = eppack3.get_prop_ex("layout".to_string(),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL));
 
+    let mut g_epp3_val = "".to_string();
     if epp3_val.is_err() {
         println!("epp3_val Err: {:?}", epp3_val.err().unwrap());
     } else {
-        println!("epp3_val Ok: {:?}", epp3_val.ok().unwrap());
+        g_epp3_val=epp3_val.ok().unwrap().clone();
+        println!("epp3_val Ok: {:?}", &g_epp3_val.to_string());
     }
 
 /*     let mut env_prop1 = EnvProp::new_with_key("label_login".to_string());
@@ -593,7 +595,7 @@ async fn main() {
     let prop2b = Prop::new("gm".to_string(),"Germany".to_string());
     props2.join(prop2a);
     props2.join(prop2b);
-    props2.set_locale(Locale{code:"jp".to_string(),description:"Japapnese".to_string()});
+    props2.set_locale(Locale{code:"jp".to_string(),description:"Japanese".to_string()});
     props2.set_env(RunEnvironment::DEV);
 
     for (prop_key, prop_val) in &props2.props {
@@ -784,7 +786,8 @@ async fn main() {
 
         for font_size in (30..100).step_by(20) {
             //let text = "abcdef";
-            let text = &g_person.name;
+            //let text = &g_person.name;
+            let text = &g_epp3_val;
             let params = TextParams {
                 font,
                 font_size,
