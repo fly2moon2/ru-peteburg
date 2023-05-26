@@ -89,7 +89,7 @@ pub fn test_json_dyn_read() {
 
 
 pub fn test_read_json_prop_file() {  
-    let input_path = "./assets/app_properties.json";
+    let input_path = "./assets/app_properties copy.json";
 
     let mut app_props = {
         // Load the first file into a string.
@@ -102,12 +102,48 @@ pub fn test_read_json_prop_file() {
     println!("app_properties.json: {}",app_props["env_props"]["locale"].to_string());
     // Get the number of items in the object 'env_props'
     let item_cnt = app_props["env_props"]["properties"].as_array().unwrap().len();
+    //let item_cnt = app_props["env_props"]["properties"][0].as_object().unwrap().len();
 
     for index in 0..item_cnt{
-        println!("app_properties.json: {}",app_props["env_props"]["properties"][index]);
+        let mut obj = app_props["env_props"]["properties"][index].as_object().unwrap();
+
+        for (key, value) in obj.iter() {
+            println!("{}: {}", key.clone(), match *value {
+                //Value::U64(v) => format!("{} (u64)", v),
+                Value::String(ref v) => format!("{} (string)", v),
+                _ => format!("other")
+            });
+
+            //let mut obj1 = app_props["env_props"]["properties"][index][key.to_string()].as_object().unwrap();
+            let mut obj1 = app_props["env_props"]["properties"][index][key][0].as_object().unwrap();
+            for (key1, value1) in obj1.iter() {
+                let o_value1 = match *value1 {
+                    //Value::U64(v) => format!("{} (u64)", v),
+                    Value::String(ref v) => format!("{} (string)", v),
+                    _ => format!("other")
+                };
+                println!("{}: {}", key1.clone(), match *value1 {
+                    //Value::U64(v) => format!("{} (u64)", v),
+                    Value::String(ref v) => format!("{} (string)", v),
+                    _ => format!("other")
+                });
+            }
+        }
+        //println!("app_properties.json: {}",app_props["env_props"]["properties"][0].as_object().unwrap());
        // println!("app_properties.json: {}",app_props["env_props"]["properties"][index]["locale"].to_string());
     }
+
+/*     let obj = app_props["env_props"]["properties"][0].as_object().unwrap();
+
+    for (key, value) in obj.iter() {
+        println!("{}: {}", key, match *value {
+            //Value::U64(v) => format!("{} (u64)", v),
+            Value::String(ref v) => format!("{} (string)", v),
+            _ => format!("other")
+        });
+    } */
 }
+
 
 #[cfg(test)]
 mod tests {
