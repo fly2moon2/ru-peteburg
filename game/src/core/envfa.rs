@@ -84,3 +84,37 @@ pub fn test_json_dyn_read() {
     )
     .unwrap(); */
 }
+
+
+
+
+pub fn test_read_json_prop_file() {  
+    let input_path = "./assets/app_properties.json";
+
+    let mut app_props = {
+        // Load the first file into a string.
+        let app_props = std::fs::read_to_string(&input_path).unwrap();
+
+        // Parse the string into a dynamically-typed JSON structure.
+        serde_json::from_str::<Value>(&app_props).unwrap()
+    };
+
+    println!("app_properties.json: {}",app_props["env_props"]["locale"].to_string());
+    // Get the number of items in the object 'env_props'
+    let item_cnt = app_props["env_props"]["properties"].as_array().unwrap().len();
+
+    for index in 0..item_cnt{
+        println!("app_properties.json: {}",app_props["env_props"]["properties"][index]);
+       // println!("app_properties.json: {}",app_props["env_props"]["properties"][index]["locale"].to_string());
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    /// Note this useful idiom: importing names from outer (for mod tests) scope.
+    use super::*;
+    use rand::distributions::{Alphanumeric, DistString};
+    use rand::Rng;
+
+
+}

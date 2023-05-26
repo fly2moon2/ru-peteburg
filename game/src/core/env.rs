@@ -180,7 +180,7 @@ impl EnvPropPack {
     pub fn get_prop_ex(&self, a_prop_key: String, a_run_env: RunEnvironment, a_locale: Localeex, a_parent_re_stgy: Option<OnDataAvailStrategy>, a_parent_loc_stgy: Option<OnDataAvailStrategy>) -> std::result::Result<EnvPropVal,ErrorOnthefly> {
         let mut is_condition_met: bool = false;
         let mut try_cnt: i8 = 0;
-        let try_cnt_lmt = 3;
+        const TRY_CNT_LMT: i8 = 3;
 
         /// blank, means not found
         let mut o_prop_val = "".to_string();
@@ -197,7 +197,7 @@ impl EnvPropPack {
         /// * Default to Current is allowed provided that corresponding conditions are met for RunEnv & Locale strategies respectively:
         /// a. strategy is to get default; or
         /// b. strategy is to get inherit and the parent strategy is to get default
-        while o_prop_val == "".to_string() && try_cnt <= try_cnt_lmt {
+        while o_prop_val == "".to_string() && try_cnt <= TRY_CNT_LMT {
             /// check if strategy conditions are met (Try 0 - no strategy check is required)
             let mut is_condition_met = match try_cnt {
                 0 => true,
@@ -217,7 +217,7 @@ impl EnvPropPack {
                 ///
                 /// get property value, given the EnvPropKey - composite of prop key, running environment & locale
                 /// exceptional if try_cnt exceeds limit
-                if try_cnt <= try_cnt_lmt {
+                if try_cnt <= TRY_CNT_LMT {
                     match &self.key_vals.get(&a_env_prop_key) {
                         Some(a_val) => o_prop_val = a_val.clone().to_string(),
                         None => o_prop_val = "".to_string(),
@@ -781,8 +781,4 @@ mod tests {
         let t_eppack_val = test_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::ERR_ON_UNAVAIL));
         assert_eq!(t_eppack_val.err().unwrap(), ErrorOnthefly::RecordNotFound);    
     }
-
-
-
-
 }

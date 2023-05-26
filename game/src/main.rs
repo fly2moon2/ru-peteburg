@@ -613,9 +613,10 @@ async fn main() {
     //calls warper would pause to listen to localhost/hello path
     //warper();
 
-    use crate::core::envfa::{test_json_stat_read};
+    use crate::core::envfa::{test_json_stat_read,test_read_json_prop_file};
 
     test_json_stat_read(String::from("./assets/missy.json"));
+    test_read_json_prop_file();
 
     //use std::rc::Rc;
     //let mut g_person=Rc::new(Person::new("persname"));
