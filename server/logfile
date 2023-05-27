@@ -279,3 +279,7 @@
 2023-05-26 19:03:56.806 HKT [18425] LOG:  could not receive data from client: Connection reset by peer
 2023-05-26 19:18:47.026 HKT [19165] LOG:  could not receive data from client: Connection reset by peer
 2023-05-26 21:27:06.441 HKT [22252] LOG:  could not receive data from client: Connection reset by peer
+2023-05-26 21:38:53.465 HKT [10306] LOG:  received smart shutdown request
+2023-05-26 21:38:53.467 HKT [10306] LOG:  background worker "logical replication launcher" (PID 10313) exited with exit code 1
+2023-05-26 21:38:53.467 HKT [10308] LOG:  shutting down
+2023-05-26 21:38:53.477 HKT [10306] LOG:  database system is shut down

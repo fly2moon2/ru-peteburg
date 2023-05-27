@@ -15,24 +15,130 @@
 				"prod(site02)": [{
 					".": "postgres://localhost:5430/rustwebdev"
 				}],
-                "run_env_strategy": "ERR_ON_UNAVAIL"
+				"run_env_strategy": "ERR_ON_UNAVAIL"
 			}],
-	
-            "docdb_url": [{
+			"docdb_url": [{
 				"dev": [{
 					".": "mongodb://localhost:27017/"
-				}]
+				}],
+				"run_env_strategy": "ERR_ON_UNAVAIL"
 			}],
-
-            "label_username": [{
+			"label_username": [{
 				".": [{
 					".": "User Name",
 					"jp": "利用者名",
 					"ch": "用户名"
 				}]
+			}],
+			"label_password": [{
+				".": [{
+					".": "Password",
+					"jp": "暗号",
+					"ch": "密码"
+				}]
+			}],
+			"label_login": [{
+				".": [{
+					".": "Login",
+					"jp": "ログイン",
+					"ch": "登入",
+					"fr": "connexion"
+				}]
+			}],
+			"label_refresh": [{
+				".": [{
+					".": "Refresh",
+					"jp": "リフレッシュ",
+					"ch": "刷新"
+				}]
+			}],
+			"label_find": [{
+				".": [{
+					".": "Find",
+					"jp": "探索",
+					"ch": "搜寻"
+				}]
+			}],
+			"label_edit": [{
+				".": [{
+					".": "Edit",
+					"jp": "編み上げる",
+					"ch": "编辑"
+				}]
+			}],
+			"label_add": [{
+				".": [{
+					".": "Add",
+					"jp": "付ける",
+					"ch": "加入"
+				}]
+			}],
+			"label_insert": [{
+				".": [{
+					".": "Insert",
+					"jp": "入れる",
+					"ch": "插入"
+				}]
+			}],
+			"label_update": [{
+				".": [{
+					".": "Update",
+					"jp": "アップデート",
+					"ch": "更新"
+				}]
+			}],
+			"label_delete": [{
+				".": [{
+					".": "Delete",
+					"jp": "消す",
+					"ch": "删除"
+				}]
+			}],
+			"label_confirm": [{
+				".": [{
+					".": "Confirm",
+					"jp": "確たる",
+					"ch": "确认"
+				}]
+			}],
+			"label_cancel": [{
+				".": [{
+					".": "Cancel",
+					"jp": "キャンセル",
+					"ch": "取消"
+				}]
+			}],
+			"label_undo": [{
+				".": [{
+					".": "Undo",
+					"jp": "アンドゥ",
+					"ch": "撤消"
+				}]
+			}],
+			"label_reset": [{
+
+				".": [{
+					".": "Reset",
+					"jp": "組み替える",
+					"ch": "重置"
+				}]
+			}],
+			"label_save": [{
+				".": [{
+					".": "Save",
+					"jp": "保存記録",
+					"ch": "保存"
+				}]
+			}],
+			"label_exit": [{
+				".": [{
+					".": "Exit",
+					"jp": "出口",
+					"ch": "退出",
+					"fr": "sortie"
+				}]
 			}]
 
 		}]
-
 	}
 }
