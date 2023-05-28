@@ -87,24 +87,52 @@ pub fn test_json_dyn_read() {
 }
 
 
-pub fn json_to_env_prop_pack(json_obj: &Map<String, Value>) -> String {
+pub fn json_to_env_prop_pack(a_value: &Value) -> String {
     let mut o_result="".to_string();
-/*     if json_obj.is_string() {
-        let mut o_result = json_obj;
-    } else { */
-        for (key, value) in json_obj.iter() {
-/*             println!("j2e println {}: {}", key.clone(), match *value {
-                //Value::U64(v) => format!("{} (u64)", v),
-                Value::String(ref v) => format!("{} (string)", v),
-                _ => format!("other")
-            }); */
+
+    /// an array of objects
+    if a_value.is_array() {
+        let item_cnt = a_value.as_array().unwrap().len();
+
+        /// iterate the array
+        for index in 0..item_cnt{
+            let mut a_obj = a_value[index].as_object().unwrap();
+            for (key, value) in a_obj.iter() {
+                println!("sjikan, {:?}", value);
+                let mut o_result = match *value {
+                    Value::String(ref v) => v.to_string(),
+                    Value::Object(ref map)=> json_to_env_prop_pack(&Value::Object(map.clone())),
+                    _ => "".to_string(),
+                };
+            }    
+        }
+
+    } else {
+        let mut a_obj = a_value.as_object().unwrap();
+        for (key, value) in a_obj.iter() {
+            println!("sjikan, {:?}", value);
             let mut o_result = match *value {
                 Value::String(ref v) => v.to_string(),
-                Value::Object(ref map)=> json_to_env_prop_pack(map),
+                Value::Object(ref map)=> json_to_env_prop_pack(&Value::Object(map.clone())),
                 _ => "".to_string(),
             };
-        }
-    // }
+        }    
+    }
+
+/*     for (key, value) in json_obj.iter() {
+/*             println!("j2e println {}: {}", key.clone(), match *value {
+            //Value::U64(v) => format!("{} (u64)", v),
+            Value::String(ref v) => format!("{} (string)", v),
+            _ => format!("other")
+        }); */
+        println!("sjikan, {:?}", value);
+        let mut o_result = match *value {
+            Value::String(ref v) => v.to_string(),
+            Value::Object(ref map)=> json_to_env_prop_pack(map),
+            _ => "".to_string(),
+        };
+    } */
+
 
     o_result
 }
@@ -120,25 +148,27 @@ pub fn test_read_json_prop_file() {
         serde_json::from_str::<Value>(&app_props).unwrap()
     };
 
+    println!("array of objs: {}", json_to_env_prop_pack(&app_props["env_props"]["properties"]));
+
     //println!("app_properties.json: {}",app_props["env_props"]["locale"].to_string());
     // Get the number of items in the object 'env_props'
     let item_cnt = app_props["env_props"]["properties"].as_array().unwrap().len();
     //let item_cnt = app_props["env_props"]["properties"][0].as_object().unwrap().len();
 
     for index in 0..item_cnt{
-        let mut obj0 = app_props["env_props"]["properties"][index].as_object().unwrap();
+ /*        let mut obj0 = app_props["env_props"]["properties"][index].as_object().unwrap();
         for (key0, value0) in obj0.iter() {
             let mut a_map=Map::new();
             //let a_map0=value0.clone();
             //a_map.insert(key0.to_string(), a_map0);
             a_map.insert(key0.to_string(), value0.clone());
-            println!("j2e: {}", json_to_env_prop_pack(&a_map));
-        }
+            //println!("j2e: {}", json_to_env_prop_pack(&a_map));
+        } */
 
         let mut obj = app_props["env_props"]["properties"][index].as_object().unwrap();
 
         for (key, value) in obj.iter() {
-            println!("{}: {}", key.clone(), match *value {
+            println!("obj {}: {}", key.clone(), match *value {
                 //Value::U64(v) => format!("{} (u64)", v),
                 Value::String(ref v) => format!("{} (string)", v),
                 _ => format!("other")
@@ -155,7 +185,7 @@ pub fn test_read_json_prop_file() {
                 for  (k, v) in o_value1.iter() {
                     println!("key={}, value={}", k, v);
                   } */
-                println!("{}: {}", key1.clone(), match *value1 {
+                println!("obj1 {}: {}", key1.clone(), match *value1 {
                     //Value::U64(v) => format!("{} (u64)", v),
                     Value::String(ref v) => format!("{} (string)", v),
                     _ => format!("other")

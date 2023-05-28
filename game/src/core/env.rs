@@ -92,8 +92,23 @@ impl Locale {
     }
 }
 
+/* /// EnvPropCmd
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
+pub struct EnvPropCmd {
+    pub run_env: RunEnvironment,
+    pub locale: Localeex,
+    pub key_vals:HashMap<String, EnvPropPack>,
+}
 
-
+impl EnvPropCmd {
+    pub fn new() -> EnvPropCmd {
+        EnvPropCmd {
+            run_env: RunEnvironment::Current,
+            locale: Localeex::Current,
+            key_vals: HashMap::new(),
+        }
+    }
+}    */ 
 
 /// EnvPropPack
 /// one or many environment properties, by running environment & locale
@@ -107,17 +122,7 @@ pub struct EnvPropKey {
     pub locale: Localeex,
 }
 
-impl EnvPropKey {
-/*     /// vanilla new
-    ///  only key is mandatory, whereas the remaining properties are default
-    pub fn new(a_key: String) -> EnvProp {
-        EnvPropKey {
-            prop_key: a_key,
-            run_env: RunEnvironment::Current,
-            locale: Localeex::Current,
-        }
-    } */
-    
+impl EnvPropKey {    
     pub fn new_born(a_key: String, a_run_env: Option<RunEnvironment>, a_locale: Option<Localeex>) -> EnvPropKey {
         EnvPropKey {
             prop_key: a_key,
@@ -738,6 +743,20 @@ mod tests {
     use rand::Rng;
     //use iif::iif;
 
+
+/*     /// setup and return an env property cmd with testing data
+    fn test_setup_env_prop_cmd(a_epp_key: &str) -> EnvPropCmd {
+        let t_epcmd = EnvPropCmd::new();
+        let t_epp_key1 = a_epp_key.to_string();
+        let t_eppack1 = test_setup_env_prop_pack(&t_epp_key1);
+        t_epcmd.key_vals.insert(t_epp_key1, t_eppack1);
+  
+        let t_epp_key2 = "Enter".to_string();
+        let t_eppack2 = test_setup_env_prop_pack(&t_epp_key2);
+        t_epcmd.key_vals.insert(t_epp_key2, t_eppack2);
+
+        t_epcmd
+    } */
 
     /// setup and return an env property pack with testing data
     fn test_setup_env_prop_pack(a_epp_key: &str) -> EnvPropPack {
