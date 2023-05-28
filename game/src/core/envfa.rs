@@ -87,8 +87,8 @@ pub fn test_json_dyn_read() {
 }
 
 
-pub fn json_to_env_prop_pack(a_value: &Value) -> String {
-    let mut o_result="".to_string();
+pub fn json_to_env_prop_packa(a_value: &Value) -> Vec<String> {
+    let mut o_vec = Vec::new();
 
     /// an array of objects
     if a_value.is_array() {
@@ -98,24 +98,71 @@ pub fn json_to_env_prop_pack(a_value: &Value) -> String {
         for index in 0..item_cnt{
             let mut a_obj = a_value[index].as_object().unwrap();
             for (key, value) in a_obj.iter() {
-                println!("sjikan, {:?}", value);
+                //println!("sjikan, {:?}", value);
                 let mut o_result = match *value {
-                    Value::String(ref v) => v.to_string(),
-                    Value::Object(ref map)=> json_to_env_prop_pack(&Value::Object(map.clone())),
-                    _ => "".to_string(),
+                    Value::String(ref v) => vec![v.to_string()],
+                    Value::Object(ref map)=> json_to_env_prop_packa(&Value::Object(map.clone())),
+                    Value::Array(ref vec)=> json_to_env_prop_packa(&Value::Array(vec.clone())),
+                    _ => vec![],
                 };
+                o_vec.push(o_result[0].clone());
             }    
         }
 
     } else {
         let mut a_obj = a_value.as_object().unwrap();
         for (key, value) in a_obj.iter() {
-            println!("sjikan, {:?}", value);
+            //println!("sjikan, {:?}", value);
+            let mut o_result = match *value {
+                Value::String(ref v) => vec![v.to_string()],
+                Value::Object(ref map)=> json_to_env_prop_packa(&Value::Object(map.clone())),
+                Value::Array(ref vec)=> json_to_env_prop_packa(&Value::Array(vec.clone())),
+                _ => vec![],
+            };
+            o_vec.push(o_result[0].clone());
+        }    
+    }
+
+    let o_item_cnt = o_vec.len();
+    for o_idx in 0..o_item_cnt{
+        println!("o_vector: {}{:?}", o_idx.to_string(), o_vec[o_idx]);
+    }
+    o_vec
+}
+
+pub fn json_to_env_prop_pack(a_value: &Value) -> String {
+    let mut o_vec = Vec::new();
+
+    /// an array of objects
+    if a_value.is_array() {
+        let item_cnt = a_value.as_array().unwrap().len();
+
+        /// iterate the array
+        for index in 0..item_cnt{
+            let mut a_obj = a_value[index].as_object().unwrap();
+            for (key, value) in a_obj.iter() {
+                //println!("sjikan, {:?}", value);
+                let mut o_result = match *value {
+                    Value::String(ref v) => v.to_string(),
+                    Value::Object(ref map)=> json_to_env_prop_pack(&Value::Object(map.clone())),
+                    Value::Array(ref vec)=> json_to_env_prop_pack(&Value::Array(vec.clone())),
+                    _ => "".to_string(),
+                };
+                o_vec.push(o_result);
+            }    
+        }
+
+    } else {
+        let mut a_obj = a_value.as_object().unwrap();
+        for (key, value) in a_obj.iter() {
+            //println!("sjikan, {:?}", value);
             let mut o_result = match *value {
                 Value::String(ref v) => v.to_string(),
                 Value::Object(ref map)=> json_to_env_prop_pack(&Value::Object(map.clone())),
+                Value::Array(ref vec)=> json_to_env_prop_pack(&Value::Array(vec.clone())),
                 _ => "".to_string(),
             };
+            o_vec.push(o_result);
         }    
     }
 
@@ -133,7 +180,8 @@ pub fn json_to_env_prop_pack(a_value: &Value) -> String {
         };
     } */
 
-
+    println!("o_vector: {:?}", o_vec[0]);
+    let o_result=o_vec[0].to_string();
     o_result
 }
 
@@ -148,7 +196,7 @@ pub fn test_read_json_prop_file() {
         serde_json::from_str::<Value>(&app_props).unwrap()
     };
 
-    println!("array of objs: {}", json_to_env_prop_pack(&app_props["env_props"]["properties"]));
+    println!("array of objs: {:?}", json_to_env_prop_packa(&app_props["env_props"]["properties"]));
 
     //println!("app_properties.json: {}",app_props["env_props"]["locale"].to_string());
     // Get the number of items in the object 'env_props'

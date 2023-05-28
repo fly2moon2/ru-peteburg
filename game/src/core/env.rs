@@ -159,8 +159,8 @@ impl EnvPropPack {
     pub fn new_born(a_key_vals: HashMap<EnvPropKey, EnvPropVal>, a_re_stgy: Option<OnDataAvailStrategy>, a_loc_stgy: Option<OnDataAvailStrategy>) -> EnvPropPack {
         EnvPropPack {
             key_vals: a_key_vals,
-            run_env_strategy: if a_re_stgy.is_none() {OnDataAvailStrategy::INHERIT} else {a_re_stgy.unwrap()},
-            locale_strategy: if a_loc_stgy.is_none() {OnDataAvailStrategy::INHERIT} else {a_loc_stgy.unwrap()},
+            run_env_strategy: if a_re_stgy.is_none() {OnDataAvailStrategy::Inherit} else {a_re_stgy.unwrap()},
+            locale_strategy: if a_loc_stgy.is_none() {OnDataAvailStrategy::Inherit} else {a_loc_stgy.unwrap()},
         }
     }
 
@@ -206,9 +206,9 @@ impl EnvPropPack {
             /// check if strategy conditions are met (Try 0 - no strategy check is required)
             let mut is_condition_met = match try_cnt {
                 0 => true,
-                1 => (self.run_env_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.run_env_strategy==OnDataAvailStrategy::INHERIT && a_parent_re_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))),
-                2 => (self.run_env_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.run_env_strategy==OnDataAvailStrategy::INHERIT && a_parent_re_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))) && (self.locale_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.locale_strategy==OnDataAvailStrategy::INHERIT && a_parent_loc_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))),
-                3 => (self.locale_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.locale_strategy==OnDataAvailStrategy::INHERIT && a_parent_loc_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))),
+                1 => (self.run_env_strategy==OnDataAvailStrategy::DefaultOnUnavail || (self.run_env_strategy==OnDataAvailStrategy::Inherit && a_parent_re_stgy==Some(OnDataAvailStrategy::DefaultOnUnavail))),
+                2 => (self.run_env_strategy==OnDataAvailStrategy::DefaultOnUnavail || (self.run_env_strategy==OnDataAvailStrategy::Inherit && a_parent_re_stgy==Some(OnDataAvailStrategy::DefaultOnUnavail))) && (self.locale_strategy==OnDataAvailStrategy::DefaultOnUnavail || (self.locale_strategy==OnDataAvailStrategy::Inherit && a_parent_loc_stgy==Some(OnDataAvailStrategy::DefaultOnUnavail))),
+                3 => (self.locale_strategy==OnDataAvailStrategy::DefaultOnUnavail || (self.locale_strategy==OnDataAvailStrategy::Inherit && a_parent_loc_stgy==Some(OnDataAvailStrategy::DefaultOnUnavail))),
                 _ => false,
             };
             if o_prop_val == "".to_string() && is_condition_met {
@@ -248,7 +248,7 @@ impl EnvPropPack {
         /// a. strategy is to get default; or
         /// b. strategy is to get inherit and the parent strategy is to get default
         if o_prop_val == "".to_string() {
-            if (self.run_env_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.run_env_strategy==OnDataAvailStrategy::INHERIT && a_parent_re_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))) {
+            if (self.run_env_strategy==OnDataAvailStrategy::DefaultOnUnavail || (self.run_env_strategy==OnDataAvailStrategy::Inherit && a_parent_re_stgy==Some(OnDataAvailStrategy::DefaultOnUnavail))) {
                 let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(RunEnvironment::Current), Some(a_locale));
                 match &self.key_vals.get(&a_env_prop_key) {
                     Some(a_val) => o_prop_val = a_val.clone().to_string(),
@@ -260,7 +260,7 @@ impl EnvPropPack {
                 /// next try with current locale as well
                 /// provided that both the runenv both locale strategies get to default
                 if o_prop_val == "".to_string() {
-                    if (self.locale_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.locale_strategy==OnDataAvailStrategy::INHERIT && a_parent_loc_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))) {
+                    if (self.locale_strategy==OnDataAvailStrategy::DefaultOnUnavail || (self.locale_strategy==OnDataAvailStrategy::Inherit && a_parent_loc_stgy==Some(OnDataAvailStrategy::DefaultOnUnavail))) {
                         let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(RunEnvironment::Current), Some(Localeex::Current));
                         match &self.key_vals.get(&a_env_prop_key) {
                             Some(a_val) => o_prop_val = a_val.clone().to_string(),
@@ -276,7 +276,7 @@ impl EnvPropPack {
         /// if still not found, try getting from current locale, but with the given runenv 
         /// provided that the locale strategy get to default
         if o_prop_val == "".to_string() {
-            if (self.locale_strategy==OnDataAvailStrategy::DEFAULT_ON_UNAVAIL || (self.locale_strategy==OnDataAvailStrategy::INHERIT && a_parent_loc_stgy==Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL))) {
+            if (self.locale_strategy==OnDataAvailStrategy::DefaultOnUnavail || (self.locale_strategy==OnDataAvailStrategy::Inherit && a_parent_loc_stgy==Some(OnDataAvailStrategy::DefaultOnUnavail))) {
                 let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env), Some(Localeex::Current));
                 match &self.key_vals.get(&a_env_prop_key) {
                     Some(a_val) => o_prop_val = a_val.clone().to_string(),
@@ -332,8 +332,8 @@ impl EnvPropSet {
         EnvPropSet {
             run_env: a_run_env,
             default_locale: Localeex::Current,
-            run_env_strategy: OnDataAvailStrategy::DEFAULT_ON_UNAVAIL,
-            locale_strategy: OnDataAvailStrategy::DEFAULT_ON_UNAVAIL,
+            run_env_strategy: OnDataAvailStrategy::DefaultOnUnavail,
+            locale_strategy: OnDataAvailStrategy::DefaultOnUnavail,
             env_props: HashMap::new(),
         }
     }
@@ -379,8 +379,8 @@ impl EnvPropSet {
             //Some(prop_val) => println!("{prop_key}: {prop_val}"),
             Some(o_env_prop) => Some(EnvProp::new(a_env_prop_key.to_string(), prop_val.to_string())),
 /*             key: a_key,
-            run_env_strategy:OnDataAvailStrategy::INHERIT,
-            locale_strategy:OnDataAvailStrategy::INHERIT,
+            run_env_strategy:OnDataAvailStrategy::Inherit,
+            locale_strategy:OnDataAvailStrategy::Inherit,
             locale_props: HashMap::new(), */
             //None => println!("{prop_key} is not found.")
             None => None,
@@ -761,7 +761,7 @@ mod tests {
     /// setup and return an env property pack with testing data
     fn test_setup_env_prop_pack(a_epp_key: &str) -> EnvPropPack {
         let t_epp_key = a_epp_key.to_string();
-        let mut t_eppack = EnvPropPack::new_born_ex(t_epp_key.clone(), RunEnvironment::DEV, Localeex::Chinese, "退出".to_string(), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::INHERIT));
+        let mut t_eppack = EnvPropPack::new_born_ex(t_epp_key.clone(), RunEnvironment::DEV, Localeex::Chinese, "退出".to_string(), Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::Inherit));
         t_eppack.key_vals.insert(EnvPropKey::new_born(t_epp_key.clone(), Some(RunEnvironment::Current), Some(Localeex::Current)),"Quit".to_string());
         t_eppack.key_vals.insert(EnvPropKey::new_born(t_epp_key.clone(), Some(RunEnvironment::PROD("DR server1".to_string())), Some(Localeex::Japanese)),"やめる".to_string());
 
@@ -773,7 +773,7 @@ mod tests {
     fn test_get_env_prop_exact_ok() {  
         /// property key for testing is randomly generated value of a random len between 1 to 100
         let t_epp_key = Alphanumeric.sample_string(&mut rand::thread_rng(), rand::thread_rng().gen_range(1..100));
-        let t_eppack_val = test_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::PROD("DR server1".to_string()), Localeex::Japanese, Some(OnDataAvailStrategy::ERR_ON_UNAVAIL), Some(OnDataAvailStrategy::ERR_ON_UNAVAIL));
+        let t_eppack_val = test_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::PROD("DR server1".to_string()), Localeex::Japanese, Some(OnDataAvailStrategy::ErrOnUnavil), Some(OnDataAvailStrategy::ErrOnUnavil));
         assert_eq!(t_eppack_val.ok().unwrap(), "やめる".to_string());    
     }
 
@@ -781,7 +781,7 @@ mod tests {
     #[test]
     fn test_get_env_prop_exact_err() {  
         let t_epp_key = "quit".to_string();
-        let t_eppack_val = test_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::Japanese, Some(OnDataAvailStrategy::ERR_ON_UNAVAIL), Some(OnDataAvailStrategy::ERR_ON_UNAVAIL));
+        let t_eppack_val = test_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::Japanese, Some(OnDataAvailStrategy::ErrOnUnavil), Some(OnDataAvailStrategy::ErrOnUnavil));
         assert_eq!(t_eppack_val.err().unwrap(), ErrorOnthefly::RecordNotFound);    
     }
 
@@ -789,7 +789,7 @@ mod tests {
     #[test]
     fn test_get_env_prop_inherit_cur_ok() {  
         let t_epp_key = "quit".to_string();
-        let t_eppack_val = test_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL));
+        let t_eppack_val = test_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::DefaultOnUnavail));
         assert_eq!(t_eppack_val.ok().unwrap(), "Quit".to_string());    
     }
 
@@ -797,7 +797,7 @@ mod tests {
     #[test]
     fn test_get_env_prop_inherit_cur_err() {  
         let t_epp_key = "quit".to_string();
-        let t_eppack_val = test_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DEFAULT_ON_UNAVAIL), Some(OnDataAvailStrategy::ERR_ON_UNAVAIL));
+        let t_eppack_val = test_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::ErrOnUnavil));
         assert_eq!(t_eppack_val.err().unwrap(), ErrorOnthefly::RecordNotFound);    
     }
 }

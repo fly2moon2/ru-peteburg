@@ -2,8 +2,8 @@
 	"env_props": {
 		"run_env": "DEV",
 		"locale": "EN",
-		"run_env_strategy": "DEFAULT_ON_UNAVAIL",
-		"locale_strategy": "DEFAULT_ON_UNAVAIL",
+		"run_env_strategy": "DefaultOnUnavail",
+		"locale_strategy": "DefaultOnUnavail",
 		"properties": [{
 			"db_url": [{
 				"dev": [{
@@ -15,13 +15,13 @@
 				"prod(site02)": [{
 					".": "postgres://localhost:5430/rustwebdev"
 				}],
-				"run_env_strategy": "ERR_ON_UNAVAIL"
+				"run_env_strategy": "ErrOnUnavil"
 			}],
 			"docdb_url": [{
 				"dev": [{
 					".": "mongodb://localhost:27017/"
 				}],
-				"run_env_strategy": "ERR_ON_UNAVAIL"
+				"run_env_strategy": "ErrOnUnavil"
 			}],
 			"label_username": [{
 				".": [{

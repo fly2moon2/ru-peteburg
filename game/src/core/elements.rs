@@ -70,16 +70,16 @@ pub enum Relationship {
 
 /// OnDataAvailStrategy:
 /// strategy when specific data/value is found/available vs. not found/unavailable
-/// e.g. used in (EnvProp) app_properties.json (INHERIT from upper level if not defined)
-/// DEFAULT_ON_UNAVAIL -  fall Back to the default when no match is found,
-/// ERR_ON_UNAVAIL - matched value is required; error/exception when no match is found, 
-/// INHERIT      - not to define strategy at this level; INHERIT strategy from upper level instead 
+/// e.g. used in (EnvProp) app_properties.json (Inherit from upper level if not defined)
+/// DefaultOnUnavail -  fall Back to the default when no match is found,
+/// ErrOnUnavil - matched value is required; error/exception when no match is found, 
+/// Inherit      - not to define strategy at this level; Inherit strategy from upper level instead 
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub enum OnDataAvailStrategy {
-    INHERIT,
-    SILENT_ON_UNAVIL,
-    DEFAULT_ON_UNAVAIL,
-    ERR_ON_UNAVAIL,
+    Inherit,
+    SilentOnUnavil,
+    DefaultOnUnavail,
+    ErrOnUnavil,
 }
 
 /// ErrorOnthefly - 
