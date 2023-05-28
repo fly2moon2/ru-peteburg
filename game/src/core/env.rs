@@ -112,19 +112,35 @@ impl EnvPropCmd {
 
 /// EnvPropPack
 /// one or many environment properties, by running environment & locale
+/* #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
+pub struct EnvPropVal (String); */
 
 /// EnvPropKey
-/// compound key of an environment property
+/// upper case of value for comparison 
+/* #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
+pub struct EnvPropKey(String); */
+type EnvPropKey=String;
+
+/* impl PartialEq for EnvPropKey {
+    fn eq(&self, other: &Self) -> bool {
+        self.to_uppercase() == other.to_uppercase
+    }
+} */
+
+type EnvPropVal=String;
+
+/// EnvPropCKey
+/// composite/compound key of an environment property
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
-pub struct EnvPropKey {
-    pub prop_key: String,
+pub struct EnvPropCKey {
+    pub prop_key: EnvPropKey,
     pub run_env: RunEnvironment,
     pub locale: Localeex,
 }
 
-impl EnvPropKey {    
-    pub fn new_born(a_key: String, a_run_env: Option<RunEnvironment>, a_locale: Option<Localeex>) -> EnvPropKey {
-        EnvPropKey {
+impl EnvPropCKey {    
+    pub fn new_born(a_key: EnvPropKey, a_run_env: Option<RunEnvironment>, a_locale: Option<Localeex>) -> EnvPropCKey {
+        EnvPropCKey {
             prop_key: a_key,
             run_env: if a_run_env.is_none() {RunEnvironment::Current} else {a_run_env.unwrap()},
             locale: if a_locale.is_none() {Localeex::Current} else {a_locale.unwrap()},
@@ -132,31 +148,27 @@ impl EnvPropKey {
     }
 }
 
-/* #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
-pub struct EnvPropVal (String); */
 
-// type alias
-type EnvPropVal=String;
 
 //#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct EnvPropPack {
-    pub key_vals:HashMap<EnvPropKey, EnvPropVal>,
+    pub key_vals:HashMap<EnvPropCKey, EnvPropVal>,
     pub run_env_strategy:OnDataAvailStrategy,
     pub locale_strategy:OnDataAvailStrategy,
 }
 
 impl EnvPropPack {
     // EXpress version of new_born
-    // each element of EnvPropKey and EnvPropVal is laid down and inserted into key_vals at one go
-    pub fn new_born_ex(a_prop_key: String, a_run_env: RunEnvironment, a_locale: Localeex, a_prop_val: EnvPropVal, a_re_stgy: Option<OnDataAvailStrategy>, a_loc_stgy: Option<OnDataAvailStrategy>) -> EnvPropPack {
-        let epkey1 = EnvPropKey::new_born(a_prop_key, Some(a_run_env), Some(a_locale));
+    // each element of EnvPropCKey and EnvPropVal is laid down and inserted into key_vals at one go
+    pub fn new_born_ex(a_prop_key: EnvPropKey, a_run_env: RunEnvironment, a_locale: Localeex, a_prop_val: EnvPropVal, a_re_stgy: Option<OnDataAvailStrategy>, a_loc_stgy: Option<OnDataAvailStrategy>) -> EnvPropPack {
+        let epkey1 = EnvPropCKey::new_born(a_prop_key, Some(a_run_env), Some(a_locale));
         let mut epkv1=HashMap::new();
         epkv1.insert(epkey1,a_prop_val);
         EnvPropPack::new_born(epkv1, a_re_stgy, a_loc_stgy)
     }
 
-    pub fn new_born(a_key_vals: HashMap<EnvPropKey, EnvPropVal>, a_re_stgy: Option<OnDataAvailStrategy>, a_loc_stgy: Option<OnDataAvailStrategy>) -> EnvPropPack {
+    pub fn new_born(a_key_vals: HashMap<EnvPropCKey, EnvPropVal>, a_re_stgy: Option<OnDataAvailStrategy>, a_loc_stgy: Option<OnDataAvailStrategy>) -> EnvPropPack {
         EnvPropPack {
             key_vals: a_key_vals,
             run_env_strategy: if a_re_stgy.is_none() {OnDataAvailStrategy::Inherit} else {a_re_stgy.unwrap()},
@@ -165,8 +177,8 @@ impl EnvPropPack {
     }
 
     // returns a Property when a matching key is found
-    pub fn get_prop(&self, a_key: EnvPropKey) {
-    //pub fn get_val(&self, a_key: EnvPropKey) -> Option<EnvPropVal> {
+    pub fn get_prop(&self, a_key: EnvPropCKey) {
+    //pub fn get_val(&self, a_key: EnvPropCKey) -> Option<EnvPropVal> {
         match &self.key_vals.get(&a_key) {
             Some(a_val) => println!("{:?}: {a_val}",a_key.prop_key),
             //Some(a_val) => Some(a_val),
@@ -176,13 +188,13 @@ impl EnvPropPack {
     }
 
     /// get property value with individual elements, 
-    /// i.e. not single unit of EnvPropKey but individual field of the composite key
+    /// i.e. not single unit of EnvPropCKey but individual field of the composite key
     /// - a_prop_key: property key to find
     /// - a_run_env: running environment to find; likely the current running environment of the app
     /// - a_locale: locale to find; likely the current locale of the app
     /// output:
     /// - o_prop_val (EnvPropVal) or ErrorOnthefly
-    pub fn get_prop_ex(&self, a_prop_key: String, a_run_env: RunEnvironment, a_locale: Localeex, a_parent_re_stgy: Option<OnDataAvailStrategy>, a_parent_loc_stgy: Option<OnDataAvailStrategy>) -> std::result::Result<EnvPropVal,ErrorOnthefly> {
+    pub fn get_prop_ex(&self, a_prop_key: EnvPropKey, a_run_env: RunEnvironment, a_locale: Localeex, a_parent_re_stgy: Option<OnDataAvailStrategy>, a_parent_loc_stgy: Option<OnDataAvailStrategy>) -> std::result::Result<EnvPropVal,ErrorOnthefly> {
         let mut is_condition_met: bool = false;
         let mut try_cnt: i8 = 0;
         const TRY_CNT_LMT: i8 = 3;
@@ -213,14 +225,14 @@ impl EnvPropPack {
             };
             if o_prop_val == "".to_string() && is_condition_met {
                 let mut a_env_prop_key = match try_cnt {
-                    0 => EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env.clone()), Some(a_locale.clone())),
-                    1 => EnvPropKey::new_born(a_prop_key.clone(), Some(RunEnvironment::Current), Some(a_locale.clone())),
-                    2 => EnvPropKey::new_born(a_prop_key.clone(), Some(RunEnvironment::Current), Some(Localeex::Current)),
-                    3 => EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env.clone()), Some(Localeex::Current)),
-                    _ => EnvPropKey::new_born(a_prop_key.clone(), None, None),
+                    0 => EnvPropCKey::new_born(a_prop_key.clone(), Some(a_run_env.clone()), Some(a_locale.clone())),
+                    1 => EnvPropCKey::new_born(a_prop_key.clone(), Some(RunEnvironment::Current), Some(a_locale.clone())),
+                    2 => EnvPropCKey::new_born(a_prop_key.clone(), Some(RunEnvironment::Current), Some(Localeex::Current)),
+                    3 => EnvPropCKey::new_born(a_prop_key.clone(), Some(a_run_env.clone()), Some(Localeex::Current)),
+                    _ => EnvPropCKey::new_born(a_prop_key.clone(), None, None),
                 };
                 ///
-                /// get property value, given the EnvPropKey - composite of prop key, running environment & locale
+                /// get property value, given the EnvPropCKey - composite of prop key, running environment & locale
                 /// exceptional if try_cnt exceeds limit
                 if try_cnt <= TRY_CNT_LMT {
                     match &self.key_vals.get(&a_env_prop_key) {
@@ -232,7 +244,7 @@ impl EnvPropPack {
             try_cnt = try_cnt + 1;
         }
 
-/*         let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env.clone()), Some(a_locale.clone()));
+/*         let mut a_env_prop_key = EnvPropCKey::new_born(a_prop_key.clone(), Some(a_run_env.clone()), Some(a_locale.clone()));
 
         let mut o_prop_val = "".to_string();
 
@@ -249,7 +261,7 @@ impl EnvPropPack {
         /// b. strategy is to get inherit and the parent strategy is to get default
         if o_prop_val == "".to_string() {
             if (self.run_env_strategy==OnDataAvailStrategy::DefaultOnUnavail || (self.run_env_strategy==OnDataAvailStrategy::Inherit && a_parent_re_stgy==Some(OnDataAvailStrategy::DefaultOnUnavail))) {
-                let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(RunEnvironment::Current), Some(a_locale));
+                let mut a_env_prop_key = EnvPropCKey::new_born(a_prop_key.clone(), Some(RunEnvironment::Current), Some(a_locale));
                 match &self.key_vals.get(&a_env_prop_key) {
                     Some(a_val) => o_prop_val = a_val.clone().to_string(),
                     None => o_prop_val = "".to_string(),
@@ -261,7 +273,7 @@ impl EnvPropPack {
                 /// provided that both the runenv both locale strategies get to default
                 if o_prop_val == "".to_string() {
                     if (self.locale_strategy==OnDataAvailStrategy::DefaultOnUnavail || (self.locale_strategy==OnDataAvailStrategy::Inherit && a_parent_loc_stgy==Some(OnDataAvailStrategy::DefaultOnUnavail))) {
-                        let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(RunEnvironment::Current), Some(Localeex::Current));
+                        let mut a_env_prop_key = EnvPropCKey::new_born(a_prop_key.clone(), Some(RunEnvironment::Current), Some(Localeex::Current));
                         match &self.key_vals.get(&a_env_prop_key) {
                             Some(a_val) => o_prop_val = a_val.clone().to_string(),
                             None => o_prop_val = "".to_string(),
@@ -277,7 +289,7 @@ impl EnvPropPack {
         /// provided that the locale strategy get to default
         if o_prop_val == "".to_string() {
             if (self.locale_strategy==OnDataAvailStrategy::DefaultOnUnavail || (self.locale_strategy==OnDataAvailStrategy::Inherit && a_parent_loc_stgy==Some(OnDataAvailStrategy::DefaultOnUnavail))) {
-                let mut a_env_prop_key = EnvPropKey::new_born(a_prop_key.clone(), Some(a_run_env), Some(Localeex::Current));
+                let mut a_env_prop_key = EnvPropCKey::new_born(a_prop_key.clone(), Some(a_run_env), Some(Localeex::Current));
                 match &self.key_vals.get(&a_env_prop_key) {
                     Some(a_val) => o_prop_val = a_val.clone().to_string(),
                     None => o_prop_val = "".to_string(),
@@ -322,7 +334,7 @@ pub struct EnvPropSet {
     pub locale_strategy:OnDataAvailStrategy,
     /// key (property key of EnvProp) is string to facilitate record searching, 
     /// followed by the whole EnvProp object
-    pub env_props:HashMap<EnvPropKey, EnvProp>,
+    pub env_props:HashMap<EnvPropCKey, EnvProp>,
 }
 
 impl EnvPropSet {
@@ -762,10 +774,18 @@ mod tests {
     fn test_setup_env_prop_pack(a_epp_key: &str) -> EnvPropPack {
         let t_epp_key = a_epp_key.to_string();
         let mut t_eppack = EnvPropPack::new_born_ex(t_epp_key.clone(), RunEnvironment::DEV, Localeex::Chinese, "退出".to_string(), Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::Inherit));
-        t_eppack.key_vals.insert(EnvPropKey::new_born(t_epp_key.clone(), Some(RunEnvironment::Current), Some(Localeex::Current)),"Quit".to_string());
-        t_eppack.key_vals.insert(EnvPropKey::new_born(t_epp_key.clone(), Some(RunEnvironment::PROD("DR server1".to_string())), Some(Localeex::Japanese)),"やめる".to_string());
+        t_eppack.key_vals.insert(EnvPropCKey::new_born(t_epp_key.clone(), Some(RunEnvironment::Current), Some(Localeex::Current)),"Quit".to_string());
+        t_eppack.key_vals.insert(EnvPropCKey::new_born(t_epp_key.clone(), Some(RunEnvironment::PROD("DR server1".to_string())), Some(Localeex::Japanese)),"やめる".to_string());
 
         t_eppack 
+    }
+
+    #[test]
+    fn test_comp_env_prop_key() {  
+        let epk1: EnvPropKey = "en".to_string();
+        let epk2: EnvPropKey = "EN".to_string();
+        
+        assert_eq!(epk1, epk2);    
     }
 
     /// ok for exact match of key, run env & locale
