@@ -115,18 +115,19 @@ impl EnvPropCmd {
 /* #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub struct EnvPropVal (String); */
 
-/// EnvPropKey
-/// upper case of value for comparison 
-/* #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
-pub struct EnvPropKey(String); */
-type EnvPropKey=String;
+/// EnvPropKey (new type idiom, instead of type alias)
+/// comparison case-insensitive, trim-applied 
+#[derive(Debug, Clone, Hash,  Eq, Serialize, Deserialize)]
+pub struct EnvPropKey(pub String);
 
-/* impl PartialEq for EnvPropKey {
+impl PartialEq for EnvPropKey {
     fn eq(&self, other: &Self) -> bool {
-        self.to_uppercase() == other.to_uppercase
+        // self.0 - takes the first & only one property of the struct
+        self.0.to_uppercase().trim() == other.0.to_uppercase().trim()
     }
-} */
+}
 
+/// type alias. 
 type EnvPropVal=String;
 
 /// EnvPropCKey
@@ -755,6 +756,18 @@ mod tests {
     use rand::Rng;
     //use iif::iif;
 
+    /// test comparison of EnvPropCKey - composite key
+    /// expected: case insensitive and trim applied
+    #[test]
+    fn test_comp_env_prop_ckey() {  
+        let epk1: EnvPropKey = EnvPropKey("  en  ".to_string());
+        let epck1 = EnvPropCKey::new_born(epk1, Some(RunEnvironment::UAT), Some(Localeex::Current));
+
+        let epk2: EnvPropKey = EnvPropKey("EN".to_string());
+        let epck2 = EnvPropCKey::new_born(epk2, Some(RunEnvironment::UAT), Some(Localeex::Current));
+        
+        assert_eq!(epck1, epck2);    
+    }
 
 /*     /// setup and return an env property cmd with testing data
     fn test_setup_env_prop_cmd(a_epp_key: &str) -> EnvPropCmd {
@@ -771,8 +784,8 @@ mod tests {
     } */
 
     /// setup and return an env property pack with testing data
-    fn test_setup_env_prop_pack(a_epp_key: &str) -> EnvPropPack {
-        let t_epp_key = a_epp_key.to_string();
+    fn test_setup_env_prop_pack(a_epp_key: &EnvPropKey) -> EnvPropPack {
+        let t_epp_key = a_epp_key;
         let mut t_eppack = EnvPropPack::new_born_ex(t_epp_key.clone(), RunEnvironment::DEV, Localeex::Chinese, "退出".to_string(), Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::Inherit));
         t_eppack.key_vals.insert(EnvPropCKey::new_born(t_epp_key.clone(), Some(RunEnvironment::Current), Some(Localeex::Current)),"Quit".to_string());
         t_eppack.key_vals.insert(EnvPropCKey::new_born(t_epp_key.clone(), Some(RunEnvironment::PROD("DR server1".to_string())), Some(Localeex::Japanese)),"やめる".to_string());
@@ -780,19 +793,11 @@ mod tests {
         t_eppack 
     }
 
-    #[test]
-    fn test_comp_env_prop_key() {  
-        let epk1: EnvPropKey = "en".to_string();
-        let epk2: EnvPropKey = "EN".to_string();
-        
-        assert_eq!(epk1, epk2);    
-    }
-
     /// ok for exact match of key, run env & locale
     #[test]
     fn test_get_env_prop_exact_ok() {  
         /// property key for testing is randomly generated value of a random len between 1 to 100
-        let t_epp_key = Alphanumeric.sample_string(&mut rand::thread_rng(), rand::thread_rng().gen_range(1..100));
+        let t_epp_key = EnvPropKey(Alphanumeric.sample_string(&mut rand::thread_rng(), rand::thread_rng().gen_range(1..100)));
         let t_eppack_val = test_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::PROD("DR server1".to_string()), Localeex::Japanese, Some(OnDataAvailStrategy::ErrOnUnavil), Some(OnDataAvailStrategy::ErrOnUnavil));
         assert_eq!(t_eppack_val.ok().unwrap(), "やめる".to_string());    
     }
@@ -800,7 +805,7 @@ mod tests {
     /// error for exact match of key, run env & locale
     #[test]
     fn test_get_env_prop_exact_err() {  
-        let t_epp_key = "quit".to_string();
+        let t_epp_key = EnvPropKey("quit".to_string());
         let t_eppack_val = test_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::Japanese, Some(OnDataAvailStrategy::ErrOnUnavil), Some(OnDataAvailStrategy::ErrOnUnavil));
         assert_eq!(t_eppack_val.err().unwrap(), ErrorOnthefly::RecordNotFound);    
     }
@@ -808,7 +813,7 @@ mod tests {
     /// ok inherit parent/up-one-level locale strategy that defaults to get the current locale when given locale is not found
     #[test]
     fn test_get_env_prop_inherit_cur_ok() {  
-        let t_epp_key = "quit".to_string();
+        let t_epp_key = EnvPropKey("quit".to_string());
         let t_eppack_val = test_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::DefaultOnUnavail));
         assert_eq!(t_eppack_val.ok().unwrap(), "Quit".to_string());    
     }
@@ -816,7 +821,7 @@ mod tests {
     /// error inherit parent/up-one-level locale strategy that returns error when given locale is not found
     #[test]
     fn test_get_env_prop_inherit_cur_err() {  
-        let t_epp_key = "quit".to_string();
+        let t_epp_key = EnvPropKey("quit".to_string());
         let t_eppack_val = test_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::ErrOnUnavil));
         assert_eq!(t_eppack_val.err().unwrap(), ErrorOnthefly::RecordNotFound);    
     }

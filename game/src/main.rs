@@ -511,10 +511,10 @@ async fn main() {
     } */
 
 
-    use crate::core::env::{Locale, Localeex, RunEnvironment, Prop, PropSet, EnvPropCKey, EnvPropPack};
+    use crate::core::env::{Locale, Localeex, RunEnvironment, Prop, PropSet, EnvPropKey, EnvPropCKey, EnvPropPack};
     use crate::core::elements::{OnDataAvailStrategy};
 
-    let env_prop_key1 = EnvPropCKey::new_born("EnvPropPack theme".to_string(), None, None);
+    let env_prop_key1 = EnvPropCKey::new_born(EnvPropKey("EnvPropPack theme".to_string()), None, None);
 
     let mut epp1_kv=HashMap::new();
 
@@ -524,10 +524,10 @@ async fn main() {
     env_prop_pack1.get_prop(env_prop_key1);
 
     let mut epp2_kv=HashMap::new();
-    let env_prop_key2 = EnvPropCKey::new_born("city".to_string(), Some(RunEnvironment::DEV), Some(Localeex::Current));
-    let env_prop_key2a = EnvPropCKey::new_born("city".to_string(), Some(RunEnvironment::DEV), Some(Localeex::Chinese));
-    let env_prop_key2b = EnvPropCKey::new_born("city".to_string(), Some(RunEnvironment::DEV), Some(Localeex::Japanese));
-    let env_prop_key2c = EnvPropCKey::new_born("city".to_string(), Some(RunEnvironment::DEV), Some(Localeex::English));
+    let env_prop_key2 = EnvPropCKey::new_born(EnvPropKey("city".to_string()), Some(RunEnvironment::DEV), Some(Localeex::Current));
+    let env_prop_key2a = EnvPropCKey::new_born(EnvPropKey("city".to_string()), Some(RunEnvironment::DEV), Some(Localeex::Chinese));
+    let env_prop_key2b = EnvPropCKey::new_born(EnvPropKey("city".to_string()), Some(RunEnvironment::DEV), Some(Localeex::Japanese));
+    let env_prop_key2c = EnvPropCKey::new_born(EnvPropKey("city".to_string()), Some(RunEnvironment::DEV), Some(Localeex::English));
 
     epp2_kv.insert(env_prop_key2.clone(),"city of angels".to_string());
     epp2_kv.insert(env_prop_key2a.clone(),"天使之城".to_string());
@@ -535,13 +535,13 @@ async fn main() {
     epp2_kv.insert(env_prop_key2c.clone(),"EN city of angels EN".to_string());
     let env_prop_pack2 = EnvPropPack::new_born(epp2_kv, Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::DefaultOnUnavail));
 
-    let epp2_val = env_prop_pack2.get_prop_ex("city".to_string(),RunEnvironment::DEV, Localeex::Italian, None, None).unwrap();
+    let epp2_val = env_prop_pack2.get_prop_ex(EnvPropKey("city".to_string()),RunEnvironment::DEV, Localeex::Italian, None, None).unwrap();
 
     println!("epp2_val: {:?}", epp2_val);
 
-    let mut eppack3 = EnvPropPack::new_born_ex("layout".to_string(), RunEnvironment::DEV, Localeex::German, "German layout".to_string(), Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::Inherit));
-    eppack3.key_vals.insert(EnvPropCKey::new_born("layout".to_string(), Some(RunEnvironment::Current), Some(Localeex::Current)),"Current layout".to_string());
-    let epp3_val = eppack3.get_prop_ex("layout".to_string(),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::DefaultOnUnavail));
+    let mut eppack3 = EnvPropPack::new_born_ex(EnvPropKey("layout".to_string()), RunEnvironment::DEV, Localeex::German, "German layout".to_string(), Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::Inherit));
+    eppack3.key_vals.insert(EnvPropCKey::new_born(EnvPropKey("layout".to_string()), Some(RunEnvironment::Current), Some(Localeex::Current)),"Current layout".to_string());
+    let epp3_val = eppack3.get_prop_ex(EnvPropKey("layout".to_string()),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::DefaultOnUnavail));
 
     let mut g_epp3_val = "".to_string();
     if epp3_val.is_err() {
