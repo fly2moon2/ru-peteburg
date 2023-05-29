@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::{Result, Value};
 use crate::core::elements::{GeneralSymbol, OnDataAvailStrategy, ErrorOnthefly};
+use std::hash::{Hash, Hasher};
 
 // ========================================================================
 // HashMap example
@@ -92,12 +93,18 @@ impl Locale {
     }
 }
 
-/* /// EnvPropCmd
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
+/// EnvPropCmd
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct EnvPropCmd {
     pub run_env: RunEnvironment,
     pub locale: Localeex,
     pub key_vals:HashMap<String, EnvPropPack>,
+}
+
+impl Hash for EnvPropCmd {
+    fn hash<H: Hasher>(&self, hasher: &mut H) {
+        self.locale.hash(hasher);
+    }
 }
 
 impl EnvPropCmd {
@@ -108,7 +115,7 @@ impl EnvPropCmd {
             key_vals: HashMap::new(),
         }
     }
-}    */ 
+} 
 
 /// EnvPropPack
 /// one or many environment properties, by running environment & locale
@@ -139,6 +146,7 @@ pub struct EnvPropCKey {
     pub locale: Localeex,
 }
 
+
 impl EnvPropCKey {    
     pub fn new_born(a_key: EnvPropKey, a_run_env: Option<RunEnvironment>, a_locale: Option<Localeex>) -> EnvPropCKey {
         EnvPropCKey {
@@ -157,6 +165,13 @@ pub struct EnvPropPack {
     pub key_vals:HashMap<EnvPropCKey, EnvPropVal>,
     pub run_env_strategy:OnDataAvailStrategy,
     pub locale_strategy:OnDataAvailStrategy,
+}
+
+
+impl Hash for EnvPropPack {
+    fn hash<H: Hasher>(&self, hasher: &mut H) {
+        self.locale_strategy.hash(hasher);
+    }
 }
 
 impl EnvPropPack {
