@@ -96,9 +96,11 @@ impl Locale {
 /// EnvPropCmd
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct EnvPropCmd {
+    pub key_vals:HashMap<EnvPropKey, EnvPropPack>,
     pub run_env: RunEnvironment,
     pub locale: Localeex,
-    pub key_vals:HashMap<String, EnvPropPack>,
+    pub run_env_strategy: OnDataAvailStrategy,
+    pub locale_strategy: OnDataAvailStrategy,
 }
 
 impl Hash for EnvPropCmd {
@@ -110,11 +112,34 @@ impl Hash for EnvPropCmd {
 impl EnvPropCmd {
     pub fn new() -> EnvPropCmd {
         EnvPropCmd {
+            key_vals: HashMap::new(),
             run_env: RunEnvironment::Current,
             locale: Localeex::Current,
-            key_vals: HashMap::new(),
+            run_env_strategy:OnDataAvailStrategy::Inherit,
+            locale_strategy:OnDataAvailStrategy::Inherit,
         }
     }
+
+    pub fn new_born(a_run_env: RunEnvironment, a_locale: Localeex, a_key_vals: Option<HashMap<EnvPropKey, EnvPropPack>>, a_re_stgy: Option<OnDataAvailStrategy>, a_loc_stgy: Option<OnDataAvailStrategy>) -> EnvPropCmd {
+        EnvPropCmd {
+            run_env: a_run_env,
+            locale: a_locale,
+            key_vals: if a_key_vals.is_none() {HashMap::new()} else {a_key_vals.unwrap()},
+            run_env_strategy: if a_re_stgy.is_none() {OnDataAvailStrategy::Inherit} else {a_re_stgy.unwrap()},
+            locale_strategy: if a_loc_stgy.is_none() {OnDataAvailStrategy::Inherit} else {a_loc_stgy.unwrap()},
+        }
+    }
+
+    // returns a EnvPropPack when a matching key is found
+    pub fn get_prop_pack(&self, a_prop_key: EnvPropKey) -> std::result::Result<EnvPropPack, ErrorOnthefly> {
+            let o_eppack = &self.key_vals.get(&a_prop_key);
+
+            if o_eppack.is_none() {
+                Err(ErrorOnthefly::RecordNotFound)
+            } else {
+                Ok(o_eppack.unwrap().clone())
+            }    
+        }
 } 
 
 /// EnvPropPack
@@ -156,7 +181,6 @@ impl EnvPropCKey {
         }
     }
 }
-
 
 
 //#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
