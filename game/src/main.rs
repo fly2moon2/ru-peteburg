@@ -561,7 +561,7 @@ async fn main() {
         println!("EnvProp locale: {a_locale:?}, prop_val:{a_prop_val:?}");
     }  
 
-    let mut env_prop_set1 = EnvPropSet::new_born(RunEnvironment::DEV, Localeex::English, OnDataAvailStrategy::ErrOnUnavil, OnDataAvailStrategy::DefaultOnUnavail, Some(env_prop1));
+    let mut env_prop_set1 = EnvPropSet::new_born(RunEnvironment::DEV, Localeex::English, OnDataAvailStrategy::ErrOnUnavail, OnDataAvailStrategy::DefaultOnUnavail, Some(env_prop1));
     // env_prop_set1.add_env_prop(env_prop1); */
 
     let mut props1 = PropSet::new();

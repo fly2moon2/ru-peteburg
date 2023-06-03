@@ -15,13 +15,13 @@
 				"prod(site02)": [{
 					".": "postgres://localhost:5430/rustwebdev"
 				}],
-				"run_env_strategy": "ErrOnUnavil"
+				"run_env_strategy": "ErrOnUnavail"
 			}],
 			"docdb_url": [{
 				"dev": [{
 					".": "mongodb://localhost:27017/"
 				}],
-				"run_env_strategy": "ErrOnUnavil"
+				"run_env_strategy": "ErrOnUnavail"
 			}],
 			"label_username": [{
 				".": [{

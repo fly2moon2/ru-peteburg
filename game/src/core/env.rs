@@ -803,7 +803,7 @@ mod tests {
         let t_eppack1 = can_setup_env_prop_pack(&t_epp_key1);
         let mut t_key_vals1 = HashMap::new();
         t_key_vals1.insert(t_epp_key1.clone(), t_eppack1);
-        let mut t_epcmd = EnvPropCmd::new_born(RunEnvironment::DEV, Localeex::English, Some(t_key_vals1), None, None);
+        let mut t_epcmd = EnvPropCmd::new_born(RunEnvironment::DEV, Localeex::English, Some(t_key_vals1), Some(OnDataAvailStrategy::ErrOnUnavail), Some(OnDataAvailStrategy::DefaultOnUnavail));
   
         /// add another EnvPropPack
         let t_epp_key2 = EnvPropKey("Enter".to_string());
@@ -843,8 +843,23 @@ mod tests {
         /// property key for testing is randomly generated value of a random len between 1 to 100
         let t_epp_key = EnvPropKey(Alphanumeric.sample_string(&mut rand::thread_rng(), rand::thread_rng().gen_range(1..100)));
         let t_epcmd = can_setup_env_prop_cmd(&t_epp_key);
-        let t_epp_val = t_epcmd.get_prop_pack(&t_epp_key).ok().unwrap().get_prop_ex(&t_epp_key),RunEnvironment::DEV, Localeex::Chinese,Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::Inherit));
+        let t_eppack = t_epcmd.get_prop_pack(t_epp_key.clone()).ok().unwrap();
+        let t_epp_val = t_eppack.get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::Chinese,Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::Inherit));
         assert_eq!(t_epp_val.ok().unwrap(), "退出".to_string());   
+    }
+
+    /// not equal value found for exact match of key, run env & locale
+    /// via the top-level struct EnvPropCmd (epc)
+    #[test]
+    fn can_get_env_prop_via_epc_exact_err() {  
+        /// property key for testing is randomly generated value of a random len between 1 to 100
+        let t_epp_key = EnvPropKey(Alphanumeric.sample_string(&mut rand::thread_rng(), rand::thread_rng().gen_range(1..100)));
+        let t_epcmd = can_setup_env_prop_cmd(&t_epp_key);
+        let t_eppack = t_epcmd.get_prop_pack(t_epp_key.clone()).ok().unwrap();
+        let t_epp_val = t_eppack.get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::Chinese,Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::Inherit));
+        /// more proper to check record not found error, instead of comparing difference result return  
+        ///assert_ne!(t_epp_val.ok().unwrap(), "やめる".to_string());   
+        assert_eq!(t_epp_val.err().unwrap(), ErrorOnthefly::RecordNotFound); 
     }
 
     /// ok for exact match of key, run env & locale
@@ -852,7 +867,7 @@ mod tests {
     fn can_get_env_prop_exact_ok() {  
         /// property key for testing is randomly generated value of a random len between 1 to 100
         let t_epp_key = EnvPropKey(Alphanumeric.sample_string(&mut rand::thread_rng(), rand::thread_rng().gen_range(1..100)));
-        let t_eppack_val = can_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::PROD("DR server1".to_string()), Localeex::Japanese, Some(OnDataAvailStrategy::ErrOnUnavil), Some(OnDataAvailStrategy::ErrOnUnavil));
+        let t_eppack_val = can_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::PROD("DR server1".to_string()), Localeex::Japanese, Some(OnDataAvailStrategy::ErrOnUnavail), Some(OnDataAvailStrategy::ErrOnUnavail));
         assert_eq!(t_eppack_val.ok().unwrap(), "やめる".to_string());    
     }
 
@@ -860,7 +875,7 @@ mod tests {
     #[test]
     fn can_get_env_prop_exact_err() {  
         let t_epp_key = EnvPropKey("quit".to_string());
-        let t_eppack_val = can_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::Japanese, Some(OnDataAvailStrategy::ErrOnUnavil), Some(OnDataAvailStrategy::ErrOnUnavil));
+        let t_eppack_val = can_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::Japanese, Some(OnDataAvailStrategy::ErrOnUnavail), Some(OnDataAvailStrategy::ErrOnUnavail));
         assert_eq!(t_eppack_val.err().unwrap(), ErrorOnthefly::RecordNotFound);    
     }
 
@@ -876,7 +891,7 @@ mod tests {
     #[test]
     fn can_get_env_prop_inherit_cur_err() {  
         let t_epp_key = EnvPropKey("quit".to_string());
-        let t_eppack_val = can_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::ErrOnUnavil));
+        let t_eppack_val = can_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::ErrOnUnavail));
         assert_eq!(t_eppack_val.err().unwrap(), ErrorOnthefly::RecordNotFound);    
     }
 }
