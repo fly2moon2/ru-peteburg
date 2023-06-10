@@ -1,3 +1,5 @@
+use std::error::Error;
+use std::fmt;
 use serde::{Deserialize, Serialize};
 
 
@@ -101,6 +103,14 @@ pub enum ErrorOnthefly {
     IOProblem(String),
 }
 
+impl fmt::Display for ErrorOnthefly {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "ErrorOnthefly...")
+    }
+}
+
+impl Error for ErrorOnthefly {}
+///
 
 #[derive(Debug)]
 pub enum TwoPointDirection {

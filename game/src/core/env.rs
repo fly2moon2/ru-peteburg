@@ -131,14 +131,19 @@ impl EnvPropCmd {
     }
 
     // returns a EnvPropPack when a matching key is found
-    pub fn get_prop_pack(&self, a_prop_key: EnvPropKey) -> std::result::Result<EnvPropPack, ErrorOnthefly> {
-            let o_eppack = &self.key_vals.get(&a_prop_key);
+    pub fn get_prop_pack(&self, a_prop_key: EnvPropKey) -> std::result::Result<Option<EnvPropPack>, ErrorOnthefly> {
+/*             let o_eppack = &self.key_vals.get(&a_prop_key);
 
             if o_eppack.is_none() {
                 Err(ErrorOnthefly::RecordNotFound)
             } else {
                 Ok(o_eppack.unwrap().clone())
-            }    
+            }    */ 
+
+            match self.key_vals.get(&a_prop_key){
+                Some(a_val) => Ok(Some(a_val.clone())),
+                None => Err(ErrorOnthefly::RecordNotFound),
+            }
         }
 } 
 
@@ -843,7 +848,7 @@ mod tests {
         /// property key for testing is randomly generated value of a random len between 1 to 100
         let t_epp_key = EnvPropKey(Alphanumeric.sample_string(&mut rand::thread_rng(), rand::thread_rng().gen_range(1..100)));
         let t_epcmd = can_setup_env_prop_cmd(&t_epp_key);
-        let t_eppack = t_epcmd.get_prop_pack(t_epp_key.clone()).ok().unwrap();
+        let t_eppack = t_epcmd.get_prop_pack(t_epp_key.clone()).ok().unwrap().unwrap();
         let t_epp_val = t_eppack.get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::Chinese,Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::Inherit));
         assert_eq!(t_epp_val.ok().unwrap(), "退出".to_string());   
     }
@@ -855,10 +860,9 @@ mod tests {
         /// property key for testing is randomly generated value of a random len between 1 to 100
         let t_epp_key = EnvPropKey(Alphanumeric.sample_string(&mut rand::thread_rng(), rand::thread_rng().gen_range(1..100)));
         let t_epcmd = can_setup_env_prop_cmd(&t_epp_key);
-        let t_eppack = t_epcmd.get_prop_pack(t_epp_key.clone()).ok().unwrap();
-        let t_epp_val = t_eppack.get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::Chinese,Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::Inherit));
-        /// more proper to check record not found error, instead of comparing difference result return  
-        ///assert_ne!(t_epp_val.ok().unwrap(), "やめる".to_string());   
+        let t_eppack = t_epcmd.get_prop_pack(t_epp_key.clone()).ok().unwrap().unwrap();
+        let t_epp_val = t_eppack.get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::Italian,Some(OnDataAvailStrategy::ErrOnUnavail), Some(OnDataAvailStrategy::Inherit));
+        /// more proper to check record not found error, instead of comparing difference result return   
         assert_eq!(t_epp_val.err().unwrap(), ErrorOnthefly::RecordNotFound); 
     }
 
