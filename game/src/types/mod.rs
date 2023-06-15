@@ -7,3 +7,4 @@ In the file src/garden/mod.rs */
 pub mod uam;
 pub mod code;
 pub mod form;
+pub mod fechain;

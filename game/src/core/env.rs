@@ -2,7 +2,7 @@ use std::collections::HashMap;
 //use std::result::Result;
 use serde::{Deserialize, Serialize};
 use serde_json::{Result, Value};
-use crate::core::elements::{GeneralSymbol, OnDataAvailStrategy, ErrorOnthefly};
+use crate::core::elements::{TypeInfo, GeneralSymbol, OnDataAvailStrategy, ErrorOnthefly};
 use std::hash::{Hash, Hasher};
 
 // ========================================================================
@@ -106,6 +106,12 @@ pub struct EnvPropCmd {
 impl Hash for EnvPropCmd {
     fn hash<H: Hasher>(&self, hasher: &mut H) {
         self.locale.hash(hasher);
+    }
+}
+
+impl TypeInfo for EnvPropCmd {
+    fn type_of(&self) -> &'static str {
+        "EnvPropCmd"
     }
 }
 

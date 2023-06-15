@@ -2,6 +2,11 @@ use std::error::Error;
 use std::fmt;
 use serde::{Deserialize, Serialize};
 
+/// defines/prints the typeof a custom type
+/// https://stackoverflow.com/questions/21747136/how-do-i-print-in-rust-the-type-of-a-variable
+pub trait TypeInfo {
+    fn type_of(&self) -> &'static str;
+}
 
 /* // a notatioun/symbol for this/current status/position
 pub const AS_Current:&str = ".";*/

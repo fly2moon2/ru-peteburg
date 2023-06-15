@@ -18,3 +18,5 @@ pub mod db;
 pub mod docdb;
 /// web socket [tungstenite]
 pub mod wsock;
+/// kindle - graph, tag etc.
+pub mod kindle;
