@@ -5,6 +5,21 @@ use std::error::Error;
 // Document found in mongodb database collection
 //use bson::document::Document;
    
+/* CREATE TABLE IF NOT EXISTS questions (
+    id serial PRIMARY KEY,
+    title VARCHAR (255) NOT NULL,
+    content TEXT NOT NULL,
+    tags TEXT [],
+    created_on TIMESTAMP NOT NULL DEFAULT NOW()
+); 
+
+CREATE TABLE IF NOT EXISTS answers (
+   id serial PRIMARY KEY,
+   content TEXT NOT NULL,
+created_on TIMESTAMP NOT NULL DEFAULT NOW(),
+   corresponding_question integer REFERENCES questions
+);
+*/
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Question {

@@ -7,11 +7,11 @@ edition = "2021"
 macroquad = "0.3.25"
 mongodb = "2.4.0"
 bson = { version = "2.6.1", features = ["chrono-0_4"] } # Needed for using chrono datetime in doc
-chrono = "0.4.24" # Used for setting DateTimes
+chrono = { version = "0.4.24", features = ["serde"] } # for setting DateTimes, serde features required for ser/deserial
 serde = "1.0.160"
 serde_json = "1.0.96"
 serde_derive = "1.0.162"
-sqlx = {version = "0.5",features = [ "runtime-tokio-rustls", "migrate", "postgres" ]}
+sqlx = {version = "0.5",features = [ "runtime-tokio-rustls", "migrate", "postgres", "chrono" ]} # chrono required for sqlx DateTime
 tokio = { version = "1.27", features = ["full"] }
 warp = "0.3.4"
 tungstenite = "0.19"
