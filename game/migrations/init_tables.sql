@@ -1,4 +1,28 @@
 -- Add migration script here
+-- organisation unit
+CREATE TABLE IF NOT EXISTS orgunit (
+   id bigserial PRIMARY KEY,
+   name VARCHAR (80) UNIQUE NOT NULL,
+   shortname VARCHAR (10) UNIQUE NOT NULL,
+   longname VARCHAR (255) UNIQUE NOT NULL,
+   typ VARCHAR(10) NOT NULL,
+   start_dte TIMESTAMP,
+   end_dte TIMESTAMP,
+   parent_orgunit_id bigint
+); 
+
+-- organisation unit
+CREATE TABLE IF NOT EXISTS personinfo (
+   id bigserial PRIMARY KEY,
+   name VARCHAR (80),
+   sex VARCHAR (1),
+   dob TIMESTAMP,
+   dod TIMESTAMP,
+   start_dte TIMESTAMP,
+   end_dte TIMESTAMP,
+   parent_orgunit_id bigint
+); 
+
 -- user
 CREATE TABLE IF NOT EXISTS uuser (
    id bigserial PRIMARY KEY,
