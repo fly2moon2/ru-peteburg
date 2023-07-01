@@ -252,8 +252,11 @@ impl EnvPropPack {
     /// - a_run_env: running environment to find; likely the current running environment of the app
     /// - a_locale: locale to find; likely the current locale of the app
     /// output:
+    /// - o_prop_val (Option<EnvPropVal>), simplified from <Result, Error> output
+    pub fn get_prop_ex(&self, a_prop_key: EnvPropKey, a_run_env: RunEnvironment, a_locale: Localeex, a_parent_re_stgy: Option<OnDataAvailStrategy>, a_parent_loc_stgy: Option<OnDataAvailStrategy>) -> Option<EnvPropVal> {
+    /// output:
     /// - o_prop_val (EnvPropVal) or ErrorOnthefly
-    pub fn get_prop_ex(&self, a_prop_key: EnvPropKey, a_run_env: RunEnvironment, a_locale: Localeex, a_parent_re_stgy: Option<OnDataAvailStrategy>, a_parent_loc_stgy: Option<OnDataAvailStrategy>) -> std::result::Result<EnvPropVal,ErrorOnthefly> {
+    ///pub fn get_prop_ex(&self, a_prop_key: EnvPropKey, a_run_env: RunEnvironment, a_locale: Localeex, a_parent_re_stgy: Option<OnDataAvailStrategy>, a_parent_loc_stgy: Option<OnDataAvailStrategy>) -> std::result::Result<EnvPropVal,ErrorOnthefly> {
         let mut is_condition_met: bool = false;
         let mut try_cnt: i8 = 0;
         const TRY_CNT_LMT: i8 = 3;
@@ -357,9 +360,11 @@ impl EnvPropPack {
         } */
 
         if o_prop_val == "".to_string() {
-            Err(ErrorOnthefly::RecordNotFound)
+            None
+            //Err(ErrorOnthefly::RecordNotFound)
         } else {
-            Ok(o_prop_val)
+            Some(o_prop_val)
+            //Ok(o_prop_val)
         }   
 
     }
@@ -865,7 +870,8 @@ mod tests {
         //let t_eppack = t_epcmd.get_prop_pack(t_epp_key.clone()).ok().unwrap().unwrap();
         let t_eppack = t_epcmd.get_prop_pack(t_epp_key.clone()).unwrap();
         let t_epp_val = t_eppack.get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::Chinese,Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::Inherit));
-        assert_eq!(t_epp_val.ok().unwrap(), "退出".to_string());   
+        assert_eq!(t_epp_val.unwrap(), EnvPropVal("退出".to_string()));   
+        //assert_eq!(t_epp_val.ok().unwrap(), "退出".to_string());   
     }
 
     /// not equal value found for exact match of key, run env & locale
@@ -879,7 +885,8 @@ mod tests {
         let t_eppack = t_epcmd.get_prop_pack(t_epp_key.clone()).unwrap();
         let t_epp_val = t_eppack.get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::Italian,Some(OnDataAvailStrategy::ErrOnUnavail), Some(OnDataAvailStrategy::Inherit));
         /// more proper to check record not found error, instead of comparing difference result return   
-        assert_eq!(t_epp_val.err().unwrap(), ErrorOnthefly::RecordNotFound); 
+        assert_eq!(t_epp_val.unwrap(),None);
+        //assert_eq!(t_epp_val.err().unwrap(), ErrorOnthefly::RecordNotFound);  
     }
 
     /// ok for exact match of key, run env & locale
@@ -888,7 +895,8 @@ mod tests {
         /// property key for testing is randomly generated value of a random len between 1 to 100
         let t_epp_key = EnvPropKey(Alphanumeric.sample_string(&mut rand::thread_rng(), rand::thread_rng().gen_range(1..100)));
         let t_eppack_val = can_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::PROD("DR server1".to_string()), Localeex::Japanese, Some(OnDataAvailStrategy::ErrOnUnavail), Some(OnDataAvailStrategy::ErrOnUnavail));
-        assert_eq!(t_eppack_val.ok().unwrap(), "やめる".to_string());    
+        assert_eq!(t_eppack_val.unwrap(), EnvPropVal("やめる".to_string()));  
+        //assert_eq!(t_eppack_val.ok().unwrap(), "やめる".to_string());    
     }
 
     /// error for exact match of key, run env & locale
@@ -896,7 +904,8 @@ mod tests {
     fn can_get_env_prop_exact_err() {  
         let t_epp_key = EnvPropKey("quit".to_string());
         let t_eppack_val = can_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::Japanese, Some(OnDataAvailStrategy::ErrOnUnavail), Some(OnDataAvailStrategy::ErrOnUnavail));
-        assert_eq!(t_eppack_val.err().unwrap(), ErrorOnthefly::RecordNotFound);    
+        assert_eq!(t_eppack_val.unwrap(), None);   
+        //assert_eq!(t_eppack_val.err().unwrap(), ErrorOnthefly::RecordNotFound);    
     }
 
     /// ok inherit parent/up-one-level locale strategy that defaults to get the current locale when given locale is not found
@@ -904,7 +913,8 @@ mod tests {
     fn can_get_env_prop_inherit_cur_ok() {  
         let t_epp_key = EnvPropKey("quit".to_string());
         let t_eppack_val = can_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::DefaultOnUnavail));
-        assert_eq!(t_eppack_val.ok().unwrap(), "Quit".to_string());    
+        assert_eq!(t_eppack_val.unwrap(), EnvPropVal("Quit".to_string()));    
+        //assert_eq!(t_eppack_val.ok().unwrap(), "Quit".to_string());  
     }
 
     /// error inherit parent/up-one-level locale strategy that returns error when given locale is not found
@@ -912,6 +922,7 @@ mod tests {
     fn can_get_env_prop_inherit_cur_err() {  
         let t_epp_key = EnvPropKey("quit".to_string());
         let t_eppack_val = can_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::ErrOnUnavail));
-        assert_eq!(t_eppack_val.err().unwrap(), ErrorOnthefly::RecordNotFound);    
+        assert_eq!(t_eppack_val.unwrap(), None);   
+        //assert_eq!(t_eppack_val.err().unwrap(), ErrorOnthefly::RecordNotFound);    
     }
 }

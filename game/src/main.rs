@@ -544,10 +544,10 @@ async fn main() {
     let epp3_val = eppack3.get_prop_ex(EnvPropKey("layout".to_string()),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::DefaultOnUnavail));
 
     let mut g_epp3_val = "".to_string();
-    if epp3_val.is_err() {
-        println!("epp3_val Err: {:?}", epp3_val.err().unwrap());
+    if epp3_val.is_none() {
+        println!("epp3_val is None");
     } else {
-        g_epp3_val=epp3_val.ok().unwrap().clone();
+        g_epp3_val=epp3_val.unwrap().clone();
         println!("epp3_val Ok: {:?}", &g_epp3_val.to_string());
     }
 
