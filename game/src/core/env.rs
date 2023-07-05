@@ -1,9 +1,16 @@
 use std::collections::HashMap;
 //use std::result::Result;
-use serde::{Deserialize, Serialize};
-use serde_json::{Result, Value};
-use crate::core::elements::{TypeInfo, GeneralSymbol, OnDataAvailStrategy, ErrorOnthefly};
 use std::hash::{Hash, Hasher};
+use std::str::FromStr;
+use strum::EnumProperty;
+use strum_macros::{EnumString, EnumProperty};
+
+use serde::{Deserialize, Serialize};
+//use serde_derive::{Deserialize, Serialize};
+use serde_json::{Result, Number, Value};
+use serde_json::Map;
+
+use crate::core::elements::{TypeInfo, GeneralSymbol, OnDataAvailStrategy, ErrorOnthefly};
 
 // ========================================================================
 // HashMap example
@@ -12,7 +19,8 @@ use std::hash::{Hash, Hasher};
 // and properties (a HashMap of Prop)
 // ========================================================================
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize, EnumString)]
+#[strum(ascii_case_insensitive)]
 pub enum RunEnvironment {
     Current,
     DEV,
@@ -27,15 +35,23 @@ pub enum RunEnvironment {
 ///             default property value would be used (subject to locale_strategy in app_properties.json)
 /// ref. https://stackoverflow.com/questions/36928569/how-can-i-create-enums-with-constant-values-in-rust
 /// hash, partialeq, eq, serialisze, deserialize is needed for putting the struct inside hashmap
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize, EnumString, EnumProperty)]
 pub enum Localeex {
+    #[strum(ascii_case_insensitive, serialize = ".")]
     Current,
+    #[strum(props(code="EN"))]
     English,
+    #[strum(props(code="CH"))]
     Chinese,
+    #[strum(props(code="JP"))]
     Japanese,
+    #[strum(props(code="FR"))]
     French,
+    #[strum(props(code="IT"))]
     Italian,
+    #[strum(props(code="GR"))]
     German,
+    #[strum(props(code="SP"))]
     Spanish,
 }
 
@@ -810,6 +826,166 @@ fn main() {
 }
 
      */
+     //pub props:HashMap<String, String>,
+
+pub fn json_to_env_prop_pack(a_value: &Value) -> Vec<String> {
+    let mut o_vec = Vec::new();
+    let mut o_vec_key = Vec::new();
+
+    /// an array of objects
+    if a_value.is_array() {
+        let item_cnt = a_value.as_array().unwrap().len();
+
+        /// iterate the array
+        for index in 0..item_cnt{
+            let mut a_obj = a_value[index].as_object().unwrap();
+            for (key, value) in a_obj.iter() {
+                //println!("sjikan, {:?}", value);
+                let mut o_result = match *value {
+                    Value::String(ref v) => vec![v.to_string()],
+                    Value::Object(ref map)=> json_to_env_prop_pack(&Value::Object(map.clone())),
+                    Value::Array(ref vec)=> json_to_env_prop_pack(&Value::Array(vec.clone())),
+                    _ => vec![],
+                };
+                o_vec.push(o_result[0].clone());
+                o_vec_key.push(key.clone());
+            }    
+        }
+
+    } else {
+        let mut a_obj = a_value.as_object().unwrap();
+        for (key, value) in a_obj.iter() {
+            //println!("sjikan, {:?}", value);
+            let mut o_result = match *value {
+                Value::String(ref v) => vec![v.to_string()],
+                Value::Object(ref map)=> json_to_env_prop_pack(&Value::Object(map.clone())),
+                Value::Array(ref vec)=> json_to_env_prop_pack(&Value::Array(vec.clone())),
+                _ => vec![],
+            };
+            o_vec.push(o_result[0].clone());
+            o_vec_key.push(key.clone());
+        }    
+    }
+
+/*     for o_idx1 in 0..o_vec_key.len() {
+        println!("o_key {}:{:?}", o_idx1.to_string(), o_vec_key[o_idx1]);
+    } */
+
+    let o_item_cnt = o_vec.len();
+    for o_idx in 0..o_item_cnt{
+        //println!("o_vector: {}{:?}", o_idx.to_string(), o_vec[o_idx]);
+        println!("index {}, key: {:?}: value: {:?}", o_idx.to_string(), o_vec_key[o_idx], o_vec[o_idx]);
+    }
+    o_vec
+}
+
+pub fn load_env(prop_file: &str) {  
+    //let input_path = "./assets/app_properties.json";
+
+    let mut app_props = {
+        // Load the first file into a string.
+        let app_props = std::fs::read_to_string(prop_file).unwrap();
+
+        // Parse the string into a dynamically-typed JSON structure.
+        serde_json::from_str::<Value>(&app_props).unwrap()
+    };
+
+    println!("array of objs env_props: {:?}", json_to_env_prop_pack(&app_props["env_props"]));
+
+    //println!("array of objs: {:?}", json_to_env_prop_pack(&app_props["env_props"]["properties"]));
+
+    //println!("app_properties.json: {}",app_props["env_props"]["locale"].to_string());
+    // Get the number of items in the object 'env_props'
+    let item_cnt = app_props["env_props"]["properties"].as_array().unwrap().len();
+    //let item_cnt = app_props["env_props"]["properties"][0].as_object().unwrap().len();
+
+    for index in 0..item_cnt{
+    /*        let mut obj0 = app_props["env_props"]["properties"][index].as_object().unwrap();
+        for (key0, value0) in obj0.iter() {
+            let mut a_map=Map::new();
+            //let a_map0=value0.clone();
+            //a_map.insert(key0.to_string(), a_map0);
+            a_map.insert(key0.to_string(), value0.clone());
+            //println!("j2e: {}", json_to_env_prop_pack(&a_map));
+        } */
+
+        let mut obj = app_props["env_props"]["properties"][index].as_object().unwrap();
+
+        for (key, value) in obj.iter() {
+            println!("obj {}: {}", key.clone(), match *value {
+                //Value::U64(v) => format!("{} (u64)", v),
+                Value::String(ref v) => format!("{} (string)", v),
+                _ => format!("other")
+            });
+
+            //let mut obj1 = app_props["env_props"]["properties"][index][key.to_string()].as_object().unwrap();
+            let mut obj1 = app_props["env_props"]["properties"][index][key][0].as_object().unwrap();
+            for (key1, value1) in obj1.iter() {
+                println!("obj1 {}: {}", key1.clone(), match *value1 {
+                    //Value::U64(v) => format!("{} (u64)", v),
+                    Value::String(ref v) => format!("{} (string)", v),
+                    _ => format!("other")
+                });
+            }
+        }
+        //println!("app_properties.json: {}",app_props["env_props"]["properties"][0].as_object().unwrap());
+        // println!("app_properties.json: {}",app_props["env_props"]["properties"][index]["locale"].to_string());
+    }
+}
+
+pub fn test_read_json_prop_file(prop_file: &str) {  
+    //let input_path = "./assets/app_properties.json";
+
+    let mut app_props = {
+        // Load the first file into a string.
+        let app_props = std::fs::read_to_string(prop_file).unwrap();
+
+        // Parse the string into a dynamically-typed JSON structure.
+        serde_json::from_str::<Value>(&app_props).unwrap()
+    };
+
+    println!("array of objs env_props: {:?}", json_to_env_prop_pack(&app_props["env_props"]));
+
+    //println!("array of objs: {:?}", json_to_env_prop_pack(&app_props["env_props"]["properties"]));
+
+    //println!("app_properties.json: {}",app_props["env_props"]["locale"].to_string());
+    // Get the number of items in the object 'env_props'
+    let item_cnt = app_props["env_props"]["properties"].as_array().unwrap().len();
+    //let item_cnt = app_props["env_props"]["properties"][0].as_object().unwrap().len();
+
+    for index in 0..item_cnt{
+    /*        let mut obj0 = app_props["env_props"]["properties"][index].as_object().unwrap();
+        for (key0, value0) in obj0.iter() {
+            let mut a_map=Map::new();
+            //let a_map0=value0.clone();
+            //a_map.insert(key0.to_string(), a_map0);
+            a_map.insert(key0.to_string(), value0.clone());
+            //println!("j2e: {}", json_to_env_prop_pack(&a_map));
+        } */
+
+        let mut obj = app_props["env_props"]["properties"][index].as_object().unwrap();
+
+        for (key, value) in obj.iter() {
+            println!("obj {}: {}", key.clone(), match *value {
+                //Value::U64(v) => format!("{} (u64)", v),
+                Value::String(ref v) => format!("{} (string)", v),
+                _ => format!("other")
+            });
+
+            //let mut obj1 = app_props["env_props"]["properties"][index][key.to_string()].as_object().unwrap();
+            let mut obj1 = app_props["env_props"]["properties"][index][key][0].as_object().unwrap();
+            for (key1, value1) in obj1.iter() {
+                println!("obj1 {}: {}", key1.clone(), match *value1 {
+                    //Value::U64(v) => format!("{} (u64)", v),
+                    Value::String(ref v) => format!("{} (string)", v),
+                    _ => format!("other")
+                });
+            }
+        }
+        //println!("app_properties.json: {}",app_props["env_props"]["properties"][0].as_object().unwrap());
+        // println!("app_properties.json: {}",app_props["env_props"]["properties"][index]["locale"].to_string());
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -870,7 +1046,8 @@ mod tests {
         //let t_eppack = t_epcmd.get_prop_pack(t_epp_key.clone()).ok().unwrap().unwrap();
         let t_eppack = t_epcmd.get_prop_pack(t_epp_key.clone()).unwrap();
         let t_epp_val = t_eppack.get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::Chinese,Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::Inherit));
-        assert_eq!(t_epp_val.unwrap(), EnvPropVal("退出".to_string()));   
+        assert_eq!(t_epp_val.unwrap(), "退出".to_string());   
+        //assert_eq!(t_epp_val.unwrap(), EnvPropVal("退出".to_string()));  
         //assert_eq!(t_epp_val.ok().unwrap(), "退出".to_string());   
     }
 
@@ -885,7 +1062,8 @@ mod tests {
         let t_eppack = t_epcmd.get_prop_pack(t_epp_key.clone()).unwrap();
         let t_epp_val = t_eppack.get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::Italian,Some(OnDataAvailStrategy::ErrOnUnavail), Some(OnDataAvailStrategy::Inherit));
         /// more proper to check record not found error, instead of comparing difference result return   
-        assert_eq!(t_epp_val.unwrap(),None);
+        assert_eq!(t_epp_val,None);
+        //assert_eq!(t_epp_val.unwrap(),None);
         //assert_eq!(t_epp_val.err().unwrap(), ErrorOnthefly::RecordNotFound);  
     }
 
@@ -895,7 +1073,8 @@ mod tests {
         /// property key for testing is randomly generated value of a random len between 1 to 100
         let t_epp_key = EnvPropKey(Alphanumeric.sample_string(&mut rand::thread_rng(), rand::thread_rng().gen_range(1..100)));
         let t_eppack_val = can_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::PROD("DR server1".to_string()), Localeex::Japanese, Some(OnDataAvailStrategy::ErrOnUnavail), Some(OnDataAvailStrategy::ErrOnUnavail));
-        assert_eq!(t_eppack_val.unwrap(), EnvPropVal("やめる".to_string()));  
+        assert_eq!(t_eppack_val.unwrap(), "やめる".to_string());  
+        //assert_eq!(t_eppack_val.unwrap(), EnvPropVal("やめる".to_string()));  
         //assert_eq!(t_eppack_val.ok().unwrap(), "やめる".to_string());    
     }
 
@@ -904,7 +1083,8 @@ mod tests {
     fn can_get_env_prop_exact_err() {  
         let t_epp_key = EnvPropKey("quit".to_string());
         let t_eppack_val = can_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::Japanese, Some(OnDataAvailStrategy::ErrOnUnavail), Some(OnDataAvailStrategy::ErrOnUnavail));
-        assert_eq!(t_eppack_val.unwrap(), None);   
+        assert_eq!(t_eppack_val, None);   
+        //assert_eq!(t_eppack_val.unwrap(), None);   
         //assert_eq!(t_eppack_val.err().unwrap(), ErrorOnthefly::RecordNotFound);    
     }
 
@@ -913,7 +1093,8 @@ mod tests {
     fn can_get_env_prop_inherit_cur_ok() {  
         let t_epp_key = EnvPropKey("quit".to_string());
         let t_eppack_val = can_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::DefaultOnUnavail));
-        assert_eq!(t_eppack_val.unwrap(), EnvPropVal("Quit".to_string()));    
+        assert_eq!(t_eppack_val.unwrap(), "Quit".to_string());   
+        //assert_eq!(t_eppack_val.unwrap(), EnvPropVal("Quit".to_string()));    
         //assert_eq!(t_eppack_val.ok().unwrap(), "Quit".to_string());  
     }
 
@@ -922,7 +1103,14 @@ mod tests {
     fn can_get_env_prop_inherit_cur_err() {  
         let t_epp_key = EnvPropKey("quit".to_string());
         let t_eppack_val = can_setup_env_prop_pack(&t_epp_key).get_prop_ex(t_epp_key.clone(),RunEnvironment::DEV, Localeex::English, Some(OnDataAvailStrategy::DefaultOnUnavail), Some(OnDataAvailStrategy::ErrOnUnavail));
-        assert_eq!(t_eppack_val.unwrap(), None);   
+        assert_eq!(t_eppack_val, None);   
+        //assert_eq!(t_eppack_val.unwrap(), None);  
         //assert_eq!(t_eppack_val.err().unwrap(), ErrorOnthefly::RecordNotFound);    
+    }
+
+    #[test]
+    fn can_get_locale_code() {
+        let loc_jp = Localeex::Japanese;
+        assert_eq!(loc_jp.get_str("code").unwrap(), "JP");
     }
 }

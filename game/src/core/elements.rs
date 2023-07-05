@@ -1,5 +1,8 @@
 use std::error::Error;
 use std::fmt;
+use std::str::FromStr;
+use strum_macros::EnumString;
+
 use serde::{Deserialize, Serialize};
 
 /// defines/prints the typeof a custom type
@@ -81,7 +84,7 @@ pub enum Relationship {
 /// DefaultOnUnavail -  fall Back to the default when no match is found,
 /// ErrOnUnavail - matched value is required; error/exception when no match is found, 
 /// Inherit      - not to define strategy at this level; Inherit strategy from upper level instead 
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize, EnumString)]
 pub enum OnDataAvailStrategy {
     Inherit,
     SilentOnUnavil,
