@@ -39,50 +39,22 @@ pub enum RunEnvironment {
 pub enum Localeex {
     #[strum(ascii_case_insensitive, serialize = ".")]
     Current,
-    #[strum(props(code="EN"))]
+    #[strum(ascii_case_insensitive, props(code="EN"))]
     English,
-    #[strum(props(code="CH"))]
+    #[strum(ascii_case_insensitive, props(code="CH"))]
     Chinese,
-    #[strum(props(code="JP"))]
+    #[strum(ascii_case_insensitive, props(code="JP"))]
     Japanese,
-    #[strum(props(code="FR"))]
+    #[strum(ascii_case_insensitive, props(code="FR"))]
     French,
-    #[strum(props(code="IT"))]
+    #[strum(ascii_case_insensitive, props(code="IT"))]
     Italian,
-    #[strum(props(code="GR"))]
+    #[strum(ascii_case_insensitive, props(code="GR"))]
     German,
-    #[strum(props(code="SP"))]
+    #[strum(ascii_case_insensitive, props(code="SP"))]
     Spanish,
 }
 
-impl Localeex{
-/*     pub fn new_born(code:&str) -> Localeex {
-        match code {
-            GeneralSymbol::Current.symbol() => Localeex::Current => GeneralSymbol::Current.symbol(),
-            "EN".to_string() => Localeex::English,
-            "CH".to_string() => Localeex::Chinese,
-            "JP".to_string() => Localeex::Japanese,
-            "FR".to_string() => Localeex::French,
-            "IT".to_string() => Localeex::Italian,
-            "GR".to_string()=> Localeex::German,
-            "SP".to_string() => Localeex::Spanish,      
-        }
-    } */
-
-
-    pub fn code(&self) -> String {
-        match *self {
-            Localeex::Current => GeneralSymbol::Current.symbol(),
-            Localeex::English => "EN".to_string(),
-            Localeex::Chinese => "CH".to_string(),
-            Localeex::Japanese => "JP".to_string(),
-            Localeex::French => "FR".to_string(),
-            Localeex::Italian => "IT".to_string(),
-            Localeex::German => "GR".to_string(),
-            Localeex::Spanish => "SP".to_string(),
-        }
-    }
-}
 
 /// hash, partialeq, eq, serialisze, deserialize is needed for putting the struct inside hashmap
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
@@ -1106,6 +1078,12 @@ mod tests {
         assert_eq!(t_eppack_val, None);   
         //assert_eq!(t_eppack_val.unwrap(), None);  
         //assert_eq!(t_eppack_val.err().unwrap(), ErrorOnthefly::RecordNotFound);    
+    }
+
+    #[test]
+    fn can_match_locale_from_str() {
+        let loc_jp = Localeex::from_str("japanese").unwrap();
+        assert_eq!(Localeex::Japanese, loc_jp);
     }
 
     #[test]
